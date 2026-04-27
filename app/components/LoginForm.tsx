@@ -54,7 +54,7 @@ export default function LoginForm() {
               name='username'
               type='text'
               required
-              className='w-full pl-10 pr-4 py-2 bg-transparent border border-[#eaeaea] dark:border-[#333] rounded-md outline-none focus:border-black dark:focus:border-white transition-colors text-sm'
+              className='w-full pl-10 pr-4 py-2 bg-transparent border border-[#eaeaea] dark:border-[#333] rounded-md outline-none focus:border-black dark:focus:border-white dark:text-white transition-colors text-sm'
               placeholder='username'
             />
           </div>
@@ -75,7 +75,7 @@ export default function LoginForm() {
               name='password'
               type={showPassword ? 'text' : 'password'}
               required
-              className='w-full pl-10 pr-10 py-2 bg-transparent border border-[#eaeaea] dark:border-[#333] rounded-md outline-none focus:border-black dark:focus:border-white transition-colors text-sm'
+              className='w-full pl-10 pr-10 py-2 bg-transparent border border-[#eaeaea] dark:border-[#333] rounded-md outline-none focus:border-black dark:focus:border-white dark:text-white transition-colors text-sm'
               placeholder='••••••••'
             />
             <button
