@@ -2,7 +2,7 @@ import Sidebar from '../components/Sidebar'
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className='flex min-h-screen bg-[#fafafa] dark:bg-[#000] text-black dark:text-white'>
+    <div className='flex min-h-screen bg-[#fafafa] dark:bg-black text-black dark:text-white'>
       {/* Sidebar - Desktop uchun doimiy ko'rinadi */}
       <Sidebar />
 

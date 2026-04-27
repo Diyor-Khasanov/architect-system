@@ -16,7 +16,7 @@ export default function Sidebar() {
   const pathname = usePathname()
 
   return (
-    <aside className='fixed inset-y-0 left-0 hidden w-64 border-r border-[#eaeaea] dark:border-[#333] bg-white dark:bg-[#000] lg:block'>
+    <aside className='fixed inset-y-0 left-0 hidden w-64 border-r border-[#eaeaea] dark:border-[#333] bg-white dark:bg-black lg:block'>
       <div className='flex h-full flex-col p-6'>
         {/* Logo section */}
         <div className='flex items-center gap-2 px-2 mb-10'>

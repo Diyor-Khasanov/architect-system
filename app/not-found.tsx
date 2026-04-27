@@ -3,7 +3,7 @@ import { ChevronLeft, Home, AlertCircle } from 'lucide-react'
 
 export default function NotFound() {
   return (
-    <div className='min-h-screen flex flex-col items-center justify-center bg-white dark:bg-[#000] text-black dark:text-white p-4'>
+    <div className='min-h-screen flex flex-col items-center justify-center bg-white dark:bg-black text-black dark:text-white p-4'>
       <div className='space-y-6 text-center max-w-md'>
         {/* Geist uslubidagi minimal 404 belgisi */}
         <div className='flex justify-center'>
@@ -33,7 +33,7 @@ export default function NotFound() {
       </div>
 
       {/* Geist dizaynidagi pastki dekorativ chiziq */}
-      <div className='fixed bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#eaeaea] dark:via-[#333] to-transparent opacity-50' />
+      <div className='fixed bottom-0 left-0 w-full h-px bg-linear-to-r from-transparent via-[#eaeaea] dark:via-[#333] to-transparent opacity-50' />
     </div>
   )
 }
