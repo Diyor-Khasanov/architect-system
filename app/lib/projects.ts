@@ -56,6 +56,7 @@ export async function fetchProjects() {
 
   const payload = (await response.json()) as unknown
   return normalizeProjectsResponse(payload)
+  return (await response.json()) as Project[]
 }
 
 export async function createProject(payload: CreateProjectPayload) {
