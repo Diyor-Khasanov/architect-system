@@ -12,6 +12,17 @@ interface SidebarProps {
   fullName: string
 }
 
+interface MenuItem {
+  name: string
+  href: string
+  icon: typeof LayoutDashboard
+}
+
+const roleMenu: Record<UserRole, MenuItem[]> = {
+  admin: [
+    { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
+    { name: 'Users', href: '/dashboard/users', icon: Users },
+    { name: 'Projects', href: '/projects', icon: FolderKanban },
 const roleMenu: Record<UserRole, { name: string; href: string; icon: typeof LayoutDashboard }[]> = {
   admin: [
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
@@ -21,6 +32,7 @@ const roleMenu: Record<UserRole, { name: string; href: string; icon: typeof Layo
   ],
   manager: [
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
+    { name: 'Projects', href: '/projects', icon: FolderKanban },
     { name: 'My Projects', href: '/dashboard/projects', icon: FolderKanban },
     { name: 'Team', href: '/dashboard/team', icon: Users },
     { name: 'Reports', href: '/dashboard/reports', icon: BarChart3 },
@@ -28,6 +40,17 @@ const roleMenu: Record<UserRole, { name: string; href: string; icon: typeof Layo
   worker: [
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Assigned Tasks', href: '/dashboard/tasks', icon: Wrench },
+  ],
+}
+
+function isActivePath(pathname: string, href: string) {
+  if (href === '/dashboard') {
+    return pathname === href
+  }
+
+  return pathname === href || pathname.startsWith(`${href}/`)
+}
+
     { name: 'My Projects', href: '/dashboard/projects', icon: FolderKanban },
   ],
 }
@@ -49,7 +72,8 @@ export default function Sidebar({ role, fullName }: SidebarProps) {
 
         <nav className='flex-1 space-y-1'>
           {menuItems.map((item) => {
-            const isActive = pathname === item.href
+            const isActive = isActivePath(pathname, item.href)
+
             return (
               <Link
                 key={item.href}
