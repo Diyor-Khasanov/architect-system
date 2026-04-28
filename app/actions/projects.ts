@@ -1,6 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
+import { fetchCurrentUser } from '../lib/auth'
 import { createProject } from '../lib/projects'
 
 interface CreateProjectState {
@@ -9,6 +10,12 @@ interface CreateProjectState {
 }
 
 export async function createProjectAction(_: CreateProjectState, formData: FormData): Promise<CreateProjectState> {
+  const currentUser = await fetchCurrentUser()
+
+  if (!currentUser || currentUser.role !== 'admin') {
+    return { error: 'Only administrators can create projects.' }
+  }
+
   const name = String(formData.get('name') ?? '').trim()
   const description = String(formData.get('description') ?? '').trim()
   const deadline = String(formData.get('deadline') ?? '').trim()

@@ -85,12 +85,13 @@ export async function fetchProject(id: string) {
     throw new Error('Failed to fetch project')
   }
 
-  const payload = (await response.json()) as any
+  const payload = (await response.json()) as unknown
 
-  if (payload && typeof payload === 'object' && !payload.id) {
-    if (payload.data) return payload.data as Project
-    if (payload.item) return payload.item as Project
-    if (payload.project) return payload.project as Project
+  if (payload && typeof payload === 'object' && payload !== null && !('id' in payload)) {
+    const candidate = payload as { data?: Project; item?: Project; project?: Project }
+    if (candidate.data) return candidate.data
+    if (candidate.item) return candidate.item
+    if (candidate.project) return candidate.project
   }
 
   return payload as Project
