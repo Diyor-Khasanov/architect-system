@@ -1,13 +1,22 @@
+import { redirect } from 'next/navigation'
 import Sidebar from '../components/Sidebar'
+import { fetchCurrentUser } from '../lib/auth'
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const currentUser = await fetchCurrentUser()
+
+  if (!currentUser) {
+    redirect('/login')
+  }
+
   return (
-    <div className='flex min-h-screen bg-[#fafafa] dark:bg-black text-black dark:text-white'>
-      {/* Sidebar - Desktop uchun doimiy ko'rinadi */}
-      <Sidebar />
+    <div className='min-h-screen bg-zinc-50 text-zinc-900'>
+      <Sidebar
+        role={currentUser.role}
+        fullName={currentUser.profile?.full_name ?? currentUser.username}
+      />
 
-      {/* Asosiy kontent maydoni */}
-      <main className='flex-1 lg:pl-64'>
+      <main className='flex-1 lg:pl-72'>
         <div className='h-full px-4 py-8 lg:px-10'>{children}</div>
       </main>
     </div>
