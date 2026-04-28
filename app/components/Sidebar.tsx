@@ -6,8 +6,6 @@ import { LayoutDashboard, FolderKanban, Users, BarChart3, Wrench, LogOut, Comman
 import { logoutAction } from '../actions/login'
 import type { UserRole } from '../lib/auth'
 import { cn } from '../lib/utils'
-import { logoutAction } from '../actions/login'
-import type { UserRole } from '../lib/auth'
 
 interface SidebarProps {
   role: UserRole
@@ -25,17 +23,11 @@ const roleMenu: Record<UserRole, MenuItem[]> = {
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Users', href: '/dashboard/users', icon: Users },
     { name: 'Projects', href: '/projects', icon: FolderKanban },
-const roleMenu: Record<UserRole, { name: string; href: string; icon: typeof LayoutDashboard }[]> = {
-  admin: [
-    { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
-    { name: 'Users', href: '/dashboard/users', icon: Users },
-    { name: 'Projects', href: '/dashboard/projects', icon: FolderKanban },
     { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
   ],
   manager: [
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Projects', href: '/projects', icon: FolderKanban },
-    { name: 'My Projects', href: '/dashboard/projects', icon: FolderKanban },
     { name: 'Team', href: '/dashboard/team', icon: Users },
     { name: 'Reports', href: '/dashboard/reports', icon: BarChart3 },
   ],
@@ -51,19 +43,6 @@ function isActivePath(pathname: string, href: string) {
   }
 
   return pathname === href || pathname.startsWith(`${href}/`)
-}
-
-
-function isActivePath(pathname: string, href: string) {
-  if (href === '/dashboard') {
-    return pathname === href
-  }
-
-  return pathname === href || pathname.startsWith(`${href}/`)
-}
-
-    { name: 'My Projects', href: '/dashboard/projects', icon: FolderKanban },
-  ],
 }
 
 export default function Sidebar({ role, fullName }: SidebarProps) {

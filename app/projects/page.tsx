@@ -12,7 +12,6 @@ export default async function ProjectsPage() {
   }
 
   if (!['admin', 'manager'].includes(currentUser.role)) {
-  if (currentUser.role === 'worker') {
     redirect('/dashboard')
   }
 
