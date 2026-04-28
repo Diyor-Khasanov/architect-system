@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import AppShell from '../components/AppShell'
 import ProjectCreateForm from '../components/ProjectCreateForm'
@@ -63,7 +64,9 @@ export default async function ProjectsPage() {
                     <tr key={project.id} className='border-b border-zinc-100'>
                       <td className='px-2 py-3 text-zinc-500'>{project.id}</td>
                       <td className='px-2 py-3'>
-                        <p className='font-medium text-zinc-900'>{project.name}</p>
+                        <Link href={`/projects/${project.id}`} className='font-medium text-zinc-900 hover:underline'>
+                          {project.name}
+                        </Link>
                         <p className='text-xs text-zinc-500'>{project.description}</p>
                       </td>
                       <td className='px-2 py-3 text-zinc-600'>{project.manager_id}</td>
