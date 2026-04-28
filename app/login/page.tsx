@@ -1,13 +1,21 @@
+import { redirect } from 'next/navigation'
 import LoginForm from '../components/LoginForm'
+import { fetchCurrentUser } from '../lib/auth'
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  const currentUser = await fetchCurrentUser()
+
+  if (currentUser) {
+    redirect('/dashboard')
+  }
+
   return (
-    <main className='min-h-screen w-full flex flex-col items-center justify-center bg-[#fafafa] dark:bg-black p-4'>
+    <main className='flex min-h-screen w-full flex-col items-center justify-center bg-zinc-50 p-4'>
       <div className='mb-8 flex items-center gap-2'>
-        <div className='w-8 h-8 bg-black dark:bg-white rounded-full flex items-center justify-center'>
-          <div className='w-3 h-3 bg-white dark:bg-black rotate-45' />
+        <div className='flex h-8 w-8 items-center justify-center rounded-full bg-zinc-950'>
+          <div className='h-3 w-3 rotate-45 bg-white' />
         </div>
-        <span className='text-xl font-bold tracking-tighter dark:text-white'>ADMIN PANEL</span>
+        <span className='text-xl font-semibold tracking-tight'>Architect Dashboard</span>
       </div>
 
       <LoginForm />
