@@ -1,5 +1,11 @@
 import { getAuthHeaderFromCookies } from './auth'
 
+export interface ProjectMember {
+  user_id: number
+  full_name: string
+  role: string
+}
+
 export interface Project {
   id: number
   name: string
@@ -8,6 +14,8 @@ export interface Project {
   status: 'draft' | 'active' | 'completed' | string
   deadline: string
   created_at: string
+  members?: ProjectMember[]
+  progress?: number
 }
 
 interface CreateProjectPayload {
@@ -56,6 +64,36 @@ export async function fetchProjects() {
 
   const payload = (await response.json()) as unknown
   return normalizeProjectsResponse(payload)
+}
+
+export async function fetchProject(id: string) {
+  const authorization = await getAuthHeaderFromCookies()
+
+  if (!authorization) {
+    throw new Error('Unauthorized')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/projects/${id}`, {
+    method: 'GET',
+    headers: {
+      Authorization: authorization,
+    },
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch project')
+  }
+
+  const payload = (await response.json()) as any
+
+  if (payload && typeof payload === 'object' && !payload.id) {
+    if (payload.data) return payload.data as Project
+    if (payload.item) return payload.item as Project
+    if (payload.project) return payload.project as Project
+  }
+
+  return payload as Project
 }
 
 export async function createProject(payload: CreateProjectPayload) {
