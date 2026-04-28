@@ -19,6 +19,22 @@ interface CreateProjectPayload {
 
 const API_BASE_URL = 'http://13.50.4.92/api/v1'
 
+function normalizeProjectsResponse(payload: unknown): Project[] {
+  if (Array.isArray(payload)) {
+    return payload as Project[]
+  }
+
+  if (payload && typeof payload === 'object') {
+    const candidate = payload as { items?: unknown; data?: unknown; results?: unknown }
+
+    if (Array.isArray(candidate.items)) return candidate.items as Project[]
+    if (Array.isArray(candidate.data)) return candidate.data as Project[]
+    if (Array.isArray(candidate.results)) return candidate.results as Project[]
+  }
+
+  return []
+}
+
 export async function fetchProjects() {
   const authorization = await getAuthHeaderFromCookies()
 
@@ -38,6 +54,8 @@ export async function fetchProjects() {
     throw new Error('Failed to fetch projects')
   }
 
+  const payload = (await response.json()) as unknown
+  return normalizeProjectsResponse(payload)
   return (await response.json()) as Project[]
 }
 

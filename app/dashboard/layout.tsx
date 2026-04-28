@@ -10,6 +10,15 @@ export default async function DashboardLayout({ children }: { children: React.Re
   }
 
   return <AppShell currentUser={currentUser}>{children}</AppShell>
+
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const currentUser = await fetchCurrentUser()
+
+  if (!currentUser) {
+    redirect('/login')
+  }
+
+  return <AppShell currentUser={currentUser}>{children}</AppShell>
 import Sidebar from '../components/Sidebar'
 import { fetchCurrentUser } from '../lib/auth'
 

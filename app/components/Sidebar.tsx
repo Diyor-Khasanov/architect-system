@@ -3,6 +3,8 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { LayoutDashboard, FolderKanban, Users, BarChart3, Wrench, LogOut, Command } from 'lucide-react'
+import { logoutAction } from '../actions/login'
+import type { UserRole } from '../lib/auth'
 import { cn } from '../lib/utils'
 import { logoutAction } from '../actions/login'
 import type { UserRole } from '../lib/auth'
@@ -42,6 +44,15 @@ const roleMenu: Record<UserRole, { name: string; href: string; icon: typeof Layo
     { name: 'Assigned Tasks', href: '/dashboard/tasks', icon: Wrench },
   ],
 }
+
+function isActivePath(pathname: string, href: string) {
+  if (href === '/dashboard') {
+    return pathname === href
+  }
+
+  return pathname === href || pathname.startsWith(`${href}/`)
+}
+
 
 function isActivePath(pathname: string, href: string) {
   if (href === '/dashboard') {
