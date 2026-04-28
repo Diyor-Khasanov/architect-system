@@ -3,16 +3,22 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { LayoutDashboard, FolderKanban, Users, BarChart3, Wrench, LogOut, Command } from 'lucide-react'
-import { cn } from '../lib/utils'
 import { logoutAction } from '../actions/login'
 import type { UserRole } from '../lib/auth'
+import { cn } from '../lib/utils'
 
 interface SidebarProps {
   role: UserRole
   fullName: string
 }
 
-const roleMenu: Record<UserRole, { name: string; href: string; icon: typeof LayoutDashboard }[]> = {
+interface MenuItem {
+  name: string
+  href: string
+  icon: typeof LayoutDashboard
+}
+
+const roleMenu: Record<UserRole, MenuItem[]> = {
   admin: [
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Users', href: '/dashboard/users', icon: Users },
@@ -29,6 +35,14 @@ const roleMenu: Record<UserRole, { name: string; href: string; icon: typeof Layo
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Assigned Tasks', href: '/dashboard/tasks', icon: Wrench },
   ],
+}
+
+function isActivePath(pathname: string, href: string) {
+  if (href === '/dashboard') {
+    return pathname === href
+  }
+
+  return pathname === href || pathname.startsWith(`${href}/`)
 }
 
 export default function Sidebar({ role, fullName }: SidebarProps) {
@@ -48,7 +62,8 @@ export default function Sidebar({ role, fullName }: SidebarProps) {
 
         <nav className='flex-1 space-y-1'>
           {menuItems.map((item) => {
-            const isActive = pathname === item.href
+            const isActive = isActivePath(pathname, item.href)
+
             return (
               <Link
                 key={item.href}
