@@ -97,7 +97,7 @@ export default function ProjectDetailClient({ project, currentUser, id }: Projec
             </>
           )}
 
-              {(isManager || isAdmin) && (
+          {isManager && (
             <div className='flex gap-2'>
               <form action={updateFormAction}>
                 <input type='hidden' name='status' value='doing' />

@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { fetchCurrentUser } from '../lib/auth'
-import { createProject, updateProject, deleteProject, updateProjectStatus } from '../lib/projects'
+import { createProject, updateProject, deleteProject } from '../lib/projects'
 
 interface ActionState {
   success?: boolean
@@ -61,11 +61,7 @@ export async function updateProjectAction(
   if (formData.has('status')) payload.status = String(formData.get('status'))
 
   try {
-    if (Object.keys(payload).length === 1 && payload.status) {
-      await updateProjectStatus(id, String(payload.status))
-    } else {
-      await updateProject(id, payload)
-    }
+    await updateProject(id, payload)
     revalidatePath(`/projects/${id}`)
     revalidatePath('/projects')
     return { success: true }
