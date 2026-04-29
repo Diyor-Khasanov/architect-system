@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { fetchCurrentUser } from '../lib/auth'
-import { createProject, updateProject, deleteProject } from '../lib/projects'
+import { createProject, updateProject, deleteProject, updateProjectStatus } from '../lib/projects'
 
 interface ActionState {
   success?: boolean
@@ -19,7 +19,7 @@ export async function createProjectAction(_: ActionState, formData: FormData): P
 
   const name = String(formData.get('name') ?? '').trim()
   const description = String(formData.get('description') ?? '').trim()
-  const deadline = String(formData.get('deadline') ?? '').trim()
+  let deadline = String(formData.get('deadline') ?? '').trim()
   const managerId = Number(formData.get('manager_id'))
 
   if (!name || !description || !deadline || !managerId) {
@@ -27,6 +27,11 @@ export async function createProjectAction(_: ActionState, formData: FormData): P
   }
 
   try {
+    // Ensure deadline is in ISO format if it's just a date string
+    if (deadline && !deadline.includes('T')) {
+      deadline = new Date(deadline).toISOString()
+    }
+
     await createProject({
       name,
       description,
@@ -56,12 +61,22 @@ export async function updateProjectAction(
 
   if (formData.has('name')) payload.name = String(formData.get('name'))
   if (formData.has('description')) payload.description = String(formData.get('description'))
-  if (formData.has('deadline')) payload.deadline = String(formData.get('deadline'))
+  if (formData.has('deadline')) {
+    let deadline = String(formData.get('deadline'))
+    if (deadline && !deadline.includes('T')) {
+      deadline = new Date(deadline).toISOString()
+    }
+    payload.deadline = deadline
+  }
   if (formData.has('manager_id')) payload.manager_id = Number(formData.get('manager_id'))
   if (formData.has('status')) payload.status = String(formData.get('status'))
 
   try {
-    await updateProject(id, payload)
+    if (Object.keys(payload).length === 1 && payload.status) {
+      await updateProjectStatus(id, String(payload.status))
+    } else {
+      await updateProject(id, payload)
+    }
     revalidatePath(`/projects/${id}`)
     revalidatePath('/projects')
     return { success: true }

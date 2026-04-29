@@ -19,6 +19,9 @@ export default function ProjectDetailClient({ project, currentUser, id }: Projec
   const updateProjectWithId = updateProjectAction.bind(null, id)
   const [updateState, updateFormAction] = useActionState(updateProjectWithId, {})
 
+  const deleteProjectWithId = deleteProjectAction.bind(null, id)
+  const [deleteState, deleteFormAction] = useActionState(deleteProjectWithId, {})
+
   const isAdmin = currentUser.role === 'admin'
   const isManager = currentUser.role === 'manager'
 
@@ -84,20 +87,22 @@ export default function ProjectDetailClient({ project, currentUser, id }: Projec
               >
                 <Edit className='h-4 w-4' /> Edit
               </button>
-              <button
-                onClick={() => {
-                  if (confirm('Are you sure you want to delete this project?')) {
-                    deleteProjectAction(id)
-                  }
-                }}
-                className='flex items-center gap-1 rounded-md border border-red-200 bg-white px-3 py-1 text-sm font-medium text-red-600 hover:bg-red-50'
-              >
-                <Trash2 className='h-4 w-4' /> Delete
-              </button>
+                  <form action={deleteFormAction} onSubmit={(e) => {
+                    if (!confirm('Are you sure you want to delete this project?')) {
+                      e.preventDefault();
+                    }
+                  }}>
+                    <button
+                      type='submit'
+                      className='flex items-center gap-1 rounded-md border border-red-200 bg-white px-3 py-1 text-sm font-medium text-red-600 hover:bg-red-50'
+                    >
+                      <Trash2 className='h-4 w-4' /> Delete
+                    </button>
+                  </form>
             </>
           )}
 
-          {isManager && (
+              {(isManager || isAdmin) && (
             <div className='flex gap-2'>
               <form action={updateFormAction}>
                 <input type='hidden' name='status' value='doing' />
@@ -122,6 +127,7 @@ export default function ProjectDetailClient({ project, currentUser, id }: Projec
         </div>
       </div>
       {updateState?.error && <p className='mt-4 text-sm text-red-600'>{updateState.error}</p>}
+      {deleteState?.error && <p className='mt-4 text-sm text-red-600'>{deleteState.error}</p>}
     </header>
   )
 }
