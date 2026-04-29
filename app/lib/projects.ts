@@ -50,7 +50,7 @@ export async function fetchProjects() {
     throw new Error('Unauthorized')
   }
 
-  const response = await fetch(`${API_BASE_URL}/projects`, {
+  const response = await fetch(`${API_BASE_URL}/projects/`, {
     method: 'GET',
     headers: {
       Authorization: authorization,
