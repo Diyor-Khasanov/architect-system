@@ -33,11 +33,13 @@ function normalizeProjectsResponse(payload: unknown): Project[] {
   }
 
   if (payload && typeof payload === 'object') {
-    const candidate = payload as { items?: unknown; data?: unknown; results?: unknown }
+    const candidate = payload as { items?: unknown; data?: unknown; results?: unknown; projects?: unknown; project?: unknown }
 
     if (Array.isArray(candidate.items)) return candidate.items as Project[]
     if (Array.isArray(candidate.data)) return candidate.data as Project[]
     if (Array.isArray(candidate.results)) return candidate.results as Project[]
+    if (Array.isArray(candidate.projects)) return candidate.projects as Project[]
+    if (Array.isArray(candidate.project)) return candidate.project as Project[]
   }
 
   return []
