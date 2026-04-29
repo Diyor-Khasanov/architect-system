@@ -21,11 +21,6 @@ export default async function ProjectsPage() {
 
   try {
     projects = await fetchProjects()
-    if (currentUser.role === 'worker') {
-      projects = projects.filter((project) =>
-        project.members?.some((member) => member.user_id === currentUser.id)
-      )
-    }
   } catch {
     fetchError = 'Failed to load projects from API.'
   }
