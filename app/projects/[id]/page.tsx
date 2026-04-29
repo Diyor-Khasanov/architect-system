@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import AppShell from '../../components/AppShell'
 import { fetchCurrentUser } from '../../lib/auth'
 import { fetchProject, type Project } from '../../lib/projects'
-import { cn } from '../../lib/utils'
+import ProjectDetailClient from './ProjectDetailClient'
 
 interface ProjectPageProps {
   params: Promise<{ id: string }>
@@ -16,7 +16,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
     redirect('/login')
   }
 
-  if (!['admin', 'manager'].includes(currentUser.role)) {
+  if (!['admin', 'manager', 'worker'].includes(currentUser.role)) {
     redirect('/dashboard')
   }
 
@@ -25,6 +25,21 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
     project = await fetchProject(id)
   } catch {
     // Error handled by null check below
+  }
+
+  if (
+    project &&
+    currentUser.role === 'worker' &&
+    !project.members?.some((member) => member.user_id === currentUser.id)
+  ) {
+    return (
+      <AppShell currentUser={currentUser}>
+        <div className='rounded-2xl border border-amber-200 bg-amber-50 p-6 text-amber-700'>
+          <h2 className='text-lg font-semibold'>Access Denied</h2>
+          <p className='mt-2'>You do not have permission to view this project.</p>
+        </div>
+      </AppShell>
+    )
   }
 
   if (!project) {
@@ -41,27 +56,10 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
   return (
     <AppShell currentUser={currentUser}>
       <section className='space-y-6'>
-        <header className='rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm'>
-          <div className='flex items-center justify-between'>
-            <div>
-              <h1 className='text-3xl font-semibold tracking-tight'>{project.name}</h1>
-              <p className='mt-2 text-sm text-zinc-600'>{project.description}</p>
-            </div>
-            <span
-              className={cn(
-                'rounded-full px-3 py-1 text-sm font-medium capitalize',
-                project.status === 'active'
-                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'
-                  : 'bg-zinc-100 text-zinc-700 border border-zinc-200'
-              )}
-            >
-              {project.status}
-            </span>
-          </div>
-        </header>
+        <ProjectDetailClient project={project} currentUser={currentUser} id={id} />
 
-        <div className='grid gap-6 md:grid-cols-3'>
-          <article className='md:col-span-2 space-y-6'>
+        <div className='grid gap-6 lg:grid-cols-3'>
+          <article className='lg:col-span-2 space-y-6'>
             <div className='rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm'>
               <h2 className='text-lg font-semibold tracking-tight'>Project Progress</h2>
               <div className='mt-4'>

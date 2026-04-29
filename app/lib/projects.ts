@@ -120,3 +120,73 @@ export async function createProject(payload: CreateProjectPayload) {
 
   return (await response.json()) as Project
 }
+
+export async function updateProject(id: string | number, payload: Partial<CreateProjectPayload> & { status?: string }) {
+  const authorization = await getAuthHeaderFromCookies()
+
+  if (!authorization) {
+    throw new Error('Unauthorized')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/projects/${id}`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: authorization,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to update project')
+  }
+
+  return (await response.json()) as Project
+}
+
+export async function deleteProject(id: string | number) {
+  const authorization = await getAuthHeaderFromCookies()
+
+  if (!authorization) {
+    throw new Error('Unauthorized')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/projects/${id}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: authorization,
+    },
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to delete project')
+  }
+
+  return true
+}
+
+export async function updateProjectStatus(id: string | number, status: string) {
+  const authorization = await getAuthHeaderFromCookies()
+
+  if (!authorization) {
+    throw new Error('Unauthorized')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/projects/${id}/status`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: authorization,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ status }),
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to update project status')
+  }
+
+  return (await response.json()) as Project
+}

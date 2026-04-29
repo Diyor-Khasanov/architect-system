@@ -12,7 +12,7 @@ export default async function ProjectsPage() {
     redirect('/login')
   }
 
-  if (!['admin', 'manager'].includes(currentUser.role)) {
+  if (!['admin', 'manager', 'worker'].includes(currentUser.role)) {
     redirect('/dashboard')
   }
 
@@ -21,6 +21,11 @@ export default async function ProjectsPage() {
 
   try {
     projects = await fetchProjects()
+    if (currentUser.role === 'worker') {
+      projects = projects.filter((project) =>
+        project.members?.some((member) => member.user_id === currentUser.id)
+      )
+    }
   } catch {
     fetchError = 'Failed to load projects from API.'
   }
@@ -29,7 +34,7 @@ export default async function ProjectsPage() {
     <AppShell currentUser={currentUser}>
       <section className='space-y-6'>
         <header className='rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm'>
-          <h1 className='text-3xl font-semibold tracking-tight'>Projects</h1>
+          <h1 className='text-2xl md:text-3xl font-semibold tracking-tight'>Projects</h1>
           <p className='mt-2 text-sm text-zinc-600'>
             Project list and management workspace (create + monitor projects).
           </p>
@@ -47,8 +52,8 @@ export default async function ProjectsPage() {
           ) : null}
 
           {!fetchError && projects.length > 0 ? (
-            <div className='mt-4 overflow-x-auto'>
-              <table className='w-full min-w-[760px] text-left text-sm'>
+            <div className='mt-4 overflow-x-auto -mx-5 px-5'>
+              <table className='w-full min-w-[600px] text-left text-sm'>
                 <thead className='border-b border-zinc-200 text-xs uppercase tracking-wide text-zinc-500'>
                   <tr>
                     <th className='px-2 py-3'>ID</th>
