@@ -27,20 +27,6 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
     // Error handled by null check below
   }
 
-  if (
-    project &&
-    currentUser.role === 'worker' &&
-    !project.members?.some((member) => member.user_id === currentUser.id)
-  ) {
-    return (
-      <AppShell currentUser={currentUser}>
-        <div className='rounded-2xl border border-amber-200 bg-amber-50 p-6 text-amber-700'>
-          <h2 className='text-lg font-semibold'>Access Denied</h2>
-          <p className='mt-2'>You do not have permission to view this project.</p>
-        </div>
-      </AppShell>
-    )
-  }
 
   if (!project) {
     return (
