@@ -24,17 +24,23 @@ export async function createUserAction(_: ActionState, formData: FormData): Prom
     const username = String(formData.get('username') ?? '').trim()
     const email = String(formData.get('email') ?? '').trim()
     const password = String(formData.get('password') ?? '')
+    const confirmPassword = String(formData.get('confirm_password') ?? '')
     const role = String(formData.get('role') ?? 'worker') as UserRole
     const fullName = String(formData.get('full_name') ?? '').trim()
 
-    if (!username || !email || !password || !fullName) {
+    if (!username || !email || !password || !confirmPassword || !fullName) {
       return { error: 'All fields are required.' }
+    }
+
+    if (password !== confirmPassword) {
+      return { error: 'Passwords do not match.' }
     }
 
     await createUser({
       username,
       email,
       password,
+      confirm_password: confirmPassword,
       role,
       full_name: fullName,
       is_active: true,

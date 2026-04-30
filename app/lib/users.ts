@@ -22,6 +22,7 @@ export interface CreateUserPayload {
   username: string
   email: string
   password?: string
+  confirm_password?: string
   role: UserRole
   is_active?: boolean
   full_name?: string
@@ -88,7 +89,16 @@ export async function createUser(payload: CreateUserPayload) {
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}))
-    throw new Error(errorData.detail || 'Failed to create user')
+    const detail = errorData.detail
+    let errorMessage = 'Failed to create user'
+
+    if (Array.isArray(detail)) {
+      errorMessage = detail.map((err: any) => `${err.loc.join('.')}: ${err.msg}`).join(', ')
+    } else if (typeof detail === 'string') {
+      errorMessage = detail
+    }
+
+    throw new Error(errorMessage)
   }
 
   return (await response.json()) as User
