@@ -94,19 +94,17 @@ export default function Sidebar({ role, fullName, isOpen, onClose }: SidebarProp
 
       <div className='mt-auto border-t border-zinc-200 pt-4'>
         <p className='mb-3 truncate px-3 text-sm text-zinc-500'>{fullName}</p>
-        <form
-          action={logoutAction}
-          onSubmit={async (e) => {
-            e.preventDefault()
-            const form = e.currentTarget
-            const confirmed = await confirm('Are you sure you want to logout?')
-            if (confirmed) {
-              form.requestSubmit()
-            }
-          }}
-        >
+        <form action={logoutAction}>
           <button
-            type='submit'
+            type='button'
+            onClick={async (e) => {
+              const form = e.currentTarget.form
+              if (!form) return
+              const confirmed = await confirm('Are you sure you want to logout?')
+              if (confirmed) {
+                form.requestSubmit()
+              }
+            }}
             className='flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50'
           >
             <LogOut className='h-4 w-4' />

@@ -15,7 +15,7 @@ const ToastContext = createContext<ToastContextType | undefined>(undefined)
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Omit<ToastProps, 'onClose'>[]>([])
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [dialog, setDialog] = useState<(DialogProps & { resolve: (val: any) => void }) | null>(null)
+  const [dialog, setDialog] = useState<(DialogProps & { id: string; resolve: (val: any) => void }) | null>(null)
 
   const showToast = useCallback((message: string, type: ToastType = 'info') => {
     const id = Math.random().toString(36).substring(2, 9)
@@ -29,6 +29,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const alert = useCallback((message: string, title = 'Notification') => {
     return new Promise<void>((resolve) => {
       setDialog({
+        id: Math.random().toString(36).substring(2, 9),
         type: 'alert',
         title,
         message,
@@ -48,6 +49,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const confirm = useCallback((message: string, title = 'Confirmation') => {
     return new Promise<boolean>((resolve) => {
       setDialog({
+        id: Math.random().toString(36).substring(2, 9),
         type: 'confirm',
         title,
         message,
@@ -67,6 +69,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const prompt = useCallback((message: string, defaultValue = '', title = 'Input Required') => {
     return new Promise<string | null>((resolve) => {
       setDialog({
+        id: Math.random().toString(36).substring(2, 9),
         type: 'prompt',
         title,
         message,
@@ -98,7 +101,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       </div>
 
       {/* Dialog Overlay */}
-      {dialog && <CustomDialog {...dialog} />}
+      {dialog && <CustomDialog key={dialog.id} {...dialog} />}
     </ToastContext.Provider>
   )
 }
