@@ -24,7 +24,7 @@ export default async function UsersPage() {
 
   return (
     <AppShell currentUser={currentUser}>
-      <UsersClient initialUsers={users} />
+      <UsersClient initialUsers={users} currentUserRole={currentUser.role} />
     </AppShell>
   )
 }

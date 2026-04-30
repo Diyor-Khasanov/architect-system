@@ -1,22 +1,24 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import UserCreateForm from '../components/UserCreateForm'
 import UserEditForm from '../components/UserEditForm'
 import { type User } from '../lib/users'
+import { type UserRole } from '../lib/auth'
 import { deleteUserAction } from '../actions/users'
 import { Pencil, Trash2, UserPlus, Shield, User as UserIcon, HardHat } from 'lucide-react'
 
-export default function UsersClient({ initialUsers }: { initialUsers: User[] }) {
-  const [users, setUsers] = useState<User[]>(initialUsers)
+export default function UsersClient({
+  initialUsers,
+  currentUserRole,
+}: {
+  initialUsers: User[]
+  currentUserRole: UserRole
+}) {
   const [editingUser, setEditingUser] = useState<User | null>(null)
   const [showCreateForm, setShowCreateForm] = useState(false)
   const router = useRouter()
-
-  useEffect(() => {
-    setUsers(initialUsers)
-  }, [initialUsers])
 
   const handleActionSuccess = () => {
     router.refresh()
@@ -32,7 +34,7 @@ export default function UsersClient({ initialUsers }: { initialUsers: User[] }) 
       if (result.error) {
         alert(result.error)
       } else {
-        setUsers(users.filter((u) => u.id !== id))
+        router.refresh()
       }
     } catch {
       alert('Failed to delete user.')
@@ -62,7 +64,7 @@ export default function UsersClient({ initialUsers }: { initialUsers: User[] }) 
 
       {showCreateForm && (
         <div className='animate-in fade-in slide-in-from-top-4 duration-300'>
-          <UserCreateForm onSuccess={handleActionSuccess} />
+          <UserCreateForm onSuccess={handleActionSuccess} currentUserRole={currentUserRole} />
         </div>
       )}
 
@@ -72,6 +74,7 @@ export default function UsersClient({ initialUsers }: { initialUsers: User[] }) 
             user={editingUser}
             onCancel={() => setEditingUser(null)}
             onSuccess={handleActionSuccess}
+            currentUserRole={currentUserRole}
           />
         </div>
       )}
@@ -79,7 +82,7 @@ export default function UsersClient({ initialUsers }: { initialUsers: User[] }) 
       <article className='rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm'>
         <h2 className='text-lg font-semibold tracking-tight'>System Users</h2>
 
-        {users.length === 0 ? (
+        {initialUsers.length === 0 ? (
           <p className='mt-3 text-sm text-zinc-500'>No users found.</p>
         ) : (
           <div className='mt-4 overflow-x-auto -mx-5 px-5'>
@@ -95,7 +98,7 @@ export default function UsersClient({ initialUsers }: { initialUsers: User[] }) 
                 </tr>
               </thead>
               <tbody>
-                {users.map((user) => (
+                {initialUsers.map((user) => (
                   <tr key={user.id} className='border-b border-zinc-100 hover:bg-zinc-50/50 transition-colors'>
                     <td className='px-2 py-4 text-zinc-500'>{user.id}</td>
                     <td className='px-2 py-4'>
@@ -137,24 +140,28 @@ export default function UsersClient({ initialUsers }: { initialUsers: User[] }) 
                     </td>
                     <td className='px-2 py-4 text-right'>
                       <div className='flex justify-end gap-2'>
-                        <button
-                          onClick={() => {
-                            setEditingUser(user)
-                            setShowCreateForm(false)
-                            window.scrollTo({ top: 0, behavior: 'smooth' })
-                          }}
-                          className='rounded-md p-2 text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900'
-                          title='Edit User'
-                        >
-                          < Pencil className='h-4 w-4' />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(user.id)}
-                          className='rounded-md p-2 text-red-600 hover:bg-red-50'
-                          title='Delete User'
-                        >
-                          <Trash2 className='h-4 w-4' />
-                        </button>
+                        {(currentUserRole === 'admin' || user.role === 'worker') && (
+                          <>
+                            <button
+                              onClick={() => {
+                                setEditingUser(user)
+                                setShowCreateForm(false)
+                                window.scrollTo({ top: 0, behavior: 'smooth' })
+                              }}
+                              className='rounded-md p-2 text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900'
+                              title='Edit User'
+                            >
+                              <Pencil className='h-4 w-4' />
+                            </button>
+                            <button
+                              onClick={() => handleDelete(user.id)}
+                              className='rounded-md p-2 text-red-600 hover:bg-red-50'
+                              title='Delete User'
+                            >
+                              <Trash2 className='h-4 w-4' />
+                            </button>
+                          </>
+                        )}
                       </div>
                     </td>
                   </tr>
