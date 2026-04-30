@@ -93,7 +93,7 @@ export async function createUser(payload: CreateUserPayload) {
     let errorMessage = 'Failed to create user'
 
     if (Array.isArray(detail)) {
-      errorMessage = detail.map((err: any) => `${err.loc.join('.')}: ${err.msg}`).join(', ')
+      errorMessage = detail.map((err: { loc: string[]; msg: string }) => `${err.loc.join('.')}: ${err.msg}`).join(', ')
     } else if (typeof detail === 'string') {
       errorMessage = detail
     }
@@ -149,4 +149,26 @@ export async function deleteUser(id: number) {
   }
 
   return true
+}
+
+export async function fetchUserById(id: number) {
+  const authorization = await getAuthHeaderFromCookies()
+
+  if (!authorization) {
+    throw new Error('Unauthorized')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/users/${id}`, {
+    method: 'GET',
+    headers: {
+      Authorization: authorization,
+    },
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch user')
+  }
+
+  return (await response.json()) as User
 }
