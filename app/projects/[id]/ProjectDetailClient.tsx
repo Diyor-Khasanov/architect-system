@@ -4,6 +4,7 @@ import { useActionState, useState } from 'react'
 import { updateProjectAction, deleteProjectAction } from '../../actions/projects'
 import { cn } from '../../lib/utils'
 import { Trash2, Edit, CheckCircle2, PlayCircle } from 'lucide-react'
+import { useToast } from '../../context/ToastContext'
 import type { Project } from '../../lib/projects'
 import type { MeResponse } from '../../lib/auth'
 
@@ -15,6 +16,7 @@ interface ProjectDetailClientProps {
 
 export default function ProjectDetailClient({ project, currentUser, id }: ProjectDetailClientProps) {
   const [isEditing, setIsEditing] = useState(false)
+  const { confirm } = useToast()
 
   const updateProjectWithId = updateProjectAction.bind(null, id)
   const [updateState, updateFormAction] = useActionState(updateProjectWithId, {})
@@ -87,9 +89,12 @@ export default function ProjectDetailClient({ project, currentUser, id }: Projec
               >
                 <Edit className='h-4 w-4' /> Edit
               </button>
-                  <form action={deleteFormAction} onSubmit={(e) => {
-                    if (!confirm('Are you sure you want to delete this project?')) {
-                      e.preventDefault();
+                  <form action={deleteFormAction} onSubmit={async (e) => {
+                    e.preventDefault();
+                    const form = e.currentTarget;
+                    const confirmed = await confirm('Are you sure you want to delete this project?');
+                    if (confirmed) {
+                      form.requestSubmit();
                     }
                   }}>
                     <button

@@ -8,6 +8,7 @@ import { type User } from '../lib/users'
 import { type UserRole } from '../lib/auth'
 import { deleteUserAction } from '../actions/users'
 import { Pencil, Trash2, UserPlus, Shield, User as UserIcon, HardHat } from 'lucide-react'
+import { useToast } from '../context/ToastContext'
 
 export default function UsersClient({
   initialUsers,
@@ -19,6 +20,7 @@ export default function UsersClient({
   const [editingUser, setEditingUser] = useState<User | null>(null)
   const [showCreateForm, setShowCreateForm] = useState(false)
   const router = useRouter()
+  const { alert, confirm, toast } = useToast()
 
   const handleActionSuccess = () => {
     router.refresh()
@@ -27,17 +29,19 @@ export default function UsersClient({
   }
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this user?')) return
+    const confirmed = await confirm('Are you sure you want to delete this user?')
+    if (!confirmed) return
 
     try {
       const result = await deleteUserAction(id)
       if (result.error) {
-        alert(result.error)
+        alert(result.error, 'Error')
       } else {
+        toast('User deleted successfully', 'success')
         router.refresh()
       }
     } catch {
-      alert('Failed to delete user.')
+      alert('Failed to delete user.', 'Error')
     }
   }
 

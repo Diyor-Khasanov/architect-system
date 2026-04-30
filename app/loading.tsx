@@ -13,9 +13,9 @@ export default function Loading() {
 
       <div className='flex flex-col items-center space-y-1'>
         <p className='text-sm font-medium tracking-tight text-black dark:text-white'>
-          Yuklanmoqda...
+          Loading...
         </p>
-        <p className='text-xs text-[#666] dark:text-[#888] animate-pulse'>Iltimos, kuting</p>
+        <p className='text-xs text-[#666] dark:text-[#888] animate-pulse'>Please wait</p>
       </div>
 
       <div className='absolute inset-0 -z-10 flex flex-col p-10 opacity-[0.03] dark:opacity-[0.07] pointer-events-none'>
