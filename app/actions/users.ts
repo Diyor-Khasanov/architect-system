@@ -19,7 +19,7 @@ async function checkPermission() {
 
 export async function createUserAction(_: ActionState, formData: FormData): Promise<ActionState> {
   try {
-    const currentUser = await checkPermission()
+    await checkPermission()
 
     const username = String(formData.get('username') ?? '').trim()
     const email = String(formData.get('email') ?? '').trim()
@@ -34,11 +34,6 @@ export async function createUserAction(_: ActionState, formData: FormData): Prom
 
     if (password !== confirmPassword) {
       return { error: 'Passwords do not match.' }
-    }
-
-    // Role-based restrictions
-    if (currentUser.role === 'manager' && role !== 'worker') {
-      return { error: 'Managers can only create worker accounts.' }
     }
 
     await createUser({

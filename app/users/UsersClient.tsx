@@ -7,15 +7,8 @@ import UserEditForm from '../components/UserEditForm'
 import { type User } from '../lib/users'
 import { deleteUserAction } from '../actions/users'
 import { Pencil, Trash2, UserPlus, Shield, User as UserIcon, HardHat } from 'lucide-react'
-import type { UserRole } from '../lib/auth'
 
-export default function UsersClient({
-  initialUsers,
-  currentUserRole,
-}: {
-  initialUsers: User[]
-  currentUserRole: UserRole
-}) {
+export default function UsersClient({ initialUsers }: { initialUsers: User[] }) {
   const [users, setUsers] = useState<User[]>(initialUsers)
   const [editingUser, setEditingUser] = useState<User | null>(null)
   const [showCreateForm, setShowCreateForm] = useState(false)
@@ -69,7 +62,7 @@ export default function UsersClient({
 
       {showCreateForm && (
         <div className='animate-in fade-in slide-in-from-top-4 duration-300'>
-          <UserCreateForm onSuccess={handleActionSuccess} currentUserRole={currentUserRole} />
+          <UserCreateForm onSuccess={handleActionSuccess} />
         </div>
       )}
 

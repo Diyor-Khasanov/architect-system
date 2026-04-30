@@ -3,7 +3,6 @@
 import { useActionState, useEffect } from 'react'
 import { useFormStatus } from 'react-dom'
 import { createUserAction } from '../actions/users'
-import type { UserRole } from '../lib/auth'
 
 function SubmitButton() {
   const { pending } = useFormStatus()
@@ -21,13 +20,7 @@ function SubmitButton() {
 
 const initialState: { success?: boolean; error?: string } = {}
 
-export default function UserCreateForm({
-  onSuccess,
-  currentUserRole,
-}: {
-  onSuccess?: () => void
-  currentUserRole: UserRole
-}) {
+export default function UserCreateForm({ onSuccess }: { onSuccess?: () => void }) {
   const [state, formAction] = useActionState(createUserAction, initialState)
 
   useEffect(() => {
@@ -102,12 +95,8 @@ export default function UserCreateForm({
             className='w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm outline-none focus:border-zinc-900'
           >
             <option value='worker'>Worker</option>
-            {currentUserRole === 'admin' && (
-              <>
-                <option value='manager'>Manager</option>
-                <option value='admin'>Admin</option>
-              </>
-            )}
+            <option value='manager'>Manager</option>
+            <option value='admin'>Admin</option>
           </select>
         </label>
       </div>
