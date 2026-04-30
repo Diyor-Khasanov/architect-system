@@ -6,6 +6,7 @@ import { LayoutDashboard, FolderKanban, Users, BarChart3, Wrench, LogOut, Comman
 import { logoutAction } from '../actions/login'
 import type { UserRole } from '../lib/auth'
 import { cn } from '../lib/utils'
+import { useToast } from '../context/ToastContext'
 
 interface SidebarProps {
   role: UserRole
@@ -51,6 +52,7 @@ function isActivePath(pathname: string, href: string) {
 export default function Sidebar({ role, fullName, isOpen, onClose }: SidebarProps) {
   const pathname = usePathname()
   const menuItems = roleMenu[role]
+  const { confirm } = useToast()
 
   const SidebarContent = (
     <div className='flex h-full flex-col p-6'>
@@ -94,9 +96,12 @@ export default function Sidebar({ role, fullName, isOpen, onClose }: SidebarProp
         <p className='mb-3 truncate px-3 text-sm text-zinc-500'>{fullName}</p>
         <form
           action={logoutAction}
-          onSubmit={(e) => {
-            if (!confirm('Are you sure you want to logout?')) {
-              e.preventDefault()
+          onSubmit={async (e) => {
+            e.preventDefault()
+            const form = e.currentTarget
+            const confirmed = await confirm('Are you sure you want to logout?')
+            if (confirmed) {
+              form.requestSubmit()
             }
           }}
         >
