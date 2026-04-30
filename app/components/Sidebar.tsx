@@ -23,14 +23,14 @@ interface MenuItem {
 const roleMenu: Record<UserRole, MenuItem[]> = {
   admin: [
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
-    { name: 'Users', href: '/dashboard/users', icon: Users },
+    { name: 'Users', href: '/users', icon: Users },
     { name: 'Projects', href: '/projects', icon: FolderKanban },
     { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
   ],
   manager: [
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Projects', href: '/projects', icon: FolderKanban },
-    { name: 'Team', href: '/dashboard/team', icon: Users },
+    { name: 'Team', href: '/users', icon: Users },
     { name: 'Reports', href: '/dashboard/reports', icon: BarChart3 },
   ],
   worker: [
