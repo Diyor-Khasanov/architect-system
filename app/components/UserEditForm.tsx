@@ -95,6 +95,26 @@ export default function UserEditForm({
           </select>
         </label>
 
+        <label className='space-y-1 text-sm text-zinc-600'>
+          New Password (optional)
+          <input
+            name='password'
+            type='password'
+            className='w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm outline-none focus:border-zinc-900'
+            placeholder='••••••••'
+          />
+        </label>
+
+        <label className='space-y-1 text-sm text-zinc-600'>
+          Confirm New Password
+          <input
+            name='confirm_password'
+            type='password'
+            className='w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm outline-none focus:border-zinc-900'
+            placeholder='••••••••'
+          />
+        </label>
+
         <label className='flex items-center gap-2 text-sm text-zinc-600'>
           <input
             name='is_active'

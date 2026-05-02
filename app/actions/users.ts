@@ -74,8 +74,8 @@ export async function updateUserAction(
 
     const payload: Partial<CreateUserPayload> = {}
 
-    if (formData.has('username')) payload.username = String(formData.get('username'))
-    if (formData.has('email')) payload.email = String(formData.get('email'))
+    if (formData.has('username')) payload.username = String(formData.get('username')).trim()
+    if (formData.has('email')) payload.email = String(formData.get('email')).trim()
 
     if (formData.has('role')) {
       const role = String(formData.get('role')) as UserRole
@@ -87,12 +87,23 @@ export async function updateUserAction(
 
     if (formData.has('full_name')) payload.full_name = String(formData.get('full_name'))
 
+    if (formData.has('password') && String(formData.get('password')).trim() !== '') {
+      const password = String(formData.get('password'))
+      const confirmPassword = String(formData.get('confirm_password'))
+      if (password !== confirmPassword) {
+        return { error: 'Passwords do not match.' }
+      }
+      payload.password = password
+      payload.confirm_password = confirmPassword
+    }
+
     // Handle checkbox: if it's not in formData, it means it's unchecked (false)
     payload.is_active = formData.get('is_active') === 'true'
 
     await updateUser(id, payload)
 
     revalidatePath('/users')
+    revalidatePath(`/users/${id}`)
     return { success: true }
   } catch (error) {
     return { error: error instanceof Error ? error.message : 'Could not update user.' }
