@@ -93,6 +93,7 @@ export async function updateUserAction(
     await updateUser(id, payload)
 
     revalidatePath('/users')
+    revalidatePath(`/users/${id}`)
     return { success: true }
   } catch (error) {
     return { error: error instanceof Error ? error.message : 'Could not update user.' }
