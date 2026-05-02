@@ -12,7 +12,7 @@ export default async function ProjectsPage() {
     redirect('/login')
   }
 
-  if (!['admin', 'manager', 'worker'].includes(currentUser.role)) {
+  if (!['admin', 'manager'].includes(currentUser.role)) {
     redirect('/dashboard')
   }
 

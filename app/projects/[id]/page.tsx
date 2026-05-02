@@ -16,7 +16,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
     redirect('/login')
   }
 
-  if (!['admin', 'manager', 'worker'].includes(currentUser.role)) {
+  if (!['admin', 'manager'].includes(currentUser.role)) {
     redirect('/dashboard')
   }
 
