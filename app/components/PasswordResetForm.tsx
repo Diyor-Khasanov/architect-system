@@ -52,7 +52,7 @@ export default function PasswordResetForm({
 
       <div className='grid gap-4 md:grid-cols-3'>
         <label className='space-y-1 text-sm text-zinc-600'>
-          Old Password (optional)
+          Old Password
           <input
             name='old_password'
             type='password'
