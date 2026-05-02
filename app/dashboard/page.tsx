@@ -19,10 +19,9 @@ const roleContent: Record<
   },
   manager: {
     headline: 'Project Delivery Dashboard',
-    description: 'Track project status, assign priorities, and balance team workloads efficiently.',
+    description: 'Track project status and assign priorities efficiently.',
     stats: [
       { title: 'Managed Projects', value: '8', hint: '2 due this week' },
-      { title: 'Team Members', value: '27', hint: '3 out today' },
       { title: 'Pending Reviews', value: '11', hint: '5 high priority' },
     ],
   },
