@@ -3,7 +3,7 @@ import Link from 'next/link'
 import AppShell from '../../components/AppShell'
 import { fetchCurrentUser } from '../../lib/auth'
 import { fetchUserById } from '../../lib/users'
-import UserProfileClient from './UserProfileClient'
+import UserDetailClient from './UserDetailClient'
 
 interface UserProfilePageProps {
   params: Promise<{ id: string }>
@@ -45,7 +45,7 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
 
   return (
     <AppShell currentUser={currentUser}>
-      <UserProfileClient user={user} currentUserRole={currentUser.role} />
+      <UserDetailClient user={user} currentUserRole={currentUser.role} />
     </AppShell>
   )
 }
