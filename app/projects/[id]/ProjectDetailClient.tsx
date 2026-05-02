@@ -89,16 +89,17 @@ export default function ProjectDetailClient({ project, currentUser, id }: Projec
               >
                 <Edit className='h-4 w-4' /> Edit
               </button>
-                  <form action={deleteFormAction} onSubmit={async (e) => {
-                    e.preventDefault();
-                    const form = e.currentTarget;
-                    const confirmed = await confirm('Are you sure you want to delete this project?');
-                    if (confirmed) {
-                      form.requestSubmit();
-                    }
-                  }}>
+                  <form action={deleteFormAction}>
                     <button
-                      type='submit'
+                      type='button'
+                      onClick={async (e) => {
+                        const form = e.currentTarget.form;
+                        if (!form) return;
+                        const confirmed = await confirm('Are you sure you want to delete this project?');
+                        if (confirmed) {
+                          form.requestSubmit();
+                        }
+                      }}
                       className='flex items-center gap-1 rounded-md border border-red-200 bg-white px-3 py-1 text-sm font-medium text-red-600 hover:bg-red-50'
                     >
                       <Trash2 className='h-4 w-4' /> Delete
