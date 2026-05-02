@@ -117,7 +117,7 @@ export async function deleteUserAction(id: number): Promise<ActionState> {
     if (currentUser.role === 'manager') {
       const targetUser = await fetchUserById(id)
       if (targetUser.role !== 'worker') {
-        return { error: 'Managers can only delete users with the "worker" role.' }
+        return { error: 'Managers can only deactivate users with the "worker" role.' }
       }
     }
 
@@ -125,6 +125,6 @@ export async function deleteUserAction(id: number): Promise<ActionState> {
     revalidatePath('/users')
     return { success: true }
   } catch (error) {
-    return { error: error instanceof Error ? error.message : 'Could not delete user.' }
+    return { error: error instanceof Error ? error.message : 'Could not deactivate user.' }
   }
 }
