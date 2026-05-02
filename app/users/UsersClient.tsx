@@ -4,13 +4,9 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import UserCreateForm from '../components/UserCreateForm'
-import UserEditForm from '../components/UserEditForm'
-import PasswordResetForm from '../components/PasswordResetForm'
 import { type User } from '../lib/users'
 import { type UserRole } from '../lib/auth'
-import { deleteUserAction } from '../actions/users'
-import { Pencil, Trash2, UserPlus, Shield, User as UserIcon, HardHat, KeyRound } from 'lucide-react'
-import { useToast } from '../context/ToastContext'
+import { UserPlus, Shield, User as UserIcon, HardHat } from 'lucide-react'
 
 export default function UsersClient({
   initialUsers,
@@ -19,34 +15,12 @@ export default function UsersClient({
   initialUsers: User[]
   currentUserRole: UserRole
 }) {
-  const [editingUser, setEditingUser] = useState<User | null>(null)
-  const [resettingPasswordUser, setResettingPasswordUser] = useState<User | null>(null)
   const [showCreateForm, setShowCreateForm] = useState(false)
   const router = useRouter()
-  const { alert, confirm, toast } = useToast()
 
   const handleActionSuccess = () => {
     router.refresh()
     setShowCreateForm(false)
-    setEditingUser(null)
-    setResettingPasswordUser(null)
-  }
-
-  const handleDelete = async (id: number) => {
-    const confirmed = await confirm('Are you sure you want to deactivate this user?')
-    if (!confirmed) return
-
-    try {
-      const result = await deleteUserAction(id)
-      if (result.error) {
-        alert(result.error, 'Error')
-      } else {
-        toast('User deactivated successfully', 'success')
-        router.refresh()
-      }
-    } catch {
-      alert('Failed to deactivate user.', 'Error')
-    }
   }
 
   return (
@@ -61,7 +35,6 @@ export default function UsersClient({
         <button
           onClick={() => {
             setShowCreateForm(!showCreateForm)
-            setEditingUser(null)
           }}
           className='flex items-center justify-center gap-2 rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90'
         >
@@ -73,28 +46,6 @@ export default function UsersClient({
       {showCreateForm && (
         <div className='animate-in fade-in slide-in-from-top-4 duration-300'>
           <UserCreateForm onSuccess={handleActionSuccess} currentUserRole={currentUserRole} />
-        </div>
-      )}
-
-      {editingUser && (
-        <div className='animate-in fade-in slide-in-from-top-4 duration-300'>
-          <UserEditForm
-            user={editingUser}
-            onCancel={() => setEditingUser(null)}
-            onSuccess={handleActionSuccess}
-            currentUserRole={currentUserRole}
-          />
-        </div>
-      )}
-
-      {resettingPasswordUser && (
-        <div className='animate-in fade-in slide-in-from-top-4 duration-300'>
-          <PasswordResetForm
-            userId={resettingPasswordUser.id}
-            username={resettingPasswordUser.username}
-            onCancel={() => setResettingPasswordUser(null)}
-            onSuccess={handleActionSuccess}
-          />
         </div>
       )}
 
@@ -113,7 +64,6 @@ export default function UsersClient({
                   <th className='px-2 py-3'>Role</th>
                   <th className='px-2 py-3'>Status</th>
                   <th className='px-2 py-3'>Created</th>
-                  <th className='px-2 py-3 text-right'>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -161,45 +111,6 @@ export default function UsersClient({
                     </td>
                     <td className='px-2 py-4 text-zinc-500'>
                       {new Date(user.created_at).toLocaleDateString()}
-                    </td>
-                    <td className='px-2 py-4 text-right'>
-                      <div className='flex justify-end gap-2'>
-                        {(currentUserRole === 'admin' || user.role === 'worker') && (
-                          <>
-                            <button
-                              onClick={() => {
-                                setResettingPasswordUser(user)
-                                setEditingUser(null)
-                                setShowCreateForm(false)
-                                window.scrollTo({ top: 0, behavior: 'smooth' })
-                              }}
-                              className='rounded-md p-2 text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900'
-                              title='Reset Password'
-                            >
-                              <KeyRound className='h-4 w-4' />
-                            </button>
-                            <button
-                              onClick={() => {
-                                setEditingUser(user)
-                                setResettingPasswordUser(null)
-                                setShowCreateForm(false)
-                                window.scrollTo({ top: 0, behavior: 'smooth' })
-                              }}
-                              className='rounded-md p-2 text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900'
-                              title='Edit User'
-                            >
-                              <Pencil className='h-4 w-4' />
-                            </button>
-                            <button
-                              onClick={() => handleDelete(user.id)}
-                              className='rounded-md p-2 text-red-600 hover:bg-red-50'
-                              title='Delete User'
-                            >
-                              <Trash2 className='h-4 w-4' />
-                            </button>
-                          </>
-                        )}
-                      </div>
                     </td>
                   </tr>
                 ))}
