@@ -67,7 +67,8 @@ export async function fetchUsers() {
   }
 
   const payload = (await response.json()) as unknown
-  return normalizeUsersResponse(payload)
+  const allUsers = normalizeUsersResponse(payload)
+  return allUsers.filter((user) => user.is_active)
 }
 
 export async function createUser(payload: CreateUserPayload) {
@@ -136,8 +137,8 @@ export async function deleteUser(id: number) {
     throw new Error('Unauthorized')
   }
 
-  const response = await fetch(`${API_BASE_URL}/users/${id}`, {
-    method: 'DELETE',
+  const response = await fetch(`${API_BASE_URL}/users/${id}/deactivate`, {
+    method: 'PATCH',
     headers: {
       Authorization: authorization,
     },
@@ -145,7 +146,7 @@ export async function deleteUser(id: number) {
   })
 
   if (!response.ok) {
-    throw new Error('Failed to delete user')
+    throw new Error('Failed to deactivate user')
   }
 
   return true

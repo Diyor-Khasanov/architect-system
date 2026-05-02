@@ -1,10 +1,9 @@
 'use client'
 
 import { useActionState, useState } from 'react'
-import { updateProjectAction, deleteProjectAction } from '../../actions/projects'
+import { updateProjectAction } from '../../actions/projects'
 import { cn } from '../../lib/utils'
-import { Trash2, Edit, CheckCircle2, PlayCircle } from 'lucide-react'
-import { useToast } from '../../context/ToastContext'
+import { Edit } from 'lucide-react'
 import type { Project } from '../../lib/projects'
 import type { MeResponse } from '../../lib/auth'
 
@@ -16,16 +15,11 @@ interface ProjectDetailClientProps {
 
 export default function ProjectDetailClient({ project, currentUser, id }: ProjectDetailClientProps) {
   const [isEditing, setIsEditing] = useState(false)
-  const { confirm } = useToast()
 
   const updateProjectWithId = updateProjectAction.bind(null, id)
   const [updateState, updateFormAction] = useActionState(updateProjectWithId, {})
 
-  const deleteProjectWithId = deleteProjectAction.bind(null, id)
-  const [deleteState, deleteFormAction] = useActionState(deleteProjectWithId, {})
-
   const isAdmin = currentUser.role === 'admin'
-  const isManager = currentUser.role === 'manager'
 
   return (
     <header className='rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm'>
@@ -82,58 +76,16 @@ export default function ProjectDetailClient({ project, currentUser, id }: Projec
           </span>
 
           {isAdmin && !isEditing && (
-            <>
-              <button
-                onClick={() => setIsEditing(true)}
-                className='flex items-center gap-1 rounded-md border border-zinc-200 bg-white px-3 py-1 text-sm font-medium hover:bg-zinc-50'
-              >
-                <Edit className='h-4 w-4' /> Edit
-              </button>
-                  <form action={deleteFormAction}>
-                    <button
-                      type='button'
-                      onClick={async (e) => {
-                        const form = e.currentTarget.form;
-                        if (!form) return;
-                        const confirmed = await confirm('Are you sure you want to delete this project?');
-                        if (confirmed) {
-                          form.requestSubmit();
-                        }
-                      }}
-                      className='flex items-center gap-1 rounded-md border border-red-200 bg-white px-3 py-1 text-sm font-medium text-red-600 hover:bg-red-50'
-                    >
-                      <Trash2 className='h-4 w-4' /> Delete
-                    </button>
-                  </form>
-            </>
-          )}
-
-              {(isManager || isAdmin) && (
-            <div className='flex gap-2'>
-              <form action={updateFormAction}>
-                <input type='hidden' name='status' value='doing' />
-                <button
-                  type='submit'
-                  className='flex items-center gap-1 rounded-md border border-emerald-200 bg-white px-3 py-1 text-sm font-medium text-emerald-600 hover:bg-emerald-50'
-                >
-                  <PlayCircle className='h-4 w-4' /> Mark Doing
-                </button>
-              </form>
-              <form action={updateFormAction}>
-                <input type='hidden' name='status' value='done' />
-                <button
-                  type='submit'
-                  className='flex items-center gap-1 rounded-md border border-blue-200 bg-white px-3 py-1 text-sm font-medium text-blue-600 hover:bg-blue-50'
-                >
-                  <CheckCircle2 className='h-4 w-4' /> Mark Done
-                </button>
-              </form>
-            </div>
+            <button
+              onClick={() => setIsEditing(true)}
+              className='flex items-center gap-1 rounded-md border border-zinc-200 bg-white px-3 py-1 text-sm font-medium hover:bg-zinc-50'
+            >
+              <Edit className='h-4 w-4' /> Edit
+            </button>
           )}
         </div>
       </div>
       {updateState?.error && <p className='mt-4 text-sm text-red-600'>{updateState.error}</p>}
-      {deleteState?.error && <p className='mt-4 text-sm text-red-600'>{deleteState.error}</p>}
     </header>
   )
 }

@@ -30,7 +30,7 @@ export default function UsersClient({
   }
 
   const handleDelete = async (id: number) => {
-    const confirmed = await confirm('Are you sure you want to delete this user?')
+    const confirmed = await confirm('Are you sure you want to deactivate this user?')
     if (!confirmed) return
 
     try {
@@ -38,11 +38,11 @@ export default function UsersClient({
       if (result.error) {
         alert(result.error, 'Error')
       } else {
-        toast('User deleted successfully', 'success')
+        toast('User deactivated successfully', 'success')
         router.refresh()
       }
     } catch {
-      alert('Failed to delete user.', 'Error')
+      alert('Failed to deactivate user.', 'Error')
     }
   }
 
