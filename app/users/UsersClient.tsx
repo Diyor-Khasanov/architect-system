@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import UserCreateForm from '../components/UserCreateForm'
 import UserEditForm from '../components/UserEditForm'
 import { type User } from '../lib/users'
@@ -111,7 +112,12 @@ export default function UsersClient({
                           <UserIcon className='h-5 w-5' />
                         </div>
                         <div>
-                          <p className='font-medium text-zinc-900'>{user.profile?.full_name || user.username}</p>
+                          <Link
+                            href={`/users/${user.id}`}
+                            className='font-medium text-zinc-900 hover:text-zinc-600 hover:underline transition-colors'
+                          >
+                            {user.profile?.full_name || user.username}
+                          </Link>
                           <p className='text-xs text-zinc-500'>{user.email}</p>
                         </div>
                       </div>
