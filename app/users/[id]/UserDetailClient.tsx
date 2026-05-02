@@ -4,9 +4,10 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import UserEditForm from '../../components/UserEditForm'
+import PasswordResetForm from '../../components/PasswordResetForm'
 import { type User } from '../../lib/users'
 import { type UserRole } from '../../lib/auth'
-import { ArrowLeft, Mail, Phone, Calendar, Shield, User as UserIcon, HardHat, Pencil } from 'lucide-react'
+import { ArrowLeft, Mail, Phone, Calendar, Shield, User as UserIcon, HardHat, Pencil, KeyRound } from 'lucide-react'
 
 export default function UserDetailClient({
   user,
@@ -16,6 +17,7 @@ export default function UserDetailClient({
   currentUserRole: UserRole
 }) {
   const [isEditing, setIsEditing] = useState(false)
+  const [isResettingPassword, setIsResettingPassword] = useState(false)
   const router = useRouter()
 
   const handleSuccess = () => {
@@ -23,7 +25,13 @@ export default function UserDetailClient({
     router.refresh()
   }
 
+  const handleResetSuccess = () => {
+    setIsResettingPassword(false)
+    router.refresh()
+  }
+
   const canEdit = currentUserRole === 'admin' || (currentUserRole === 'manager' && user.role === 'worker')
+  const canReset = currentUserRole === 'admin' || (currentUserRole === 'manager' && user.role === 'worker')
 
   return (
     <section className='space-y-6'>
@@ -40,16 +48,38 @@ export default function UserDetailClient({
             <p className='text-sm text-zinc-500'>Detailed information about the user.</p>
           </div>
         </div>
-        {canEdit && !isEditing && (
-          <button
-            onClick={() => setIsEditing(true)}
-            className='flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-50 hover:text-zinc-900'
-          >
-            <Pencil className='h-4 w-4' />
-            Edit Profile
-          </button>
-        )}
+        <div className='flex gap-2'>
+          {canReset && !isEditing && !isResettingPassword && (
+            <button
+              onClick={() => setIsResettingPassword(true)}
+              className='flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-50 hover:text-zinc-900'
+            >
+              <KeyRound className='h-4 w-4' />
+              Reset Password
+            </button>
+          )}
+          {canEdit && !isEditing && !isResettingPassword && (
+            <button
+              onClick={() => setIsEditing(true)}
+              className='flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-50 hover:text-zinc-900'
+            >
+              <Pencil className='h-4 w-4' />
+              Edit Profile
+            </button>
+          )}
+        </div>
       </header>
+
+      {isResettingPassword && (
+        <div className='animate-in fade-in slide-in-from-top-4 duration-300'>
+          <PasswordResetForm
+            userId={user.id}
+            username={user.username}
+            onCancel={() => setIsResettingPassword(false)}
+            onSuccess={handleResetSuccess}
+          />
+        </div>
+      )}
 
       {isEditing ? (
         <div className='animate-in fade-in slide-in-from-top-4 duration-300'>

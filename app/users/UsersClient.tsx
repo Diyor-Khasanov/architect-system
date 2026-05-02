@@ -5,10 +5,11 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import UserCreateForm from '../components/UserCreateForm'
 import UserEditForm from '../components/UserEditForm'
+import PasswordResetForm from '../components/PasswordResetForm'
 import { type User } from '../lib/users'
 import { type UserRole } from '../lib/auth'
 import { deleteUserAction } from '../actions/users'
-import { Pencil, Trash2, UserPlus, Shield, User as UserIcon, HardHat } from 'lucide-react'
+import { Pencil, Trash2, UserPlus, Shield, User as UserIcon, HardHat, KeyRound } from 'lucide-react'
 import { useToast } from '../context/ToastContext'
 
 export default function UsersClient({
@@ -19,6 +20,7 @@ export default function UsersClient({
   currentUserRole: UserRole
 }) {
   const [editingUser, setEditingUser] = useState<User | null>(null)
+  const [resettingPasswordUser, setResettingPasswordUser] = useState<User | null>(null)
   const [showCreateForm, setShowCreateForm] = useState(false)
   const router = useRouter()
   const { alert, confirm, toast } = useToast()
@@ -27,6 +29,7 @@ export default function UsersClient({
     router.refresh()
     setShowCreateForm(false)
     setEditingUser(null)
+    setResettingPasswordUser(null)
   }
 
   const handleDelete = async (id: number) => {
@@ -80,6 +83,17 @@ export default function UsersClient({
             onCancel={() => setEditingUser(null)}
             onSuccess={handleActionSuccess}
             currentUserRole={currentUserRole}
+          />
+        </div>
+      )}
+
+      {resettingPasswordUser && (
+        <div className='animate-in fade-in slide-in-from-top-4 duration-300'>
+          <PasswordResetForm
+            userId={resettingPasswordUser.id}
+            username={resettingPasswordUser.username}
+            onCancel={() => setResettingPasswordUser(null)}
+            onSuccess={handleActionSuccess}
           />
         </div>
       )}
@@ -154,7 +168,20 @@ export default function UsersClient({
                           <>
                             <button
                               onClick={() => {
+                                setResettingPasswordUser(user)
+                                setEditingUser(null)
+                                setShowCreateForm(false)
+                                window.scrollTo({ top: 0, behavior: 'smooth' })
+                              }}
+                              className='rounded-md p-2 text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900'
+                              title='Reset Password'
+                            >
+                              <KeyRound className='h-4 w-4' />
+                            </button>
+                            <button
+                              onClick={() => {
                                 setEditingUser(user)
+                                setResettingPasswordUser(null)
                                 setShowCreateForm(false)
                                 window.scrollTo({ top: 0, behavior: 'smooth' })
                               }}

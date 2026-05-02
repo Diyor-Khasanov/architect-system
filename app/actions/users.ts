@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { fetchCurrentUser, type UserRole } from '../lib/auth'
-import { createUser, updateUser, deleteUser, type CreateUserPayload, fetchUserById } from '../lib/users'
+import { createUser, updateUser, deleteUser, type CreateUserPayload, fetchUserById, resetUserPassword } from '../lib/users'
 
 interface ActionState {
   success?: boolean
@@ -107,6 +107,49 @@ export async function updateUserAction(
     return { success: true }
   } catch (error) {
     return { error: error instanceof Error ? error.message : 'Could not update user.' }
+  }
+}
+
+export async function resetPasswordAction(
+  id: number,
+  _: ActionState,
+  formData: FormData
+): Promise<ActionState> {
+  try {
+    const currentUser = await checkPermission()
+
+    const targetUser = await fetchUserById(id)
+
+    // Admin can reset everyone
+    // Manager can reset only workers
+    if (currentUser.role === 'manager' && targetUser.role !== 'worker') {
+      return { error: "Managers can only reset workers' passwords." }
+    }
+
+    if (currentUser.role === 'worker') {
+      return { error: 'Workers cannot reset passwords.' }
+    }
+
+    const newPassword = String(formData.get('new_password') ?? '')
+    const confirmPassword = String(formData.get('confirm_password') ?? '')
+    const oldPassword = String(formData.get('old_password') ?? '')
+
+    if (!newPassword) {
+      return { error: 'New password is required.' }
+    }
+
+    if (newPassword !== confirmPassword) {
+      return { error: 'Passwords do not match.' }
+    }
+
+    await resetUserPassword(id, {
+      old_password: oldPassword || undefined,
+      new_password: newPassword,
+    })
+
+    return { success: true }
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : 'Could not reset password.' }
   }
 }
 

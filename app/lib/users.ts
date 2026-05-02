@@ -130,6 +130,31 @@ export async function updateUser(id: number, payload: Partial<CreateUserPayload>
   return (await response.json()) as User
 }
 
+export async function resetUserPassword(id: number, payload: { old_password?: string; new_password: string }) {
+  const authorization = await getAuthHeaderFromCookies()
+
+  if (!authorization) {
+    throw new Error('Unauthorized')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/users/${id}/reset-password`, {
+    method: 'POST',
+    headers: {
+      Authorization: authorization,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}))
+    throw new Error(errorData.detail || 'Failed to reset password')
+  }
+
+  return true
+}
+
 export async function deleteUser(id: number) {
   const authorization = await getAuthHeaderFromCookies()
 
