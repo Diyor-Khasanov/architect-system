@@ -7,7 +7,9 @@ import UserEditForm from '../../components/UserEditForm'
 import PasswordResetForm from '../../components/PasswordResetForm'
 import { type User } from '../../lib/users'
 import { type UserRole } from '../../lib/auth'
-import { ArrowLeft, Mail, Phone, Calendar, Shield, User as UserIcon, HardHat, Pencil, KeyRound } from 'lucide-react'
+import { deleteUserAction } from '../../actions/users'
+import { useToast } from '../../context/ToastContext'
+import { ArrowLeft, Mail, Phone, Calendar, Shield, User as UserIcon, HardHat, Pencil, KeyRound, Trash2 } from 'lucide-react'
 
 export default function UserDetailClient({
   user,
@@ -19,6 +21,7 @@ export default function UserDetailClient({
   const [isEditing, setIsEditing] = useState(false)
   const [isResettingPassword, setIsResettingPassword] = useState(false)
   const router = useRouter()
+  const { alert, confirm, toast } = useToast()
 
   const handleSuccess = () => {
     setIsEditing(false)
@@ -30,8 +33,26 @@ export default function UserDetailClient({
     router.refresh()
   }
 
+  const handleDelete = async () => {
+    const confirmed = await confirm('Are you sure you want to deactivate this user?')
+    if (!confirmed) return
+
+    try {
+      const result = await deleteUserAction(user.id)
+      if (result.error) {
+        alert(result.error, 'Error')
+      } else {
+        toast('User deactivated successfully', 'success')
+        router.push('/users')
+      }
+    } catch {
+      alert('Failed to deactivate user.', 'Error')
+    }
+  }
+
   const canEdit = currentUserRole === 'admin' || (currentUserRole === 'manager' && user.role === 'worker')
   const canReset = currentUserRole === 'admin' || (currentUserRole === 'manager' && user.role === 'worker')
+  const canDelete = currentUserRole === 'admin' || (currentUserRole === 'manager' && user.role === 'worker')
 
   return (
     <section className='space-y-6'>
@@ -65,6 +86,15 @@ export default function UserDetailClient({
             >
               <Pencil className='h-4 w-4' />
               Edit Profile
+            </button>
+          )}
+          {canDelete && !isEditing && !isResettingPassword && (
+            <button
+              onClick={handleDelete}
+              className='flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-100 hover:text-red-700'
+            >
+              <Trash2 className='h-4 w-4' />
+              Deactivate User
             </button>
           )}
         </div>
