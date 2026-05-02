@@ -12,6 +12,10 @@ export default async function TeamPage() {
     redirect('/login')
   }
 
+  if (currentUser.role === 'worker') {
+    redirect('/dashboard')
+  }
+
   let projects: Project[] = []
   try {
     projects = await fetchProjects()
