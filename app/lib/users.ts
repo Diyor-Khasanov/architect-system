@@ -105,6 +105,53 @@ export async function createUser(payload: CreateUserPayload) {
   return (await response.json()) as User
 }
 
+export async function fetchMyProfile() {
+  const authorization = await getAuthHeaderFromCookies()
+
+  if (!authorization) {
+    throw new Error('Unauthorized')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/profile/me`, {
+    method: 'GET',
+    headers: {
+      Authorization: authorization,
+    },
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch my profile')
+  }
+
+  return (await response.json()) as UserProfile
+}
+
+export async function updateMyProfile(payload: Partial<CreateUserPayload>) {
+  const authorization = await getAuthHeaderFromCookies()
+
+  if (!authorization) {
+    throw new Error('Unauthorized')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/profile/me`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: authorization,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}))
+    throw new Error(errorData.detail || 'Failed to update profile')
+  }
+
+  return (await response.json()) as UserProfile
+}
+
 export async function updateUser(id: number, payload: Partial<CreateUserPayload>) {
   const authorization = await getAuthHeaderFromCookies()
 
