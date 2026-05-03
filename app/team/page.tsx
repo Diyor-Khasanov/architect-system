@@ -5,6 +5,8 @@ import { fetchProjects, type Project } from '../lib/projects'
 import { fetchUsers, type User } from '../lib/users'
 import { User as UserIcon, Shield, HardHat } from 'lucide-react'
 
+export const dynamic = 'force-dynamic'
+
 export default async function TeamPage() {
   const currentUser = await fetchCurrentUser()
 

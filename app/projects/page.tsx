@@ -5,6 +5,8 @@ import ProjectCreateForm from '../components/ProjectCreateForm'
 import { fetchCurrentUser } from '../lib/auth'
 import { fetchProjects, type Project } from '../lib/projects'
 
+export const dynamic = 'force-dynamic'
+
 export default async function ProjectsPage() {
   const currentUser = await fetchCurrentUser()
 
