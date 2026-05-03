@@ -31,7 +31,7 @@ export default async function ProfilePage() {
 
   return (
     <AppShell currentUser={currentUser}>
-      <ProfileClient user={userProfile} />
+      <ProfileClient user={currentUser} profile={userProfile} />
     </AppShell>
   )
 }
