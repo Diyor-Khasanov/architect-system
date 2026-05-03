@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import AppShell from '../components/AppShell'
 import { fetchCurrentUser } from '../lib/auth'
-import { fetchMyProfile, type User } from '../lib/users'
+import { fetchMyProfile } from '../lib/users'
 import ProfileClient from './ProfileClient'
 
 export default async function ProfilePage() {
@@ -11,14 +11,14 @@ export default async function ProfilePage() {
     redirect('/login')
   }
 
-  let userProfileData = null
+  let userProfile = null
   try {
-    userProfileData = await fetchMyProfile()
+    userProfile = await fetchMyProfile()
   } catch (error) {
     console.error('Failed to fetch profile:', error)
   }
 
-  if (!userProfileData) {
+  if (!userProfile) {
     return (
       <AppShell currentUser={currentUser}>
         <div className='rounded-2xl border border-red-200 bg-red-50 p-6 text-red-700'>
@@ -29,20 +29,9 @@ export default async function ProfilePage() {
     )
   }
 
-  // Merge the basic user info from /auth/me with the detailed profile from /profile/me
-  const fullUser: User = {
-    id: currentUser.id,
-    username: currentUser.username,
-    email: currentUser.email,
-    role: currentUser.role,
-    is_active: currentUser.is_active,
-    created_at: currentUser.created_at,
-    profile: userProfileData,
-  }
-
   return (
     <AppShell currentUser={currentUser}>
-      <ProfileClient user={fullUser} />
+      <ProfileClient user={userProfile} />
     </AppShell>
   )
 }
