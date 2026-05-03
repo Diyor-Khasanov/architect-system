@@ -76,16 +76,8 @@ export default function ProfileClient({ user, profile }: { user: MeResponse, pro
           <div className='lg:col-span-2 space-y-6'>
             <article className='rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm'>
               <div className='flex items-center gap-4 mb-6'>
-              <div className='flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-zinc-100 text-zinc-400'>
-                {profile.avatar_file_id ? (
-                  <img
-                    src={`http://13.50.4.92/api/v1/files/${profile.avatar_file_id}`}
-                    alt={profile.full_name || 'Avatar'}
-                    className='h-full w-full object-cover'
-                  />
-                ) : (
+                <div className='flex h-16 w-16 items-center justify-center rounded-full bg-zinc-100 text-zinc-400'>
                   <UserIcon className='h-8 w-8' />
-                )}
                 </div>
                 <div>
                   <h2 className='text-xl font-bold text-zinc-900'>{displayValue(profile.full_name)}</h2>
