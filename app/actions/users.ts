@@ -11,11 +11,13 @@ import {
   resetUserPassword,
   updateMyProfile,
   updateUserProfileDetails,
+  uploadAvatar,
 } from '../lib/users'
 
 interface ActionState {
   success?: boolean
   error?: string
+  data?: unknown
 }
 
 async function checkPermission() {
@@ -241,5 +243,26 @@ export async function updateMyProfileDetailsAction(_: ActionState, formData: For
     return { success: true }
   } catch (error) {
     return { error: error instanceof Error ? error.message : 'Could not update profile details.' }
+  }
+}
+
+export async function uploadAvatarAction(_: ActionState, formData: FormData): Promise<ActionState> {
+  try {
+    const currentUser = await fetchCurrentUser()
+    if (!currentUser) {
+      throw new Error('Unauthorized')
+    }
+
+    const file = formData.get('file') as File
+    if (!file || file.size === 0) {
+      return { error: 'No file selected.' }
+    }
+
+    const result = await uploadAvatar(formData)
+
+    revalidatePath('/profile')
+    return { success: true, data: result }
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : 'Could not upload avatar.' }
   }
 }
