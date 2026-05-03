@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import AppShell from '../../components/AppShell'
 import { fetchCurrentUser } from '../../lib/auth'
 import { fetchProject, type Project } from '../../lib/projects'
+import { fetchUsers } from '../../lib/users'
 import ProjectDetailClient from './ProjectDetailClient'
 
 interface ProjectPageProps {
@@ -21,8 +22,19 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
   }
 
   let project: Project | null = null
+  let managers: { id: number; username: string; full_name: string }[] = []
   try {
     project = await fetchProject(id)
+    if (currentUser.role === 'admin') {
+      const allUsers = await fetchUsers()
+      managers = allUsers
+        .filter((u) => u.role === 'manager')
+        .map((u) => ({
+          id: u.id,
+          username: u.username,
+          full_name: u.profile?.full_name || u.username,
+        }))
+    }
   } catch {
     // Error handled by null check below
   }
@@ -42,7 +54,12 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
   return (
     <AppShell currentUser={currentUser}>
       <section className='space-y-6'>
-        <ProjectDetailClient project={project} currentUser={currentUser} id={id} />
+        <ProjectDetailClient
+          project={project}
+          currentUser={currentUser}
+          id={id}
+          availableManagers={managers}
+        />
 
         <div className='grid gap-6 lg:grid-cols-3'>
           <article className='lg:col-span-2 space-y-6'>

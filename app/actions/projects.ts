@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { fetchCurrentUser } from '../lib/auth'
-import { createProject, updateProject, deleteProject, updateProjectStatus } from '../lib/projects'
+import { createProject, updateProject, deleteProject, updateProjectStatus, assignProjectManager } from '../lib/projects'
 
 interface ActionState {
   success?: boolean
@@ -59,17 +59,17 @@ export async function updateProjectAction(
 
   const payload: Record<string, string | number> = {}
 
-  if (formData.has('name')) payload.name = String(formData.get('name'))
-  if (formData.has('description')) payload.description = String(formData.get('description'))
-  if (formData.has('deadline')) {
+  if (formData.get('name')) payload.name = String(formData.get('name'))
+  if (formData.get('description')) payload.description = String(formData.get('description'))
+  if (formData.get('deadline')) {
     let deadline = String(formData.get('deadline'))
     if (deadline && !deadline.includes('T')) {
       deadline = new Date(deadline).toISOString()
     }
     payload.deadline = deadline
   }
-  if (formData.has('manager_id')) payload.manager_id = Number(formData.get('manager_id'))
-  if (formData.has('status')) payload.status = String(formData.get('status'))
+  if (formData.get('manager_id')) payload.manager_id = Number(formData.get('manager_id'))
+  if (formData.get('status')) payload.status = String(formData.get('status'))
 
   // Validate status if provided
   const validStatuses = ['draft', 'assigned', 'active', 'completed', 'archived', 'on_hold']
@@ -82,6 +82,8 @@ export async function updateProjectAction(
   try {
     if (Object.keys(payload).length === 1 && payload.status) {
       await updateProjectStatus(id, String(payload.status))
+    } else if (Object.keys(payload).length === 1 && payload.manager_id) {
+      await assignProjectManager(id, Number(payload.manager_id))
     } else {
       await updateProject(id, payload)
     }
@@ -90,6 +92,33 @@ export async function updateProjectAction(
     return { success: true }
   } catch {
     return { error: 'Could not update project.' }
+  }
+}
+
+export async function assignProjectManagerAction(
+  id: string,
+  _: ActionState,
+  formData: FormData
+): Promise<ActionState> {
+  const currentUser = await fetchCurrentUser()
+
+  if (!currentUser || currentUser.role !== 'admin') {
+    return { error: 'Only administrators can assign managers to projects.' }
+  }
+
+  const managerId = Number(formData.get('manager_id'))
+
+  if (!managerId) {
+    return { error: 'Manager ID is required.' }
+  }
+
+  try {
+    await assignProjectManager(id, managerId)
+    revalidatePath(`/projects/${id}`)
+    revalidatePath('/projects')
+    return { success: true }
+  } catch {
+    return { error: 'Could not assign manager.' }
   }
 }
 
