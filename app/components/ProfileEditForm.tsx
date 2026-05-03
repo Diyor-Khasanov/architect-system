@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState, useEffect } from 'react'
+import { useActionState, useEffect, useState } from 'react'
 import { useFormStatus } from 'react-dom'
 import { updateMyProfileDetailsAction } from '../actions/users'
 import type { UserProfile } from '../lib/users'
@@ -25,12 +25,23 @@ export default function ProfileEditForm({
   profile,
   onCancel,
   onSuccess,
+  forcedAvatarFileId,
 }: {
   profile: UserProfile
   onCancel: () => void
   onSuccess?: () => void
+  forcedAvatarFileId?: number
 }) {
   const [state, formAction] = useActionState(updateMyProfileDetailsAction, initialState)
+  const [avatarFileId, setAvatarFileId] = useState<number | string>(profile.avatar_file_id ?? '')
+  const [prevForcedId, setPrevForcedId] = useState<number | undefined>(forcedAvatarFileId)
+
+  if (forcedAvatarFileId !== prevForcedId) {
+    setPrevForcedId(forcedAvatarFileId)
+    if (forcedAvatarFileId !== undefined) {
+      setAvatarFileId(forcedAvatarFileId)
+    }
+  }
 
   useEffect(() => {
     if (state.success && onSuccess) {
@@ -67,7 +78,8 @@ export default function ProfileEditForm({
           <input
             name='avatar_file_id'
             type='number'
-            defaultValue={profile.avatar_file_id}
+            value={avatarFileId}
+            onChange={(e) => setAvatarFileId(e.target.value)}
             className='w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm outline-none focus:border-zinc-900'
           />
         </label>

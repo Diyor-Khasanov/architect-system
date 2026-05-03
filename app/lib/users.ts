@@ -136,6 +136,30 @@ export async function updateUserProfileDetails(payload: UpdateUserProfilePayload
   return (await response.json()) as UserProfile
 }
 
+export async function uploadAvatar(formData: FormData) {
+  const authorization = await getAuthHeaderFromCookies()
+
+  if (!authorization) {
+    throw new Error('Unauthorized')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/profile/avatar`, {
+    method: 'POST',
+    headers: {
+      Authorization: authorization,
+    },
+    body: formData,
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}))
+    throw new Error(errorData.detail || 'Failed to upload avatar')
+  }
+
+  return await response.json()
+}
+
 export async function fetchMyProfile() {
   const authorization = await getAuthHeaderFromCookies()
 

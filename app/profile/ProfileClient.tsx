@@ -6,9 +6,11 @@ import type { UserProfile } from '../lib/users'
 import type { MeResponse } from '../lib/auth'
 import { User as UserIcon, Phone, Fingerprint, Hash, Image as ImageIcon, Mail, Shield, HardHat, Pencil } from 'lucide-react'
 import ProfileEditForm from '../components/ProfileEditForm'
+import AvatarUploadForm from '../components/AvatarUploadForm'
 
 export default function ProfileClient({ user, profile }: { user: MeResponse, profile: UserProfile }) {
   const [isEditing, setIsEditing] = useState(false)
+  const [newAvatarFileId, setNewAvatarFileId] = useState<number | undefined>(undefined)
   const router = useRouter()
 
   const displayValue = (value: string | number | undefined | null) => {
@@ -18,7 +20,24 @@ export default function ProfileClient({ user, profile }: { user: MeResponse, pro
 
   const handleSuccess = () => {
     setIsEditing(false)
+    setNewAvatarFileId(undefined)
     router.refresh()
+  }
+
+  const handleAvatarUploaded = (data: unknown) => {
+    let id: number | undefined
+    if (typeof data === 'number') {
+      id = data
+    } else if (data && typeof data === 'object' && 'id' in data) {
+      const possibleId = (data as { id: unknown }).id
+      if (typeof possibleId === 'number') {
+        id = possibleId
+      }
+    }
+
+    if (id) {
+      setNewAvatarFileId(id)
+    }
   }
 
   return (
@@ -40,12 +59,17 @@ export default function ProfileClient({ user, profile }: { user: MeResponse, pro
       </header>
 
       {isEditing ? (
-        <div className='animate-in fade-in slide-in-from-top-4 duration-300'>
+        <div className='space-y-6 animate-in fade-in slide-in-from-top-4 duration-300'>
           <ProfileEditForm
             profile={profile}
-            onCancel={() => setIsEditing(false)}
+            onCancel={() => {
+              setIsEditing(false)
+              setNewAvatarFileId(undefined)
+            }}
             onSuccess={handleSuccess}
+            forcedAvatarFileId={newAvatarFileId}
           />
+          <AvatarUploadForm onUploadSuccess={handleAvatarUploaded} />
         </div>
       ) : (
         <div className='grid gap-6 lg:grid-cols-3'>
