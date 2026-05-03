@@ -36,6 +36,8 @@ const roleContent: Record<
   },
 }
 
+export const dynamic = 'force-dynamic'
+
 export default async function DashboardPage() {
   const currentUser = await fetchCurrentUser()
 

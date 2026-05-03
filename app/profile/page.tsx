@@ -4,6 +4,8 @@ import { fetchCurrentUser } from '../lib/auth'
 import { fetchMyProfile } from '../lib/users'
 import ProfileClient from './ProfileClient'
 
+export const dynamic = 'force-dynamic'
+
 export default async function ProfilePage() {
   const currentUser = await fetchCurrentUser()
 
