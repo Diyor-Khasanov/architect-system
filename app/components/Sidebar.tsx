@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, FolderKanban, Users, BarChart3, Wrench, LogOut, Command, X } from 'lucide-react'
+import { LayoutDashboard, FolderKanban, Users, BarChart3, Wrench, LogOut, Command, X, UserCircle } from 'lucide-react'
 import { logoutAction } from '../actions/login'
 import type { UserRole } from '../lib/auth'
 import { cn } from '../lib/utils'
@@ -27,16 +27,19 @@ const roleMenu: Record<UserRole, MenuItem[]> = {
     { name: 'Users', href: '/users', icon: Users },
     { name: 'Projects', href: '/projects', icon: FolderKanban },
     { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
+    { name: 'My Profile', href: '/profile', icon: UserCircle },
   ],
   manager: [
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Projects', href: '/projects', icon: FolderKanban },
     { name: 'Team', href: '/users', icon: Users },
     { name: 'Reports', href: '/dashboard/reports', icon: BarChart3 },
+    { name: 'My Profile', href: '/profile', icon: UserCircle },
   ],
   worker: [
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Assigned Tasks', href: '/dashboard/tasks', icon: Wrench },
+    { name: 'My Profile', href: '/profile', icon: UserCircle },
   ],
 }
 
