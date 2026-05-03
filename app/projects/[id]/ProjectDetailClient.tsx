@@ -1,7 +1,7 @@
 'use client'
 
 import { useActionState, useState, useTransition } from 'react'
-import { updateProjectAction } from '../../actions/projects'
+import { updateProjectAction, assignProjectManagerAction } from '../../actions/projects'
 import { cn } from '../../lib/utils'
 import { Edit, Play, Pause, CheckCircle2, Trash2, UserPlus } from 'lucide-react'
 import type { Project } from '../../lib/projects'
@@ -46,15 +46,24 @@ interface ProjectDetailClientProps {
   project: Project
   currentUser: MeResponse
   id: string
+  availableManagers: { id: number; username: string; full_name: string }[]
 }
 
-export default function ProjectDetailClient({ project, currentUser, id }: ProjectDetailClientProps) {
+export default function ProjectDetailClient({
+  project,
+  currentUser,
+  id,
+  availableManagers,
+}: ProjectDetailClientProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [isPending, startTransition] = useTransition()
   const { confirm, toast } = useToast()
 
   const updateProjectWithId = updateProjectAction.bind(null, id)
   const [updateState, updateFormAction] = useActionState(updateProjectWithId, {})
+
+  const assignManagerWithId = assignProjectManagerAction.bind(null, id)
+  const [assignState] = useActionState(assignManagerWithId, {})
 
   const isAdmin = currentUser.role === 'admin'
   const isManager = currentUser.role === 'manager'
@@ -101,6 +110,21 @@ export default function ProjectDetailClient({ project, currentUser, id }: Projec
                 className='mt-2 block w-full text-sm text-zinc-600 border border-zinc-200 rounded-md p-2 focus:outline-none focus:border-zinc-900'
                 rows={3}
               />
+              <div>
+                <label className='block text-xs font-medium text-zinc-500 uppercase mb-1'>Manager</label>
+                <select
+                  name='manager_id'
+                  defaultValue={project.manager_id}
+                  className='block w-full text-sm border border-zinc-200 rounded-md p-2 focus:outline-none focus:border-zinc-900 bg-white'
+                >
+                  {availableManagers.map((m) => (
+                    <option key={m.id} value={m.id}>
+                      {m.full_name} ({m.username})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <div className='flex gap-2'>
                 <button
                   type='submit'
@@ -174,7 +198,9 @@ export default function ProjectDetailClient({ project, currentUser, id }: Projec
           )}
         </div>
       </div>
-      {updateState?.error && <p className='mt-4 text-sm text-red-600'>{updateState.error}</p>}
+      {(updateState?.error || assignState?.error) && (
+        <p className='mt-4 text-sm text-red-600'>{updateState?.error || assignState?.error}</p>
+      )}
     </header>
   )
 }
