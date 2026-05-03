@@ -10,16 +10,6 @@ export default function ProfileClient({ user, profile }: { user: MeResponse, pro
     return value
   }
 
-  const displayValue = (value: string | number | undefined | null) => {
-    if (value === undefined || value === null || value === '') return 'N/A'
-    return value
-  }
-
-  const displayValue = (value: string | number | undefined | null) => {
-    if (value === undefined || value === null || value === '') return 'N/A'
-    return value
-  }
-
   return (
     <section className='space-y-6'>
       <header>
