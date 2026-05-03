@@ -2,7 +2,15 @@
 
 import { revalidatePath } from 'next/cache'
 import { fetchCurrentUser, type UserRole } from '../lib/auth'
-import { createUser, updateUser, deleteUser, type CreateUserPayload, fetchUserById, resetUserPassword } from '../lib/users'
+import {
+  createUser,
+  updateUser,
+  deleteUser,
+  type CreateUserPayload,
+  fetchUserById,
+  resetUserPassword,
+  updateMyProfile,
+} from '../lib/users'
 
 interface ActionState {
   success?: boolean
@@ -169,5 +177,40 @@ export async function deleteUserAction(id: number): Promise<ActionState> {
     return { success: true }
   } catch (error) {
     return { error: error instanceof Error ? error.message : 'Could not deactivate user.' }
+  }
+}
+
+export async function updateMyProfileAction(_: ActionState, formData: FormData): Promise<ActionState> {
+  try {
+    const currentUser = await fetchCurrentUser()
+    if (!currentUser) {
+      throw new Error('Unauthorized')
+    }
+
+    const payload: Partial<CreateUserPayload> = {}
+
+    if (formData.has('username')) payload.username = String(formData.get('username')).trim()
+    if (formData.has('email')) payload.email = String(formData.get('email')).trim()
+    if (formData.has('full_name')) payload.full_name = String(formData.get('full_name'))
+
+    if (formData.has('password') && String(formData.get('password')).trim() !== '') {
+      const password = String(formData.get('password'))
+      const confirmPassword = String(formData.get('confirm_password'))
+      if (password !== confirmPassword) {
+        return { error: 'Passwords do not match.' }
+      }
+      payload.password = password
+      payload.confirm_password = confirmPassword
+    }
+
+    await updateMyProfile(payload)
+
+    revalidatePath('/profile')
+    revalidatePath('/dashboard')
+    revalidatePath('/users')
+
+    return { success: true }
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : 'Could not update profile.' }
   }
 }
