@@ -28,6 +28,12 @@ export interface CreateUserPayload {
   full_name?: string
 }
 
+export interface UpdateUserProfilePayload {
+  full_name: string
+  phone: string
+  avatar_file_id: number
+}
+
 const API_BASE_URL = 'http://13.50.4.92/api/v1'
 
 function normalizeUsersResponse(payload: unknown): User[] {
@@ -103,6 +109,31 @@ export async function createUser(payload: CreateUserPayload) {
   }
 
   return (await response.json()) as User
+}
+
+export async function updateUserProfileDetails(payload: UpdateUserProfilePayload) {
+  const authorization = await getAuthHeaderFromCookies()
+
+  if (!authorization) {
+    throw new Error('Unauthorized')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/profile/me`, {
+    method: 'POST',
+    headers: {
+      Authorization: authorization,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}))
+    throw new Error(errorData.detail || 'Failed to update profile details')
+  }
+
+  return (await response.json()) as UserProfile
 }
 
 export async function fetchMyProfile() {

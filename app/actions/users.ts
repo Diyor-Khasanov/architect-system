@@ -10,6 +10,7 @@ import {
   fetchUserById,
   resetUserPassword,
   updateMyProfile,
+  updateUserProfileDetails,
 } from '../lib/users'
 
 interface ActionState {
@@ -212,5 +213,33 @@ export async function updateMyProfileAction(_: ActionState, formData: FormData):
     return { success: true }
   } catch (error) {
     return { error: error instanceof Error ? error.message : 'Could not update profile.' }
+  }
+}
+
+export async function updateMyProfileDetailsAction(_: ActionState, formData: FormData): Promise<ActionState> {
+  try {
+    const currentUser = await fetchCurrentUser()
+    if (!currentUser) {
+      throw new Error('Unauthorized')
+    }
+
+    const full_name = String(formData.get('full_name') ?? '').trim()
+    const phone = String(formData.get('phone') ?? '').trim()
+    const avatar_file_id = Number(formData.get('avatar_file_id') ?? 0)
+
+    if (!full_name) {
+      return { error: 'Full name is required.' }
+    }
+
+    await updateUserProfileDetails({
+      full_name,
+      phone,
+      avatar_file_id,
+    })
+
+    revalidatePath('/profile')
+    return { success: true }
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : 'Could not update profile details.' }
   }
 }
