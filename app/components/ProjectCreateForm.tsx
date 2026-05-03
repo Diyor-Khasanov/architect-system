@@ -20,8 +20,12 @@ function SubmitButton() {
 
 const initialState: { success?: boolean; error?: string } = {}
 
-export default function ProjectCreateForm() {
-  const [state, formAction] = useActionState(createProjectAction, initialState)
+export default function ProjectCreateForm({ onSuccess }: { onSuccess?: () => void }) {
+  const [state, formAction] = useActionState(async (prev: typeof initialState, formData: FormData) => {
+    const res = await createProjectAction(prev, formData)
+    if (res.success && onSuccess) onSuccess()
+    return res
+  }, initialState)
 
   return (
     <form action={formAction} className='grid gap-4 rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm'>
