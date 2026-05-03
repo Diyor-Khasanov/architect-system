@@ -95,7 +95,13 @@ export default function Sidebar({ role, fullName, isOpen, onClose }: SidebarProp
       </nav>
 
       <div className='mt-auto border-t border-zinc-200 pt-4'>
-        <p className='mb-3 truncate px-3 text-sm text-zinc-500'>{fullName}</p>
+        <Link
+          href='/profile'
+          onClick={onClose}
+          className='mb-3 block truncate rounded-lg px-3 py-2 text-sm text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-950'
+        >
+          {fullName}
+        </Link>
         <form action={logoutAction}>
           <button
             type='button'
