@@ -124,7 +124,7 @@ export async function fetchMyProfile() {
     throw new Error('Failed to fetch my profile')
   }
 
-  return (await response.json()) as User
+  return (await response.json()) as UserProfile
 }
 
 export async function updateMyProfile(payload: Partial<CreateUserPayload>) {
