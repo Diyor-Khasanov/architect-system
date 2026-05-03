@@ -123,6 +123,30 @@ export async function createProject(payload: CreateProjectPayload) {
   return (await response.json()) as Project
 }
 
+export async function assignProjectManager(id: string | number, managerId: number) {
+  const authorization = await getAuthHeaderFromCookies()
+
+  if (!authorization) {
+    throw new Error('Unauthorized')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/projects/${id}/assign-manager`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: authorization,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ manager_id: managerId }),
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to assign manager')
+  }
+
+  return (await response.json()) as Project
+}
+
 export async function updateProject(id: string | number, payload: Partial<CreateProjectPayload> & { status?: string }) {
   const authorization = await getAuthHeaderFromCookies()
 
