@@ -1,23 +1,39 @@
-import { fetchDeadlineAnalytics } from '../../lib/analytics'
-import { AlertCircle, Calendar, CheckCircle2, Clock } from 'lucide-react'
+import {
+  fetchDeadlineAnalytics,
+  fetchProjectProgressAnalytics,
+  fetchReportsAnalytics,
+  fetchWorkloadAnalytics,
+  DeadlineAnalytics,
+} from '../../lib/analytics'
+import { fetchCurrentUser } from '../../lib/auth'
+import { AlertCircle, Calendar, CheckCircle2, Clock, BarChart3, PieChart, Users } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
 
-import { DeadlineAnalytics } from '../../lib/analytics'
-
 export default async function AnalyticsPage() {
-  const data = (await fetchDeadlineAnalytics()) as DeadlineAnalytics | null
+  const user = await fetchCurrentUser()
+  if (!user) return null
+
+  const isAdvanced = user.role === 'admin' || user.role === 'manager'
+
+  const [deadlineData, progressData, reportsData, workloadData] = await Promise.all([
+    fetchDeadlineAnalytics(),
+    isAdvanced ? fetchProjectProgressAnalytics() : Promise.resolve(null),
+    isAdvanced ? fetchReportsAnalytics() : Promise.resolve(null),
+    isAdvanced ? fetchWorkloadAnalytics() : Promise.resolve(null),
+  ])
 
   // Helper to safely extract arrays even if the API structure varies
-  const upcomingDeadlines = data?.upcoming_deadlines || (Array.isArray((data as any)?.items) ? (data as any).items : [])
-  const overdueTasks = data?.overdue_tasks || []
-  const summary = data?.summary || {
+  const upcomingDeadlines =
+    (deadlineData as any)?.upcoming_deadlines || (Array.isArray((deadlineData as any)?.items) ? (deadlineData as any).items : [])
+  const overdueTasks = (deadlineData as any)?.overdue_tasks || []
+  const summary = (deadlineData as any)?.summary || {
     total_active_tasks: upcomingDeadlines.length,
     approaching_deadlines_count: upcomingDeadlines.filter((t: any) => t.days_left <= 7).length,
     overdue_count: overdueTasks.length,
   }
 
-  if (!data) {
+  if (!deadlineData && !isAdvanced) {
     return (
       <div className='rounded-2xl border border-zinc-200 bg-white p-12 text-center shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
         <p className='text-zinc-500 dark:text-zinc-400'>No analytics data available at the moment.</p>
@@ -28,11 +44,15 @@ export default async function AnalyticsPage() {
   return (
     <div className='space-y-8'>
       <header>
-        <h1 className='text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100'>Deadline Analytics</h1>
-        <p className='mt-2 text-zinc-600 dark:text-zinc-400'>Track your upcoming deadlines and overdue tasks.</p>
+        <h1 className='text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100'>
+          {isAdvanced ? 'Analytics Dashboard' : 'Deadline Analytics'}
+        </h1>
+        <p className='mt-2 text-zinc-600 dark:text-zinc-400'>
+          {isAdvanced ? 'Comprehensive project and team performance insights.' : 'Track your upcoming deadlines and overdue tasks.'}
+        </p>
       </header>
 
-      {/* Summary Cards */}
+      {/* Deadline Summary Cards */}
       <div className='grid gap-4 sm:grid-cols-3'>
         <div className='rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
           <div className='flex items-center gap-3 text-zinc-500 dark:text-zinc-400'>
@@ -75,9 +95,7 @@ export default async function AnalyticsPage() {
                   <div key={task.id} className='flex items-center justify-between rounded-xl border border-zinc-100 p-4 dark:border-zinc-800'>
                     <div>
                       <h3 className='font-medium text-zinc-900 dark:text-zinc-100'>{task.name}</h3>
-                      <p className='text-sm text-zinc-500 dark:text-zinc-400'>
-                        Deadline: {new Date(task.deadline).toLocaleDateString()}
-                      </p>
+                      <p className='text-sm text-zinc-500 dark:text-zinc-400'>Deadline: {new Date(task.deadline).toLocaleDateString()}</p>
                     </div>
                     <div className='text-right'>
                       <span className='inline-flex items-center rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs font-medium text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200'>
@@ -105,12 +123,13 @@ export default async function AnalyticsPage() {
             {overdueTasks.length > 0 ? (
               <div className='space-y-4'>
                 {overdueTasks.map((task: any) => (
-                  <div key={task.id} className='flex items-center justify-between rounded-xl border border-red-100 bg-red-50/30 p-4 dark:border-red-900/30 dark:bg-red-950/10'>
+                  <div
+                    key={task.id}
+                    className='flex items-center justify-between rounded-xl border border-red-100 bg-red-50/30 p-4 dark:border-red-900/30 dark:bg-red-950/10'
+                  >
                     <div>
                       <h3 className='font-medium text-red-900 dark:text-red-100'>{task.name}</h3>
-                      <p className='text-sm text-red-700/70 dark:text-red-400/70'>
-                        Was due: {new Date(task.deadline).toLocaleDateString()}
-                      </p>
+                      <p className='text-sm text-red-700/70 dark:text-red-400/70'>Was due: {new Date(task.deadline).toLocaleDateString()}</p>
                     </div>
                     <div className='text-right'>
                       <span className='inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900/50 dark:text-red-200'>
@@ -125,6 +144,107 @@ export default async function AnalyticsPage() {
             )}
           </div>
         </section>
+
+        {/* Project Progress - Admin/Manager Only */}
+        {isAdvanced && (
+          <section className='rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
+            <div className='border-b border-zinc-100 p-6 dark:border-zinc-800'>
+              <h2 className='flex items-center gap-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100'>
+                <BarChart3 className='h-5 w-5 text-zinc-500' />
+                Project Progress
+              </h2>
+            </div>
+            <div className='p-6'>
+              {progressData && (Array.isArray(progressData) || Array.isArray((progressData as any).items)) ? (
+                <div className='space-y-6'>
+                  {(Array.isArray(progressData) ? progressData : (progressData as any).items).map((project: any) => (
+                    <div key={project.id} className='space-y-2'>
+                      <div className='flex justify-between text-sm'>
+                        <span className='font-medium text-zinc-900 dark:text-zinc-100'>{project.name}</span>
+                        <span className='text-zinc-500'>{project.progress}%</span>
+                      </div>
+                      <div className='h-2 w-full overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800'>
+                        <div className='h-full bg-blue-500 transition-all' style={{ width: `${project.progress}%` }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className='text-sm text-zinc-500 dark:text-zinc-400'>No progress data available.</p>
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* Workload - Admin/Manager Only */}
+        {isAdvanced && (
+          <section className='rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
+            <div className='border-b border-zinc-100 p-6 dark:border-zinc-800'>
+              <h2 className='flex items-center gap-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100'>
+                <Users className='h-5 w-5 text-zinc-500' />
+                Team Workload
+              </h2>
+            </div>
+            <div className='p-6'>
+              {workloadData &&
+              (Array.isArray(workloadData) || Array.isArray((workloadData as any).items) || Array.isArray((workloadData as any).users)) ? (
+                <div className='space-y-4'>
+                  {(Array.isArray(workloadData) ? workloadData : (workloadData as any).items || (workloadData as any).users).map((user: any) => (
+                    <div
+                      key={user.id || user.user_id}
+                      className='flex items-center justify-between rounded-xl border border-zinc-100 p-4 dark:border-zinc-800'
+                    >
+                      <div>
+                        <h3 className='font-medium text-zinc-900 dark:text-zinc-100'>
+                          {user.full_name || user.username || `User ${user.id}`}
+                        </h3>
+                        <p className='text-xs text-zinc-500 dark:text-zinc-400'>{user.role}</p>
+                      </div>
+                      <div className='text-right'>
+                        <span className='text-lg font-semibold text-zinc-900 dark:text-zinc-100'>
+                          {user.task_count || user.tasks_count || 0}
+                        </span>
+                        <p className='text-[10px] uppercase tracking-wider text-zinc-500'>Active Tasks</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className='text-sm text-zinc-500 dark:text-zinc-400'>No workload data available.</p>
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* Reports - Admin/Manager Only */}
+        {isAdvanced && (
+          <section className='col-span-full rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
+            <div className='border-b border-zinc-100 p-6 dark:border-zinc-800'>
+              <h2 className='flex items-center gap-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100'>
+                <PieChart className='h-5 w-5 text-zinc-500' />
+                Performance Reports
+              </h2>
+            </div>
+            <div className='p-6'>
+              {reportsData && typeof reportsData === 'object' && !Array.isArray(reportsData) ? (
+                <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
+                  {Object.entries(reportsData).map(([key, value]: [string, any]) => (
+                    <div key={key} className='rounded-xl bg-zinc-50 p-4 dark:bg-zinc-800/50'>
+                      <p className='text-xs font-medium uppercase tracking-wider text-zinc-500 dark:text-zinc-400'>
+                        {key.replace(/_/g, ' ')}
+                      </p>
+                      <p className='mt-1 text-2xl font-semibold text-zinc-900 dark:text-zinc-100'>
+                        {typeof value === 'number' ? value : String(value)}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className='text-sm text-zinc-500 dark:text-zinc-400'>No reports data available.</p>
+              )}
+            </div>
+          </section>
+        )}
       </div>
     </div>
   )
