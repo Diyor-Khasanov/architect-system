@@ -30,7 +30,7 @@ export function Toast({ id, type, message, onClose }: ToastProps) {
   return (
     <div
       role="alert"
-      className="flex items-center gap-3 rounded-xl border border-zinc-200 bg-white p-4 shadow-lg animate-in fade-in slide-in-from-right-4 duration-300 dark:border-zinc-800 dark:bg-zinc-900"
+      className="flex items-center gap-3 rounded-xl border border-zinc-200 bg-white p-4 shadow-lg animate-in fade-in slide-in-from-right-4 duration-300 dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-zinc-950/50"
     >
       {icons[type]}
       <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">{message}</p>

@@ -64,21 +64,6 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
         <div className='grid gap-6 lg:grid-cols-3'>
           <article className='lg:col-span-2 space-y-6'>
             <div className='rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm'>
-              <h2 className='text-lg font-semibold tracking-tight'>Project Progress</h2>
-              <div className='mt-4'>
-                <div className='flex items-center justify-between mb-2'>
-                  <span className='text-sm font-medium text-zinc-700'>{project.progress ?? 0}% Complete</span>
-                </div>
-                <div className='w-full bg-zinc-100 rounded-full h-2.5'>
-                  <div
-                    className='bg-zinc-900 h-2.5 rounded-full transition-all duration-500'
-                    style={{ width: `${project.progress ?? 0}%` }}
-                  ></div>
-                </div>
-              </div>
-            </div>
-
-            <div className='rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm'>
               <h2 className='text-lg font-semibold tracking-tight'>Team Members</h2>
               <div className='mt-4 overflow-x-auto'>
                 <table className='w-full text-left text-sm'>
