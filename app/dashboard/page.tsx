@@ -79,7 +79,6 @@ export default async function DashboardPage() {
         <h1 className='mt-1 text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100'>
           {currentUser.profile?.full_name ?? currentUser.username}
         </h1>
-        <p className='mt-3 max-w-2xl text-sm text-zinc-600 dark:text-zinc-400'>{activeRoleContent.description}</p>
       </header>
 
       <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>

@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, FolderKanban, Users, BarChart3, Wrench, LogOut, Command, X } from 'lucide-react'
+import { LayoutDashboard, FolderKanban, Users, BarChart3, Wrench, LogOut, Command, X, ClipboardList } from 'lucide-react'
 import { logoutAction } from '../actions/login'
 import type { UserRole } from '../lib/auth'
 import { cn } from '../lib/utils'
@@ -25,6 +25,7 @@ const roleMenu: Record<UserRole, MenuItem[]> = {
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Users', href: '/users', icon: Users },
     { name: 'Projects', href: '/projects', icon: FolderKanban },
+    { name: 'Audit Logs', href: '/audit-logs', icon: ClipboardList },
     { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
   ],
   manager: [
