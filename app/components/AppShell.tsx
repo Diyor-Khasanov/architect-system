@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { Menu } from 'lucide-react'
 import type { MeResponse } from '../lib/auth'
 import Sidebar from './Sidebar'
@@ -16,12 +17,7 @@ export default function AppShell({ currentUser, children }: AppShellProps) {
 
   return (
     <div className='min-h-screen bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50'>
-      <Sidebar
-        role={currentUser.role}
-        fullName={currentUser.profile?.full_name ?? currentUser.username}
-        isOpen={isSidebarOpen}
-        onClose={() => setIsSidebarOpen(false)}
-      />
+      <Sidebar role={currentUser.role} isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
       <main className='flex flex-1 flex-col lg:pl-72'>
         {/* Top Navbar */}
@@ -41,7 +37,10 @@ export default function AppShell({ currentUser, children }: AppShellProps) {
           <div className='flex items-center gap-4'>
             <ThemeToggle />
             <div className='h-8 w-px bg-zinc-200 dark:bg-zinc-800' />
-            <div className='flex items-center gap-3'>
+            <Link
+              href='/profile'
+              className='flex items-center gap-3 rounded-lg p-1.5 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800'
+            >
               <div className='hidden flex-col items-end sm:flex'>
                 <span className='text-sm font-medium text-zinc-900 dark:text-zinc-100'>
                   {currentUser.profile?.full_name ?? currentUser.username}
@@ -51,7 +50,7 @@ export default function AppShell({ currentUser, children }: AppShellProps) {
               <div className='flex h-8 w-8 items-center justify-center rounded-full bg-zinc-900 text-xs font-medium text-white dark:bg-zinc-100 dark:text-zinc-900'>
                 {(currentUser.profile?.full_name ?? currentUser.username).charAt(0).toUpperCase()}
               </div>
-            </div>
+            </Link>
           </div>
         </header>
 

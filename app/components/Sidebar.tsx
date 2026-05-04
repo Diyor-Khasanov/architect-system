@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, FolderKanban, Users, BarChart3, Wrench, LogOut, Command, X } from 'lucide-react'
+import { LayoutDashboard, FolderKanban, Users, BarChart3, Wrench, LogOut, Command, X, ClipboardList } from 'lucide-react'
 import { logoutAction } from '../actions/login'
 import type { UserRole } from '../lib/auth'
 import { cn } from '../lib/utils'
@@ -10,7 +10,6 @@ import { useToast } from '../context/ToastContext'
 
 interface SidebarProps {
   role: UserRole
-  fullName: string
   isOpen?: boolean
   onClose?: () => void
 }
@@ -26,6 +25,7 @@ const roleMenu: Record<UserRole, MenuItem[]> = {
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Users', href: '/users', icon: Users },
     { name: 'Projects', href: '/projects', icon: FolderKanban },
+    { name: 'Audit Logs', href: '/audit-logs', icon: ClipboardList },
     { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
   ],
   manager: [
@@ -48,7 +48,7 @@ function isActivePath(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`)
 }
 
-export default function Sidebar({ role, fullName, isOpen, onClose }: SidebarProps) {
+export default function Sidebar({ role, isOpen, onClose }: SidebarProps) {
   const pathname = usePathname()
   const menuItems = roleMenu[role]
   const { confirm } = useToast()
@@ -94,13 +94,6 @@ export default function Sidebar({ role, fullName, isOpen, onClose }: SidebarProp
       </nav>
 
       <div className='mt-auto border-t border-zinc-200 pt-4 dark:border-zinc-800'>
-        <Link
-          href='/profile'
-          onClick={onClose}
-          className='mb-3 block truncate rounded-lg px-3 py-2 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-950 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100'
-        >
-          {fullName}
-        </Link>
         <form action={logoutAction}>
           <button
             type='button'
