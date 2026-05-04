@@ -94,7 +94,7 @@ export default function ProjectDetailClient({
   const transitions = STATUS_TRANSITIONS[currentStatus] || []
 
   return (
-    <header className='rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm'>
+    <header className='rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
       <div className='flex flex-col md:flex-row md:items-start justify-between gap-4'>
         <div className='flex-1'>
           {isEditing ? (
@@ -102,20 +102,22 @@ export default function ProjectDetailClient({
               <input
                 name='name'
                 defaultValue={project.name}
-                className='block w-full text-2xl md:text-3xl font-semibold tracking-tight border-b border-zinc-300 focus:outline-none focus:border-zinc-900'
+                className='block w-full text-2xl md:text-3xl font-semibold tracking-tight border-b border-zinc-300 bg-transparent text-zinc-900 focus:outline-none focus:border-zinc-900 dark:border-zinc-700 dark:text-zinc-100 dark:focus:border-zinc-500'
               />
               <textarea
                 name='description'
                 defaultValue={project.description}
-                className='mt-2 block w-full text-sm text-zinc-600 border border-zinc-200 rounded-md p-2 focus:outline-none focus:border-zinc-900'
+                className='mt-2 block w-full text-sm text-zinc-600 border border-zinc-200 rounded-md p-2 focus:outline-none focus:border-zinc-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-400 dark:focus:border-zinc-700'
                 rows={3}
               />
               <div>
-                <label className='block text-xs font-medium text-zinc-500 uppercase mb-1'>Manager</label>
+                <label className='block text-xs font-medium text-zinc-500 uppercase mb-1 dark:text-zinc-400'>
+                  Manager
+                </label>
                 <select
                   name='manager_id'
                   defaultValue={project.manager_id}
-                  className='block w-full text-sm border border-zinc-200 rounded-md p-2 focus:outline-none focus:border-zinc-900 bg-white'
+                  className='block w-full text-sm border border-zinc-200 rounded-md p-2 focus:outline-none focus:border-zinc-900 bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-zinc-700'
                 >
                   {availableManagers.map((m) => (
                     <option key={m.id} value={m.id}>
@@ -128,14 +130,14 @@ export default function ProjectDetailClient({
               <div className='flex gap-2'>
                 <button
                   type='submit'
-                  className='rounded-md bg-zinc-900 px-3 py-1 text-xs font-medium text-white'
+                  className='rounded-md bg-zinc-900 px-3 py-1 text-xs font-medium text-white dark:bg-zinc-100 dark:text-zinc-900'
                 >
                   Save
                 </button>
                 <button
                   type='button'
                   onClick={() => setIsEditing(false)}
-                  className='rounded-md border border-zinc-200 px-3 py-1 text-xs font-medium'
+                  className='rounded-md border border-zinc-200 px-3 py-1 text-xs font-medium dark:border-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100'
                 >
                   Cancel
                 </button>
@@ -143,8 +145,10 @@ export default function ProjectDetailClient({
             </form>
           ) : (
             <>
-              <h1 className='text-2xl md:text-3xl font-semibold tracking-tight'>{project.name}</h1>
-              <p className='mt-2 text-sm text-zinc-600'>{project.description}</p>
+              <h1 className='text-2xl md:text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100'>
+                {project.name}
+              </h1>
+              <p className='mt-2 text-sm text-zinc-600 dark:text-zinc-400'>{project.description}</p>
             </>
           )}
         </div>
@@ -153,14 +157,14 @@ export default function ProjectDetailClient({
             className={cn(
               'inline-flex rounded-full px-3 py-1 text-sm font-medium border',
               currentStatus === 'active' || currentStatus === 'doing'
-                ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
+                ? 'bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-900'
                 : currentStatus === 'completed' || currentStatus === 'done'
-                ? 'bg-blue-50 text-blue-700 border-blue-100'
+                ? 'bg-blue-50 text-blue-700 border-blue-100 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-900'
                 : currentStatus === 'on_hold'
-                ? 'bg-amber-50 text-amber-700 border-amber-100'
+                ? 'bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-900'
                 : currentStatus === 'archived'
-                ? 'bg-red-50 text-red-700 border-red-100'
-                : 'bg-zinc-100 text-zinc-700 border-zinc-200'
+                ? 'bg-red-50 text-red-700 border-red-100 dark:bg-red-950/30 dark:text-red-400 dark:border-red-900'
+                : 'bg-zinc-100 text-zinc-700 border-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:border-zinc-700'
             )}
           >
             {STATUS_LABELS[currentStatus] || project.status}
@@ -177,8 +181,8 @@ export default function ProjectDetailClient({
                     className={cn(
                       'flex items-center gap-1 rounded-md border px-3 py-1 text-sm font-medium transition-colors disabled:opacity-50',
                       status === 'archived'
-                        ? 'border-red-200 bg-white text-red-600 hover:bg-red-50'
-                        : 'border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-50'
+                        ? 'border-red-200 bg-white text-red-600 hover:bg-red-50 dark:border-red-900 dark:bg-zinc-900 dark:text-red-400 dark:hover:bg-red-950/30'
+                        : 'border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100'
                     )}
                   >
                     {STATUS_ICONS[status]}
@@ -189,7 +193,7 @@ export default function ProjectDetailClient({
               {isAdmin && (
                 <button
                   onClick={() => setIsEditing(true)}
-                  className='flex items-center gap-1 rounded-md border border-zinc-200 bg-white px-3 py-1 text-sm font-medium hover:bg-zinc-50'
+                  className='flex items-center gap-1 rounded-md border border-zinc-200 bg-white px-3 py-1 text-sm font-medium hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100'
                 >
                   <Edit className='h-4 w-4' /> Edit
                 </button>

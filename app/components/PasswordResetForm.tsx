@@ -12,7 +12,7 @@ function SubmitButton() {
     <button
       type='submit'
       disabled={pending}
-      className='rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-60'
+      className='rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-60 dark:bg-zinc-100 dark:text-zinc-900'
     >
       {pending ? 'Resetting...' : 'Reset Password'}
     </button>
@@ -44,41 +44,46 @@ export default function PasswordResetForm({
   }, [state.success, onSuccess])
 
   return (
-    <form action={formAction} className='grid gap-4 rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm'>
+    <form
+      action={formAction}
+      className='grid gap-4 rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'
+    >
       <div className='flex items-center gap-2'>
-        <KeyRound className='h-5 w-5 text-zinc-900' />
-        <h2 className='text-lg font-semibold tracking-tight'>Reset Password for {username}</h2>
+        <KeyRound className='h-5 w-5 text-zinc-900 dark:text-zinc-100' />
+        <h2 className='text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100'>
+          Reset Password for {username}
+        </h2>
       </div>
 
       <div className='grid gap-4 md:grid-cols-3'>
-        <label className='space-y-1 text-sm text-zinc-600'>
+        <label className='space-y-1 text-sm text-zinc-600 dark:text-zinc-400'>
           Old Password
           <input
             name='old_password'
             type='password'
-            className='w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm outline-none focus:border-zinc-900'
+            className='w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-zinc-700'
             placeholder='••••••••'
           />
         </label>
 
-        <label className='space-y-1 text-sm text-zinc-600'>
+        <label className='space-y-1 text-sm text-zinc-600 dark:text-zinc-400'>
           New Password
           <input
             name='new_password'
             type='password'
             required
-            className='w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm outline-none focus:border-zinc-900'
+            className='w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-zinc-700'
             placeholder='••••••••'
           />
         </label>
 
-        <label className='space-y-1 text-sm text-zinc-600'>
+        <label className='space-y-1 text-sm text-zinc-600 dark:text-zinc-400'>
           Confirm New Password
           <input
             name='confirm_password'
             type='password'
             required
-            className='w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm outline-none focus:border-zinc-900'
+            className='w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-zinc-700'
             placeholder='••••••••'
           />
         </label>
@@ -88,7 +93,7 @@ export default function PasswordResetForm({
         <button
           type='button'
           onClick={onCancel}
-          className='text-sm font-medium text-zinc-600 hover:text-zinc-900'
+          className='text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100'
         >
           Cancel
         </button>

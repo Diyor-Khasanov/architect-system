@@ -5,33 +5,8 @@
 ▲ Next.js 16.2.4 (Turbopack)
 - Local:         http://localhost:3000
 - Network:       http://192.168.0.2:3000
-✓ Ready in 617ms
+✓ Ready in 535ms
 
-○ Compiling /login ...
- GET /login 200 in 5.7s (next.js: 5.2s, application-code: 489ms)
- GET /login 200 in 154ms (next.js: 7ms, application-code: 146ms)
- POST /login 200 in 749ms (next.js: 4ms, application-code: 745ms)
-  └─ ƒ loginAction({}) in 538ms actions/login.ts
- GET /dashboard 200 in 1077ms (next.js: 865ms, application-code: 212ms)
- GET /dashboard 200 in 329ms (next.js: 4ms, application-code: 324ms)
- GET /projects 200 in 1244ms (next.js: 923ms, application-code: 321ms)
- GET /projects 200 in 318ms (next.js: 3ms, application-code: 315ms)
- GET /login 200 in 82ms (next.js: 4ms, application-code: 78ms)
- POST /login 200 in 760ms (next.js: 5ms, application-code: 755ms)
-  └─ ƒ loginAction({}) in 521ms actions/login.ts
- GET /dashboard 200 in 322ms (next.js: 4ms, application-code: 318ms)
- GET /dashboard 200 in 375ms (next.js: 14ms, application-code: 361ms)
- GET /projects 200 in 321ms (next.js: 5ms, application-code: 317ms)
- GET /projects 200 in 312ms (next.js: 3ms, application-code: 309ms)
- GET /login 200 in 87ms (next.js: 3ms, application-code: 83ms)
- POST /login 200 in 806ms (next.js: 5ms, application-code: 801ms)
-  └─ ƒ loginAction({}) in 525ms actions/login.ts
- GET /dashboard 200 in 400ms (next.js: 4ms, application-code: 396ms)
- GET /dashboard 200 in 399ms (next.js: 5ms, application-code: 394ms)
- GET /projects 200 in 340ms (next.js: 4ms, application-code: 336ms)
- GET /login 200 in 106ms (next.js: 5ms, application-code: 102ms)
- POST /login 200 in 730ms (next.js: 4ms, application-code: 726ms)
-  └─ ƒ loginAction({}) in 514ms actions/login.ts
- GET /dashboard 200 in 313ms (next.js: 5ms, application-code: 308ms)
- GET /dashboard 200 in 348ms (next.js: 6ms, application-code: 342ms)
- GET /projects 200 in 327ms (next.js: 8ms, application-code: 318ms)
+ GET /login 200 in 1099ms (next.js: 493ms, application-code: 606ms)
+✓ Compiled in 513ms
+ GET /login 200 in 123ms (next.js: 10ms, application-code: 113ms)

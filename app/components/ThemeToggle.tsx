@@ -24,12 +24,12 @@ export function ThemeToggle() {
   }
 
   return (
-    <div className='flex items-center gap-1 rounded-lg bg-zinc-100 p-1 dark:bg-zinc-800'>
+    <div className='flex items-center gap-1 rounded-full border border-zinc-200 bg-zinc-50/50 p-1 dark:border-zinc-800 dark:bg-zinc-900/50'>
       <button
         onClick={() => setTheme('light')}
-        className={`rounded-md p-1.5 transition-colors ${
+        className={`flex h-8 w-8 items-center justify-center rounded-full transition-all duration-200 ${
           theme === 'light'
-            ? 'bg-white text-zinc-900 shadow-sm dark:bg-zinc-700 dark:text-zinc-100'
+            ? 'bg-white text-zinc-900 shadow-sm ring-1 ring-zinc-200 dark:bg-zinc-800 dark:text-zinc-100 dark:ring-zinc-700'
             : 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100'
         }`}
         title='Light mode'
@@ -38,9 +38,9 @@ export function ThemeToggle() {
       </button>
       <button
         onClick={() => setTheme('dark')}
-        className={`rounded-md p-1.5 transition-colors ${
+        className={`flex h-8 w-8 items-center justify-center rounded-full transition-all duration-200 ${
           theme === 'dark'
-            ? 'bg-white text-zinc-900 shadow-sm dark:bg-zinc-700 dark:text-zinc-100'
+            ? 'bg-white text-zinc-900 shadow-sm ring-1 ring-zinc-200 dark:bg-zinc-800 dark:text-zinc-100 dark:ring-zinc-700'
             : 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100'
         }`}
         title='Dark mode'
@@ -49,9 +49,9 @@ export function ThemeToggle() {
       </button>
       <button
         onClick={() => setTheme('system')}
-        className={`rounded-md p-1.5 transition-colors ${
+        className={`flex h-8 w-8 items-center justify-center rounded-full transition-all duration-200 ${
           theme === 'system'
-            ? 'bg-white text-zinc-900 shadow-sm dark:bg-zinc-700 dark:text-zinc-100'
+            ? 'bg-white text-zinc-900 shadow-sm ring-1 ring-zinc-200 dark:bg-zinc-800 dark:text-zinc-100 dark:ring-zinc-700'
             : 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100'
         }`}
         title='System settings'

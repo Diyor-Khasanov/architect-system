@@ -12,7 +12,7 @@ function UploadButton() {
     <button
       type='submit'
       disabled={pending}
-      className='flex items-center gap-2 rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-60'
+      className='flex items-center gap-2 rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-60 dark:bg-zinc-100 dark:text-zinc-900'
     >
       {pending ? (
         <>
@@ -41,9 +41,12 @@ export default function AvatarUploadForm({ onUploadSuccess }: { onUploadSuccess?
   }, [state.success, state.data, onUploadSuccess])
 
   return (
-    <form action={formAction} className='space-y-4 rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm'>
-      <h3 className='text-lg font-semibold tracking-tight'>Update Avatar</h3>
-      <p className='text-sm text-zinc-500'>Choose a file to upload as your profile picture.</p>
+    <form
+      action={formAction}
+      className='space-y-4 rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'
+    >
+      <h3 className='text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100'>Update Avatar</h3>
+      <p className='text-sm text-zinc-500 dark:text-zinc-400'>Choose a file to upload as your profile picture.</p>
 
       <div className='flex flex-col gap-4 sm:flex-row sm:items-center'>
         <input
@@ -51,7 +54,7 @@ export default function AvatarUploadForm({ onUploadSuccess }: { onUploadSuccess?
           type='file'
           accept='image/*'
           required
-          className='flex-1 rounded-lg border border-zinc-200 px-3 py-1.5 text-sm file:mr-4 file:rounded-md file:border-0 file:bg-zinc-100 file:px-3 file:py-1 file:text-sm file:font-medium hover:file:bg-zinc-200'
+          className='flex-1 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-sm text-zinc-900 file:mr-4 file:rounded-md file:border-0 file:bg-zinc-100 file:px-3 file:py-1 file:text-sm file:font-medium hover:file:bg-zinc-200 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:file:bg-zinc-800 dark:file:text-zinc-100 dark:hover:file:bg-zinc-700'
         />
         <UploadButton />
       </div>

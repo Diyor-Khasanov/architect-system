@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { LayoutDashboard, FolderKanban, Users, BarChart3, Wrench, LogOut, Command, X } from 'lucide-react'
 import { logoutAction } from '../actions/login'
-import { ThemeToggle } from './ThemeToggle'
 import type { UserRole } from '../lib/auth'
 import { cn } from '../lib/utils'
 import { useToast } from '../context/ToastContext'
@@ -95,10 +94,6 @@ export default function Sidebar({ role, fullName, isOpen, onClose }: SidebarProp
       </nav>
 
       <div className='mt-auto border-t border-zinc-200 pt-4 dark:border-zinc-800'>
-        <div className='mb-4 px-2'>
-          <p className='mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400'>Appearance</p>
-          <ThemeToggle />
-        </div>
         <Link
           href='/profile'
           onClick={onClose}
