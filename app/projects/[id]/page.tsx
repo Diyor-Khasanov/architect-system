@@ -43,7 +43,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
   if (!project) {
     return (
       <AppShell currentUser={currentUser}>
-        <div className='rounded-2xl border border-red-200 bg-red-50 p-6 text-red-700'>
+        <div className='rounded-2xl border border-red-200 bg-red-50 p-6 text-red-700 dark:border-red-900 dark:bg-red-950/30 dark:text-red-400'>
           <h2 className='text-lg font-semibold'>Error</h2>
           <p className='mt-2'>Failed to load project details. It might not exist or you don&apos;t have permission.</p>
         </div>
@@ -63,11 +63,11 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
 
         <div className='grid gap-6 lg:grid-cols-3'>
           <article className='lg:col-span-2 space-y-6'>
-            <div className='rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm'>
-              <h2 className='text-lg font-semibold tracking-tight'>Team Members</h2>
+            <div className='rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
+              <h2 className='text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100'>Team Members</h2>
               <div className='mt-4 overflow-x-auto'>
                 <table className='w-full text-left text-sm'>
-                  <thead className='border-b border-zinc-200 text-xs uppercase tracking-wide text-zinc-500'>
+                  <thead className='border-b border-zinc-200 text-xs uppercase tracking-wide text-zinc-500 dark:border-zinc-800 dark:text-zinc-400'>
                     <tr>
                       <th className='px-2 py-3'>Name</th>
                       <th className='px-2 py-3'>Role</th>
@@ -76,14 +76,14 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                   <tbody>
                     {project.members && project.members.length > 0 ? (
                       project.members.map((member) => (
-                        <tr key={member.user_id} className='border-b border-zinc-100'>
-                          <td className='px-2 py-3 font-medium text-zinc-900'>{member.full_name}</td>
-                          <td className='px-2 py-3 text-zinc-600 capitalize'>{member.role}</td>
+                        <tr key={member.user_id} className='border-b border-zinc-100 dark:border-zinc-800'>
+                          <td className='px-2 py-3 font-medium text-zinc-900 dark:text-zinc-100'>{member.full_name}</td>
+                          <td className='px-2 py-3 text-zinc-600 capitalize dark:text-zinc-400'>{member.role}</td>
                         </tr>
                       ))
                     ) : (
                       <tr>
-                        <td colSpan={2} className='px-2 py-4 text-center text-zinc-500'>
+                        <td colSpan={2} className='px-2 py-4 text-center text-zinc-500 dark:text-zinc-400'>
                           No members assigned to this project yet.
                         </td>
                       </tr>
@@ -95,20 +95,20 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
           </article>
 
           <aside className='space-y-6'>
-            <div className='rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm'>
-              <h2 className='text-lg font-semibold tracking-tight'>Details</h2>
+            <div className='rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
+              <h2 className='text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100'>Details</h2>
               <dl className='mt-4 space-y-4 text-sm'>
                 <div>
-                  <dt className='text-zinc-500'>Project ID</dt>
-                  <dd className='font-medium text-zinc-900'>{project.id}</dd>
+                  <dt className='text-zinc-500 dark:text-zinc-400'>Project ID</dt>
+                  <dd className='font-medium text-zinc-900 dark:text-zinc-100'>{project.id}</dd>
                 </div>
                 <div>
-                  <dt className='text-zinc-500'>Manager ID</dt>
-                  <dd className='font-medium text-zinc-900'>{project.manager_id}</dd>
+                  <dt className='text-zinc-500 dark:text-zinc-400'>Manager ID</dt>
+                  <dd className='font-medium text-zinc-900 dark:text-zinc-100'>{project.manager_id}</dd>
                 </div>
                 <div>
-                  <dt className='text-zinc-500'>Deadline</dt>
-                  <dd className='font-medium text-zinc-900'>
+                  <dt className='text-zinc-500 dark:text-zinc-400'>Deadline</dt>
+                  <dd className='font-medium text-zinc-900 dark:text-zinc-100'>
                     {new Date(project.deadline).toLocaleDateString(undefined, {
                       year: 'numeric',
                       month: 'long',
@@ -117,8 +117,8 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                   </dd>
                 </div>
                 <div>
-                  <dt className='text-zinc-500'>Created At</dt>
-                  <dd className='font-medium text-zinc-900'>
+                  <dt className='text-zinc-500 dark:text-zinc-400'>Created At</dt>
+                  <dd className='font-medium text-zinc-900 dark:text-zinc-100'>
                     {new Date(project.created_at).toLocaleDateString(undefined, {
                       year: 'numeric',
                       month: 'long',
