@@ -1,6 +1,27 @@
 import { fetchCurrentUser, type UserRole } from '../lib/auth'
 import { fetchDashboardData } from '../lib/dashboard'
 
+const roleContent: Record<
+  UserRole,
+  {
+    headline: string
+    description: string
+  }
+> = {
+  admin: {
+    headline: 'Platform Control Center',
+    description: 'Manage users, monitor activity, and keep operations healthy across all projects.',
+  },
+  manager: {
+    headline: 'Project Delivery Dashboard',
+    description: 'Track project status and assign priorities efficiently.',
+  },
+  worker: {
+    headline: 'My Work Dashboard',
+    description: 'Focus on assigned tasks, upcoming deadlines, and progress on your deliverables.',
+  },
+}
+
 function formatStats(role: UserRole, data: Record<string, number> | null) {
   if (!data) return []
 
@@ -48,6 +69,7 @@ export default async function DashboardPage() {
   }
 
   const dashboardData = await fetchDashboardData(currentUser.role)
+  const activeRoleContent = roleContent[currentUser.role]
   const stats = formatStats(currentUser.role, dashboardData)
 
   return (
@@ -70,6 +92,14 @@ export default async function DashboardPage() {
           </article>
         ))}
       </div>
+
+      <article className='rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
+        <h2 className='text-lg font-semibold text-zinc-900 dark:text-zinc-100'>{activeRoleContent.headline}</h2>
+        <p className='mt-2 text-sm text-zinc-600 dark:text-zinc-400'>
+          This view is automatically tailored using <code className='text-zinc-900 dark:text-zinc-100'>role = {currentUser.role}</code> from{' '}
+          <code className='text-zinc-900 dark:text-zinc-100'>/api/v1/auth/me</code>.
+        </p>
+      </article>
     </section>
   )
 }
