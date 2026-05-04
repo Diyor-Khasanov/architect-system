@@ -79,14 +79,6 @@ export async function updateProjectAction(
     if (payload.status === 'done') payload.status = 'completed'
   }
 
-  // Validate status if provided
-  const validStatuses = ['draft', 'assigned', 'active', 'completed', 'archived', 'on_hold']
-  if (payload.status && !validStatuses.includes(String(payload.status))) {
-    // Some existing data might use 'doing' or 'done', we should allow them for compatibility or map them
-    if (payload.status === 'doing') payload.status = 'active'
-    if (payload.status === 'done') payload.status = 'completed'
-  }
-
   try {
     if (Object.keys(payload).length === 1 && payload.status) {
       await updateProjectStatus(id, String(payload.status))
