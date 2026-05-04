@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import { ToastProvider } from './context/ToastContext'
+import { ThemeProvider } from './components/ThemeProvider'
 
 const geistSans = Geist({
   subsets: ['latin'],
@@ -24,9 +25,11 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang='en' className={`h-full antialiased ${geistSans.variable} ${geistMono.variable}`}>
+    <html lang='en' className={`h-full antialiased ${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
       <body className='min-h-full font-sans'>
-        <ToastProvider>{children}</ToastProvider>
+        <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
+          <ToastProvider>{children}</ToastProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

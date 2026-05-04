@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { LayoutDashboard, FolderKanban, Users, BarChart3, Wrench, LogOut, Command, X } from 'lucide-react'
 import { logoutAction } from '../actions/login'
+import { ThemeToggle } from './ThemeToggle'
 import type { UserRole } from '../lib/auth'
 import { cn } from '../lib/utils'
 import { useToast } from '../context/ToastContext'
@@ -54,17 +55,17 @@ export default function Sidebar({ role, fullName, isOpen, onClose }: SidebarProp
   const { confirm } = useToast()
 
   const SidebarContent = (
-    <div className='flex h-full flex-col p-6'>
+    <div className='flex h-full flex-col p-6 dark:bg-zinc-900'>
       <div className='mb-8 flex items-center justify-between px-2'>
         <div className='flex items-center gap-2'>
-          <Command className='h-6 w-6' />
+          <Command className='h-6 w-6 text-zinc-900 dark:text-zinc-100' />
           <div>
-            <span className='block text-lg font-semibold tracking-tight'>Architect</span>
-            <span className='text-xs uppercase tracking-[0.2em] text-zinc-500'>{role}</span>
+            <span className='block text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100'>Architect</span>
+            <span className='text-xs uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-400'>{role}</span>
           </div>
         </div>
         {onClose && (
-          <button onClick={onClose} className='lg:hidden'>
+          <button onClick={onClose} className='lg:hidden text-zinc-500 dark:text-zinc-400'>
             <X className='h-6 w-6' />
           </button>
         )}
@@ -81,7 +82,9 @@ export default function Sidebar({ role, fullName, isOpen, onClose }: SidebarProp
               onClick={onClose}
               className={cn(
                 'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
-                isActive ? 'bg-zinc-900 text-white' : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950'
+                isActive
+                  ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
+                  : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100'
               )}
             >
               <item.icon className='h-4 w-4' />
@@ -91,11 +94,15 @@ export default function Sidebar({ role, fullName, isOpen, onClose }: SidebarProp
         })}
       </nav>
 
-      <div className='mt-auto border-t border-zinc-200 pt-4'>
+      <div className='mt-auto border-t border-zinc-200 pt-4 dark:border-zinc-800'>
+        <div className='mb-4 px-2'>
+          <p className='mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400'>Appearance</p>
+          <ThemeToggle />
+        </div>
         <Link
           href='/profile'
           onClick={onClose}
-          className='mb-3 block truncate rounded-lg px-3 py-2 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-950'
+          className='mb-3 block truncate rounded-lg px-3 py-2 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-950 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100'
         >
           {fullName}
         </Link>
@@ -110,7 +117,7 @@ export default function Sidebar({ role, fullName, isOpen, onClose }: SidebarProp
                 form.requestSubmit()
               }
             }}
-            className='flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50'
+            className='flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/30'
           >
             <LogOut className='h-4 w-4' />
             Logout
@@ -123,7 +130,7 @@ export default function Sidebar({ role, fullName, isOpen, onClose }: SidebarProp
   return (
     <>
       {/* Desktop Sidebar */}
-      <aside className='fixed inset-y-0 left-0 hidden w-72 border-r border-zinc-200 bg-white lg:block'>
+      <aside className='fixed inset-y-0 left-0 hidden w-72 border-r border-zinc-200 bg-white lg:block dark:border-zinc-800 dark:bg-zinc-900'>
         {SidebarContent}
       </aside>
 
@@ -137,7 +144,7 @@ export default function Sidebar({ role, fullName, isOpen, onClose }: SidebarProp
       />
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-50 w-72 bg-white transition-transform duration-300 ease-in-out lg:hidden',
+          'fixed inset-y-0 left-0 z-50 w-72 bg-white transition-transform duration-300 ease-in-out lg:hidden dark:bg-zinc-900',
           isOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >

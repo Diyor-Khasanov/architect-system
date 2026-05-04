@@ -14,7 +14,7 @@ export default function AppShell({ currentUser, children }: AppShellProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   return (
-    <div className='min-h-screen bg-zinc-50 text-zinc-900'>
+    <div className='min-h-screen bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50'>
       <Sidebar
         role={currentUser.role}
         fullName={currentUser.profile?.full_name ?? currentUser.username}
@@ -23,8 +23,8 @@ export default function AppShell({ currentUser, children }: AppShellProps) {
       />
 
       <main className='flex-1 lg:pl-72'>
-        <div className='flex h-16 items-center border-b border-zinc-200 bg-white px-4 lg:hidden'>
-          <button onClick={() => setIsSidebarOpen(true)} className='p-2'>
+        <div className='flex h-16 items-center border-b border-zinc-200 bg-white px-4 lg:hidden dark:border-zinc-800 dark:bg-zinc-900'>
+          <button onClick={() => setIsSidebarOpen(true)} className='p-2 text-zinc-600 dark:text-zinc-400'>
             <Menu className='h-6 w-6' />
           </button>
           <span className='ml-4 text-lg font-semibold'>Architect</span>
