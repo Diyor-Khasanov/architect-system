@@ -32,7 +32,7 @@ const roleMenu: Record<UserRole, MenuItem[]> = {
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Projects', href: '/projects', icon: FolderKanban },
     { name: 'Team', href: '/users', icon: Users },
-    { name: 'Reports', href: '/dashboard/reports', icon: BarChart3 },
+    { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
   ],
   worker: [
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
