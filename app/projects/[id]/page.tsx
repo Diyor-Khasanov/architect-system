@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import AppShell from '../../components/AppShell'
 import { fetchCurrentUser } from '../../lib/auth'
-import { fetchProject, fetchProjectMembers, fetchProjectProgress, type Project, type ProjectMember } from '../../lib/projects'
+import { fetchProject, fetchProjectMembers, type Project, type ProjectMember } from '../../lib/projects'
 import { fetchUsers, type User } from '../../lib/users'
 import ProjectDetailClient from './ProjectDetailClient'
 import ProjectMembersClient from './ProjectMembersClient'
@@ -26,14 +26,12 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
   let members: ProjectMember[] = []
   let managers: { id: number; username: string; full_name: string }[] = []
   let availableWorkers: User[] = []
-  let progress: number | null = null
 
   try {
     project = await fetchProject(id)
     members = await fetchProjectMembers(id)
 
     if (['admin', 'manager'].includes(currentUser.role)) {
-      progress = await fetchProjectProgress(id)
       const allUsers = await fetchUsers()
       managers = allUsers
         .filter((u) => u.role === 'manager')

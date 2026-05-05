@@ -86,7 +86,7 @@ export default function ProjectMembersClient({
         <table className='w-full text-left text-sm'>
           <thead className='border-b border-zinc-200 text-xs uppercase tracking-wide text-zinc-500 dark:border-zinc-800 dark:text-zinc-400'>
             <tr>
-              <th className='px-2 py-3'>Name</th>
+              <th className='px-2 py-3'>Worker Id</th>
               <th className='px-2 py-3'>Role</th>
               {canManage && <th className='px-2 py-3 text-right'>Actions</th>}
             </tr>
@@ -96,7 +96,7 @@ export default function ProjectMembersClient({
               members.map((member) => (
                 <tr key={member.user_id} className='group hover:bg-zinc-50/50 dark:hover:bg-zinc-800/50'>
                   <td className='px-2 py-3 font-medium text-zinc-900 dark:text-zinc-100'>
-                    {member.full_name}
+                    #{member.user_id}
                   </td>
                   <td className='px-2 py-3 text-zinc-600 capitalize dark:text-zinc-400'>
                     {member.role}
