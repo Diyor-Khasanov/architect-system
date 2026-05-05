@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import AppShell from '../../components/AppShell'
 import { fetchCurrentUser } from '../../lib/auth'
-import { fetchUserById } from '../../lib/users'
+import { fetchUserById, fetchUserProjects, fetchUserReports, fetchUserTasks } from '../../lib/users'
 import UserDetailClient from './UserDetailClient'
 
 interface UserProfilePageProps {
@@ -43,9 +43,37 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
     )
   }
 
+  // Managers can only see data for workers
+  const hasAccessToData = currentUser.role === 'admin' || (currentUser.role === 'manager' && user.role === 'worker')
+
+  let projects = []
+  let tasks = []
+  let reports = null
+
+  if (hasAccessToData) {
+    try {
+      const [projectsRes, tasksRes, reportsRes] = await Promise.all([
+        fetchUserProjects(user.id),
+        fetchUserTasks(user.id),
+        fetchUserReports(user.id),
+      ])
+      projects = projectsRes
+      tasks = tasksRes
+      reports = reportsRes
+    } catch (error) {
+      console.error('Failed to fetch additional user data:', error)
+    }
+  }
+
   return (
     <AppShell currentUser={currentUser}>
-      <UserDetailClient user={user} currentUserRole={currentUser.role} />
+      <UserDetailClient
+        user={user}
+        currentUserRole={currentUser.role}
+        projects={projects}
+        tasks={tasks}
+        reports={reports}
+      />
     </AppShell>
   )
 }
