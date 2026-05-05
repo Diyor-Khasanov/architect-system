@@ -123,6 +123,28 @@ export async function createProject(payload: CreateProjectPayload) {
   return (await response.json()) as Project
 }
 
+export async function acceptProject(id: string | number) {
+  const authorization = await getAuthHeaderFromCookies()
+
+  if (!authorization) {
+    throw new Error('Unauthorized')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/projects/${id}/accept`, {
+    method: 'POST',
+    headers: {
+      Authorization: authorization,
+    },
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to accept project')
+  }
+
+  return (await response.json()) as Project
+}
+
 export async function assignProjectManager(id: string | number, managerId: number) {
   const authorization = await getAuthHeaderFromCookies()
 

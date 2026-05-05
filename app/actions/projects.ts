@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { fetchCurrentUser } from '../lib/auth'
-import { createProject, updateProject, deleteProject, updateProjectStatus, assignProjectManager } from '../lib/projects'
+import { createProject, updateProject, deleteProject, updateProjectStatus, assignProjectManager, acceptProject } from '../lib/projects'
 
 interface ActionState {
   success?: boolean
@@ -92,6 +92,26 @@ export async function updateProjectAction(
     return { success: true }
   } catch {
     return { error: 'Could not update project.' }
+  }
+}
+
+export async function acceptProjectAction(
+  id: string,
+  _: ActionState
+): Promise<ActionState> {
+  const currentUser = await fetchCurrentUser()
+
+  if (!currentUser || currentUser.role !== 'manager') {
+    return { error: 'Only managers can accept projects.' }
+  }
+
+  try {
+    await acceptProject(id)
+    revalidatePath(`/projects/${id}`)
+    revalidatePath('/projects')
+    return { success: true }
+  } catch {
+    return { error: 'Could not accept project.' }
   }
 }
 
