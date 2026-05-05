@@ -48,6 +48,7 @@ interface ProjectDetailClientProps {
   currentUser: MeResponse
   id: string
   availableManagers: { id: number; username: string; full_name: string }[]
+  progress?: number | null
 }
 
 export default function ProjectDetailClient({
@@ -55,6 +56,7 @@ export default function ProjectDetailClient({
   currentUser,
   id,
   availableManagers,
+  progress,
 }: ProjectDetailClientProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [isPending, startTransition] = useTransition()
@@ -160,9 +162,25 @@ export default function ProjectDetailClient({
             </form>
           ) : (
             <>
-              <h1 className='text-2xl md:text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100'>
-                {project.name}
-              </h1>
+              <div className="flex items-center gap-4">
+                <h1 className='text-2xl md:text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100'>
+                  {project.name}
+                </h1>
+                {progress !== null && progress !== undefined && (
+                  <div className="flex flex-col">
+                    <span className="text-xs font-medium text-zinc-500 uppercase dark:text-zinc-400">Progress</span>
+                    <div className="flex items-center gap-2">
+                      <div className="h-2 w-24 rounded-full bg-zinc-100 dark:bg-zinc-800 overflow-hidden">
+                        <div
+                          className="h-full bg-emerald-500 transition-all duration-500"
+                          style={{ width: `${progress}%` }}
+                        />
+                      </div>
+                      <span className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">{progress}%</span>
+                    </div>
+                  </div>
+                )}
+              </div>
               <p className='mt-2 text-sm text-zinc-600 dark:text-zinc-400'>{project.description}</p>
             </>
           )}

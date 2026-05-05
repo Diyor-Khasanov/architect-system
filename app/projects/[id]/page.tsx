@@ -1,9 +1,10 @@
 import { redirect } from 'next/navigation'
 import AppShell from '../../components/AppShell'
 import { fetchCurrentUser } from '../../lib/auth'
-import { fetchProject, fetchProjectMembers, type Project, type ProjectMember } from '../../lib/projects'
-import { fetchUsers } from '../../lib/users'
+import { fetchProject, fetchProjectMembers, fetchProjectProgress, type Project, type ProjectMember } from '../../lib/projects'
+import { fetchUsers, type User } from '../../lib/users'
 import ProjectDetailClient from './ProjectDetailClient'
+import ProjectMembersClient from './ProjectMembersClient'
 
 interface ProjectPageProps {
   params: Promise<{ id: string }>
@@ -24,10 +25,15 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
   let project: Project | null = null
   let members: ProjectMember[] = []
   let managers: { id: number; username: string; full_name: string }[] = []
+  let availableWorkers: User[] = []
+  let progress: number | null = null
+
   try {
     project = await fetchProject(id)
     members = await fetchProjectMembers(id)
-    if (currentUser.role === 'admin') {
+
+    if (['admin', 'manager'].includes(currentUser.role)) {
+      progress = await fetchProjectProgress(id)
       const allUsers = await fetchUsers()
       managers = allUsers
         .filter((u) => u.role === 'manager')
@@ -36,6 +42,8 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
           username: u.username,
           full_name: u.profile?.full_name || u.username,
         }))
+
+      availableWorkers = allUsers.filter((u) => u.role === 'worker')
     }
   } catch {
     // Error handled by null check below
@@ -61,39 +69,17 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
           currentUser={currentUser}
           id={id}
           availableManagers={managers}
+          progress={progress}
         />
 
         <div className='grid gap-6 lg:grid-cols-3'>
           <article className='lg:col-span-2 space-y-6'>
-            <div className='rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
-              <h2 className='text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100'>Team Members</h2>
-              <div className='mt-4 overflow-x-auto'>
-                <table className='w-full text-left text-sm'>
-                  <thead className='border-b border-zinc-200 text-xs uppercase tracking-wide text-zinc-500 dark:border-zinc-800 dark:text-zinc-400'>
-                    <tr>
-                      <th className='px-2 py-3'>Name</th>
-                      <th className='px-2 py-3'>Role</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {members && members.length > 0 ? (
-                      members.map((member) => (
-                        <tr key={member.user_id} className='border-b border-zinc-100 dark:border-zinc-800'>
-                          <td className='px-2 py-3 font-medium text-zinc-900 dark:text-zinc-100'>{member.full_name}</td>
-                          <td className='px-2 py-3 text-zinc-600 capitalize dark:text-zinc-400'>{member.role}</td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan={2} className='px-2 py-4 text-center text-zinc-500 dark:text-zinc-400'>
-                          No members assigned to this project yet.
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+            <ProjectMembersClient
+              projectId={id}
+              members={members}
+              availableWorkers={availableWorkers}
+              canManage={['admin', 'manager'].includes(currentUser.role)}
+            />
           </article>
 
           <aside className='space-y-6'>

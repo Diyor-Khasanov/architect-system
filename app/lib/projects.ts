@@ -145,7 +145,7 @@ export async function acceptProject(id: string | number) {
   return (await response.json()) as Project
 }
 
-export async function fetchProjectMembers(id: string | number) {
+export async function fetchProjectMembers(id: string | number): Promise<ProjectMember[]> {
   const authorization = await getAuthHeaderFromCookies()
 
   if (!authorization) {
@@ -164,16 +164,66 @@ export async function fetchProjectMembers(id: string | number) {
     throw new Error('Failed to fetch project members')
   }
 
-  const payload = (await response.json()) as unknown
-  if (Array.isArray(payload)) return payload as ProjectMember[]
-  if (payload && typeof payload === 'object') {
-    const candidate = payload as { items?: ProjectMember[]; data?: ProjectMember[]; results?: ProjectMember[]; members?: ProjectMember[] }
-    if (Array.isArray(candidate.items)) return candidate.items
-    if (Array.isArray(candidate.data)) return candidate.data
-    if (Array.isArray(candidate.results)) return candidate.results
-    if (Array.isArray(candidate.members)) return candidate.members
+  const payload = await response.json()
+
+  if (Array.isArray(payload)) {
+    return payload as ProjectMember[]
   }
+
+  if (payload && typeof payload === 'object') {
+    const data = (payload as any).items || (payload as any).data || (payload as any).results || (payload as any).members
+    if (Array.isArray(data)) {
+      return data as ProjectMember[]
+    }
+  }
+
   return []
+}
+
+export async function addProjectMember(projectId: string | number, userId: number) {
+  const authorization = await getAuthHeaderFromCookies()
+
+  if (!authorization) {
+    throw new Error('Unauthorized')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/projects/${projectId}/members`, {
+    method: 'POST',
+    headers: {
+      Authorization: authorization,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ user_id: userId }),
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to add project member')
+  }
+
+  return (await response.json())
+}
+
+export async function removeProjectMember(projectId: string | number, userId: number) {
+  const authorization = await getAuthHeaderFromCookies()
+
+  if (!authorization) {
+    throw new Error('Unauthorized')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/projects/${projectId}/members/${userId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: authorization,
+    },
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to remove project member')
+  }
+
+  return true
 }
 
 export async function assignProjectManager(id: string | number, managerId: number) {
@@ -244,6 +294,34 @@ export async function deleteProject(id: string | number) {
   }
 
   return true
+}
+
+export async function fetchProjectProgress(id: string | number) {
+  const authorization = await getAuthHeaderFromCookies()
+
+  if (!authorization) {
+    throw new Error('Unauthorized')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/projects/${id}/progress`, {
+    method: 'GET',
+    headers: {
+      Authorization: authorization,
+    },
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch project progress')
+  }
+
+  const payload = await response.json()
+  // Adjust based on expected backend response structure
+  if (typeof payload === 'number') return payload
+  if (payload && typeof payload === 'object' && 'progress' in payload) {
+    return payload.progress as number
+  }
+  return 0
 }
 
 export async function updateProjectStatus(id: string | number, status: string) {
