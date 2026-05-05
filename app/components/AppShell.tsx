@@ -6,6 +6,7 @@ import { Menu } from 'lucide-react'
 import type { MeResponse } from '../lib/auth'
 import Sidebar from './Sidebar'
 import { ThemeToggle } from './ThemeToggle'
+import NotificationIcon from './NotificationIcon'
 
 interface AppShellProps {
   currentUser: MeResponse
@@ -35,6 +36,7 @@ export default function AppShell({ currentUser, children }: AppShellProps) {
           </div>
 
           <div className='flex items-center gap-4'>
+            <NotificationIcon />
             <ThemeToggle />
             <div className='h-8 w-px bg-zinc-200 dark:bg-zinc-800' />
             <Link
