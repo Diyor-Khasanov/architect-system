@@ -111,6 +111,66 @@ export async function createUser(payload: CreateUserPayload) {
   return (await response.json()) as User
 }
 
+function normalizeGenericResponse<T>(payload: unknown): T[] {
+  if (Array.isArray(payload)) {
+    return payload as T[]
+  }
+
+  if (payload && typeof payload === 'object') {
+    const candidate = payload as { items?: unknown; data?: unknown; results?: unknown }
+
+    if (Array.isArray(candidate.items)) return candidate.items as T[]
+    if (Array.isArray(candidate.data)) return candidate.data as T[]
+    if (Array.isArray(candidate.results)) return candidate.results as T[]
+  }
+
+  return []
+}
+
+export async function fetchUserProjects(id: number) {
+  const authorization = await getAuthHeaderFromCookies()
+  if (!authorization) throw new Error('Unauthorized')
+
+  const response = await fetch(`${API_BASE_URL}/users/${id}/projects`, {
+    method: 'GET',
+    headers: { Authorization: authorization },
+    cache: 'no-store',
+  })
+
+  if (!response.ok) throw new Error('Failed to fetch user projects')
+  const payload = await response.json()
+  return normalizeGenericResponse<any>(payload)
+}
+
+export async function fetchUserTasks(id: number) {
+  const authorization = await getAuthHeaderFromCookies()
+  if (!authorization) throw new Error('Unauthorized')
+
+  const response = await fetch(`${API_BASE_URL}/users/${id}/tasks`, {
+    method: 'GET',
+    headers: { Authorization: authorization },
+    cache: 'no-store',
+  })
+
+  if (!response.ok) throw new Error('Failed to fetch user tasks')
+  const payload = await response.json()
+  return normalizeGenericResponse<any>(payload)
+}
+
+export async function fetchUserReports(id: number) {
+  const authorization = await getAuthHeaderFromCookies()
+  if (!authorization) throw new Error('Unauthorized')
+
+  const response = await fetch(`${API_BASE_URL}/users/${id}/reports`, {
+    method: 'GET',
+    headers: { Authorization: authorization },
+    cache: 'no-store',
+  })
+
+  if (!response.ok) throw new Error('Failed to fetch user reports')
+  return await response.json()
+}
+
 export async function updateUserProfileDetails(payload: UpdateUserProfilePayload) {
   const authorization = await getAuthHeaderFromCookies()
 
