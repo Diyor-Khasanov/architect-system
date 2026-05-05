@@ -1,7 +1,11 @@
 'use client'
 
 import { useActionState, useState, useTransition } from 'react'
-import { updateProjectAction, assignProjectManagerAction, acceptProjectAction } from '../../actions/projects'
+import {
+  updateProjectAction,
+  assignProjectManagerAction,
+  acceptProjectAction,
+} from '../../actions/projects'
 import { cn } from '../../lib/utils'
 import { Edit, Play, Pause, CheckCircle2, Trash2, UserPlus } from 'lucide-react'
 import type { Project } from '../../lib/projects'
@@ -35,12 +39,12 @@ const STATUS_TRANSITIONS: Record<string, string[]> = {
 }
 
 const STATUS_ICONS: Record<string, React.ReactNode> = {
-  assigned: <UserPlus className="h-4 w-4" />,
-  active: <Play className="h-4 w-4" />,
-  completed: <CheckCircle2 className="h-4 w-4" />,
-  on_hold: <Pause className="h-4 w-4" />,
-  archived: <Trash2 className="h-4 w-4" />,
-  accept: <CheckCircle2 className="h-4 w-4" />,
+  assigned: <UserPlus className='h-4 w-4' />,
+  active: <Play className='h-4 w-4' />,
+  completed: <CheckCircle2 className='h-4 w-4' />,
+  on_hold: <Pause className='h-4 w-4' />,
+  archived: <Trash2 className='h-4 w-4' />,
+  accept: <CheckCircle2 className='h-4 w-4' />,
 }
 
 interface ProjectDetailClientProps {
@@ -115,7 +119,11 @@ export default function ProjectDetailClient({
       <div className='flex flex-col md:flex-row md:items-start justify-between gap-4'>
         <div className='flex-1'>
           {isEditing ? (
-            <form action={updateFormAction} className='space-y-4' onSubmit={() => setIsEditing(false)}>
+            <form
+              action={updateFormAction}
+              className='space-y-4'
+              onSubmit={() => setIsEditing(false)}
+            >
               <input
                 name='name'
                 defaultValue={project.name}
@@ -162,21 +170,25 @@ export default function ProjectDetailClient({
             </form>
           ) : (
             <>
-              <div className="flex items-center gap-4">
+              <div className='flex items-center gap-4'>
                 <h1 className='text-2xl md:text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100'>
                   {project.name}
                 </h1>
                 {progress !== null && progress !== undefined && (
-                  <div className="flex flex-col">
-                    <span className="text-xs font-medium text-zinc-500 uppercase dark:text-zinc-400">Progress</span>
-                    <div className="flex items-center gap-2">
-                      <div className="h-2 w-24 rounded-full bg-zinc-100 dark:bg-zinc-800 overflow-hidden">
+                  <div className='flex flex-col'>
+                    <span className='text-xs font-medium text-zinc-500 uppercase dark:text-zinc-400'>
+                      Progress
+                    </span>
+                    <div className='flex items-center gap-2'>
+                      <div className='h-2 w-24 rounded-full bg-zinc-100 dark:bg-zinc-800 overflow-hidden'>
                         <div
-                          className="h-full bg-emerald-500 transition-all duration-500"
+                          className='h-full bg-emerald-500 transition-all duration-500'
                           style={{ width: `${progress}%` }}
                         />
                       </div>
-                      <span className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">{progress}%</span>
+                      <span className='text-sm font-semibold text-emerald-600 dark:text-emerald-400'>
+                        {progress}%
+                      </span>
                     </div>
                   </div>
                 )}
@@ -187,34 +199,35 @@ export default function ProjectDetailClient({
         </div>
         <div className='flex flex-wrap items-center gap-2'>
           <span
-            className={cn(
-              'inline-flex rounded-full px-3 py-1 text-sm font-medium border',
-              currentStatus === 'active' || currentStatus === 'doing'
-                ? 'bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-900'
-                : currentStatus === 'completed' || currentStatus === 'done'
-                ? 'bg-blue-50 text-blue-700 border-blue-100 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-900'
-                : currentStatus === 'on_hold'
-                ? 'bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-900'
-                : currentStatus === 'archived'
-                ? 'bg-red-50 text-red-700 border-red-100 dark:bg-red-950/30 dark:text-red-400 dark:border-red-900'
-                : 'bg-zinc-100 text-zinc-700 border-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:border-zinc-700'
-            )}
+            className={`inline-flex rounded-full px-3 py-1 text-sm font-medium border ${
+              project.status === 'active'
+                ? 'bg-emerald-100 text-emerald-700'
+                : project.status === 'completed'
+                  ? 'bg-purple-100 text-purple-700'
+                  : project.status === 'on_hold'
+                    ? 'bg-amber-100 text-amber-700'
+                    : project.status === 'assigned'
+                      ? 'bg-blue-100 text-blue-700'
+                      : 'bg-zinc-100 text-zinc-700'
+            }`}
           >
-            {STATUS_LABELS[currentStatus] || project.status}
+            {STATUS_LABELS[project.status.toLowerCase()] || project.status}
           </span>
 
           {!isEditing && (
             <div className='flex flex-wrap gap-2'>
-              {isManager && currentStatus === 'assigned' && project.manager_id === currentUser.id && (
-                <button
-                  disabled={isPending}
-                  onClick={handleAcceptProject}
-                  className='flex items-center gap-1 rounded-md border border-emerald-200 bg-white px-3 py-1 text-sm font-medium text-emerald-600 hover:bg-emerald-50 dark:border-emerald-900 dark:bg-zinc-900 dark:text-emerald-400 dark:hover:bg-emerald-950/30 disabled:opacity-50'
-                >
-                  {STATUS_ICONS.accept}
-                  Accept Project
-                </button>
-              )}
+              {isManager &&
+                currentStatus === 'assigned' &&
+                project.manager_id === currentUser.id && (
+                  <button
+                    disabled={isPending}
+                    onClick={handleAcceptProject}
+                    className='flex items-center gap-1 rounded-md border border-emerald-200 bg-white px-3 py-1 text-sm font-medium text-emerald-600 hover:bg-emerald-50 dark:border-emerald-900 dark:bg-zinc-900 dark:text-emerald-400 dark:hover:bg-emerald-950/30 disabled:opacity-50'
+                  >
+                    {STATUS_ICONS.accept}
+                    Accept Project
+                  </button>
+                )}
 
               {canUpdateStatus &&
                 transitions.map((status) => (
@@ -247,7 +260,9 @@ export default function ProjectDetailClient({
         </div>
       </div>
       {(updateState?.error || assignState?.error || acceptState?.error) && (
-        <p className='mt-4 text-sm text-red-600'>{updateState?.error || assignState?.error || acceptState?.error}</p>
+        <p className='mt-4 text-sm text-red-600'>
+          {updateState?.error || assignState?.error || acceptState?.error}
+        </p>
       )}
     </header>
   )
