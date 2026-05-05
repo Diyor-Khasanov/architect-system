@@ -11,16 +11,16 @@ import { Plus } from 'lucide-react'
 const STATUS_LABELS: Record<string, string> = {
   draft: 'Draft',
   assigned: 'Assigned',
+  on_hold: 'Paused',
   active: 'Active',
   completed: 'Success',
-  on_hold: 'Paused',
   archived: 'Deleted',
 }
 
 export default function ProjectsClient({
   projects,
   currentUser,
-  fetchError
+  fetchError,
 }: {
   projects: Project[]
   currentUser: MeResponse
@@ -38,7 +38,9 @@ export default function ProjectsClient({
     <section className='space-y-6'>
       <header className='flex flex-col gap-4 md:flex-row md:items-center md:justify-between rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
         <div>
-          <h1 className='text-2xl md:text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100'>Projects</h1>
+          <h1 className='text-2xl md:text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100'>
+            Projects
+          </h1>
           <p className='mt-2 text-sm text-zinc-600 dark:text-zinc-400'>
             Project list and management workspace (create + monitor projects).
           </p>
@@ -63,9 +65,13 @@ export default function ProjectsClient({
       )}
 
       <article className='rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
-        <h2 className='text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100'>Project list</h2>
+        <h2 className='text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100'>
+          Project list
+        </h2>
 
-        {fetchError ? <p className='mt-3 text-sm text-red-600 dark:text-red-400'>{fetchError}</p> : null}
+        {fetchError ? (
+          <p className='mt-3 text-sm text-red-600 dark:text-red-400'>{fetchError}</p>
+        ) : null}
 
         {!fetchError && projects.length === 0 ? (
           <p className='mt-3 text-sm text-zinc-500 dark:text-zinc-400'>No projects found.</p>
@@ -87,24 +93,48 @@ export default function ProjectsClient({
               </thead>
               <tbody>
                 {projects.map((project) => (
-                  <tr key={project.id} className='border-b border-zinc-100 transition-colors hover:bg-zinc-50/50 dark:border-zinc-800 dark:hover:bg-zinc-800/50'>
+                  <tr
+                    key={project.id}
+                    className='border-b border-zinc-100 transition-colors hover:bg-zinc-50/50 dark:border-zinc-800 dark:hover:bg-zinc-800/50'
+                  >
                     <td className='px-2 py-3 text-zinc-500 dark:text-zinc-400'>{project.id}</td>
                     <td className='px-2 py-3'>
-                      <Link href={`/projects/${project.id}`} className='font-medium text-zinc-900 hover:underline dark:text-zinc-100 dark:hover:text-zinc-300'>
+                      <Link
+                        href={`/projects/${project.id}`}
+                        className='font-medium text-zinc-900 hover:underline dark:text-zinc-100 dark:hover:text-zinc-300'
+                      >
                         {project.name}
                       </Link>
-                      <p className='text-xs text-zinc-500 dark:text-zinc-400'>{project.description}</p>
+                      <p className='text-xs text-zinc-500 dark:text-zinc-400'>
+                        {project.description}
+                      </p>
                     </td>
                     <td className='px-2 py-3 text-center text-zinc-600 dark:text-zinc-300'>
                       {project.members?.length ?? 0}
                     </td>
-                    <td className='px-2 py-3 text-zinc-600 dark:text-zinc-300'>{project.manager_id}</td>
+                    <td className='px-2 py-3 text-zinc-600 dark:text-zinc-300'>
+                      {project.manager_id}
+                    </td>
                     <td className='px-2 py-3'>
-                      <span className='rounded-full bg-zinc-100 px-2 py-1 text-xs text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300'>
+                      <span
+                        className={`rounded-full px-2 py-1 text-xs ${
+                          project.status === 'active'
+                            ? 'bg-emerald-100 text-emerald-700'
+                            : project.status === 'completed'
+                              ? 'bg-purple-100 text-purple-700'
+                              : project.status === 'on_hold'
+                                ? 'bg-amber-100 text-amber-700'
+                                : project.status === 'assigned'
+                                  ? 'bg-blue-100 text-blue-700'
+                                  : 'bg-zinc-100 text-zinc-700'
+                        }`}
+                      >
                         {STATUS_LABELS[project.status.toLowerCase()] || project.status}
                       </span>
                     </td>
-                    <td className='px-2 py-3 text-zinc-600 dark:text-zinc-300'>{new Date(project.deadline).toLocaleDateString()}</td>
+                    <td className='px-2 py-3 text-zinc-600 dark:text-zinc-300'>
+                      {new Date(project.deadline).toLocaleDateString()}
+                    </td>
                     <td className='px-2 py-3 text-zinc-500 dark:text-zinc-400'>
                       {new Date(project.created_at).toLocaleDateString()}
                     </td>
