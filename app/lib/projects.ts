@@ -145,6 +145,37 @@ export async function acceptProject(id: string | number) {
   return (await response.json()) as Project
 }
 
+export async function fetchProjectMembers(id: string | number) {
+  const authorization = await getAuthHeaderFromCookies()
+
+  if (!authorization) {
+    throw new Error('Unauthorized')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/projects/${id}/members`, {
+    method: 'GET',
+    headers: {
+      Authorization: authorization,
+    },
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch project members')
+  }
+
+  const payload = (await response.json()) as unknown
+  if (Array.isArray(payload)) return payload as ProjectMember[]
+  if (payload && typeof payload === 'object') {
+    const candidate = payload as { items?: ProjectMember[]; data?: ProjectMember[]; results?: ProjectMember[]; members?: ProjectMember[] }
+    if (Array.isArray(candidate.items)) return candidate.items
+    if (Array.isArray(candidate.data)) return candidate.data
+    if (Array.isArray(candidate.results)) return candidate.results
+    if (Array.isArray(candidate.members)) return candidate.members
+  }
+  return []
+}
+
 export async function assignProjectManager(id: string | number, managerId: number) {
   const authorization = await getAuthHeaderFromCookies()
 
