@@ -67,6 +67,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
           currentUser={currentUser}
           id={id}
           availableManagers={managers}
+          progress={progress}
         />
 
         <div className='grid gap-6 lg:grid-cols-3'>
