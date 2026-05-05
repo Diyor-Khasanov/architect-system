@@ -9,14 +9,36 @@ import { type User } from '../../lib/users'
 import { type UserRole } from '../../lib/auth'
 import { deleteUserAction } from '../../actions/users'
 import { useToast } from '../../context/ToastContext'
-import { ArrowLeft, Mail, Phone, Calendar, Shield, User as UserIcon, HardHat, Pencil, KeyRound, Trash2 } from 'lucide-react'
+import {
+  ArrowLeft,
+  Mail,
+  Phone,
+  Calendar,
+  Shield,
+  User as UserIcon,
+  HardHat,
+  Pencil,
+  KeyRound,
+  Trash2,
+  Briefcase,
+  CheckSquare,
+  BarChart,
+  Clock,
+  AlertCircle,
+} from 'lucide-react'
 
 export default function UserDetailClient({
   user,
   currentUserRole,
+  projects = [],
+  tasks = [],
+  reports = null,
 }: {
   user: User
   currentUserRole: UserRole
+  projects?: any[]
+  tasks?: any[]
+  reports?: any
 }) {
   const [isEditing, setIsEditing] = useState(false)
   const [isResettingPassword, setIsResettingPassword] = useState(false)
@@ -227,7 +249,111 @@ export default function UserDetailClient({
                 </div>
               </div>
             </div>
+
+            {reports && (
+              <div className='rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm'>
+                <h3 className='text-lg font-semibold mb-4 flex items-center gap-2'>
+                  <BarChart className='h-5 w-5 text-zinc-500' />
+                  Performance Reports
+                </h3>
+                <div className='grid grid-cols-2 gap-4'>
+                  {Object.entries(reports).map(([key, value]) => (
+                    <div key={key} className='rounded-xl bg-zinc-50 p-3'>
+                      <p className='text-[10px] font-medium uppercase tracking-wider text-zinc-500 truncate'>
+                        {key.replace(/_/g, ' ')}
+                      </p>
+                      <p className='text-xl font-bold text-zinc-900'>{String(value)}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </aside>
+        </div>
+      )}
+
+      {!isEditing && !isResettingPassword && (currentUserRole === 'admin' || (currentUserRole === 'manager' && user.role === 'worker')) && (
+        <div className='grid gap-6 lg:grid-cols-2'>
+          {/* Assigned Projects */}
+          <section className='rounded-2xl border border-zinc-200 bg-white shadow-sm'>
+            <div className='border-b border-zinc-100 p-6'>
+              <h2 className='flex items-center gap-2 text-lg font-semibold text-zinc-900'>
+                <Briefcase className='h-5 w-5 text-zinc-500' />
+                Assigned Projects
+              </h2>
+            </div>
+            <div className='p-6'>
+              {projects.length > 0 ? (
+                <div className='space-y-4'>
+                  {projects.map((project) => (
+                    <div key={project.id} className='flex items-center justify-between rounded-xl border border-zinc-100 p-4'>
+                      <div>
+                        <h3 className='font-medium text-zinc-900'>{project.name}</h3>
+                        <p className='text-sm text-zinc-500'>Status: <span className='capitalize'>{project.status}</span></p>
+                      </div>
+                      {project.progress !== undefined && (
+                        <div className='text-right'>
+                          <span className='text-sm font-medium text-zinc-900'>{project.progress}%</span>
+                          <div className='mt-1 h-1.5 w-20 overflow-hidden rounded-full bg-zinc-100'>
+                            <div className='h-full bg-blue-500' style={{ width: `${project.progress}%` }} />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className='text-sm text-zinc-500'>No projects assigned to this user.</p>
+              )}
+            </div>
+          </section>
+
+          {/* User Tasks */}
+          <section className='rounded-2xl border border-zinc-200 bg-white shadow-sm'>
+            <div className='border-b border-zinc-100 p-6'>
+              <h2 className='flex items-center gap-2 text-lg font-semibold text-zinc-900'>
+                <CheckSquare className='h-5 w-5 text-zinc-500' />
+                User Tasks
+              </h2>
+            </div>
+            <div className='p-6'>
+              {tasks.length > 0 ? (
+                <div className='space-y-4'>
+                  {tasks.map((task) => (
+                    <div key={task.id} className='flex items-center justify-between rounded-xl border border-zinc-100 p-4'>
+                      <div className='flex items-start gap-3'>
+                        <div className={`mt-1 h-2 w-2 rounded-full ${
+                          task.status === 'completed' ? 'bg-emerald-500' :
+                          task.status === 'active' ? 'bg-blue-500' :
+                          'bg-zinc-300'
+                        }`} />
+                        <div>
+                          <h3 className='font-medium text-zinc-900'>{task.name}</h3>
+                          <div className='flex items-center gap-3 mt-0.5'>
+                            <span className='flex items-center gap-1 text-xs text-zinc-500'>
+                              <Clock className='h-3 w-3' />
+                              {new Date(task.deadline).toLocaleDateString()}
+                            </span>
+                            {task.days_overdue > 0 && (
+                              <span className='flex items-center gap-1 text-xs font-medium text-red-600'>
+                                <AlertCircle className='h-3 w-3' />
+                                {task.days_overdue} days overdue
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <span className='rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs font-medium text-zinc-800 capitalize'>
+                        {task.status}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className='text-sm text-zinc-500'>No tasks found for this user.</p>
+              )}
+            </div>
+          </section>
         </div>
       )}
     </section>
