@@ -58,39 +58,3 @@ export async function fetchNotifications(): Promise<Notification[]> {
     return []
   }
 }
-
-export async function markNotificationAsRead(id: number): Promise<boolean> {
-  const authorization = await getAuthHeaderFromCookies()
-  if (!authorization) return false
-
-  try {
-    const response = await fetch(`${API_BASE_URL}/notifications/${id}/read`, {
-      method: 'PATCH',
-      headers: { Authorization: authorization },
-      cache: 'no-store',
-    })
-
-    return response.ok
-  } catch (error) {
-    console.error(`Failed to mark notification ${id} as read:`, error)
-    return false
-  }
-}
-
-export async function markAllNotificationsAsRead(): Promise<boolean> {
-  const authorization = await getAuthHeaderFromCookies()
-  if (!authorization) return false
-
-  try {
-    const response = await fetch(`${API_BASE_URL}/notifications/read-all`, {
-      method: 'PATCH',
-      headers: { Authorization: authorization },
-      cache: 'no-store',
-    })
-
-    return response.ok
-  } catch (error) {
-    console.error('Failed to mark all notifications as read:', error)
-    return false
-  }
-}
