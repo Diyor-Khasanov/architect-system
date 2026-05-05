@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { fetchCurrentUser } from '../lib/auth'
-import { createProject, updateProject, deleteProject, updateProjectStatus, assignProjectManager, acceptProject } from '../lib/projects'
+import { createProject, updateProject, deleteProject, updateProjectStatus, assignProjectManager, acceptProject, addProjectMember, removeProjectMember } from '../lib/projects'
 
 interface ActionState {
   success?: boolean
@@ -139,6 +139,51 @@ export async function assignProjectManagerAction(
     return { success: true }
   } catch {
     return { error: 'Could not assign manager.' }
+  }
+}
+
+export async function addProjectMemberAction(
+  projectId: string,
+  _: ActionState,
+  formData: FormData
+): Promise<ActionState> {
+  const currentUser = await fetchCurrentUser()
+
+  if (!currentUser || !['admin', 'manager'].includes(currentUser.role)) {
+    return { error: 'Unauthorized to add members to projects.' }
+  }
+
+  const userId = Number(formData.get('user_id'))
+
+  if (!userId) {
+    return { error: 'User ID is required.' }
+  }
+
+  try {
+    await addProjectMember(projectId, userId)
+    revalidatePath(`/projects/${projectId}`)
+    return { success: true }
+  } catch {
+    return { error: 'Could not add member to project.' }
+  }
+}
+
+export async function removeProjectMemberAction(
+  projectId: string,
+  userId: number
+): Promise<ActionState> {
+  const currentUser = await fetchCurrentUser()
+
+  if (!currentUser || !['admin', 'manager'].includes(currentUser.role)) {
+    return { error: 'Unauthorized to remove members from projects.' }
+  }
+
+  try {
+    await removeProjectMember(projectId, userId)
+    revalidatePath(`/projects/${projectId}`)
+    return { success: true }
+  } catch {
+    return { error: 'Could not remove member from project.' }
   }
 }
 

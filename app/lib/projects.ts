@@ -176,6 +176,52 @@ export async function fetchProjectMembers(id: string | number) {
   return []
 }
 
+export async function addProjectMember(projectId: string | number, userId: number) {
+  const authorization = await getAuthHeaderFromCookies()
+
+  if (!authorization) {
+    throw new Error('Unauthorized')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/projects/${projectId}/members`, {
+    method: 'POST',
+    headers: {
+      Authorization: authorization,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ user_id: userId }),
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to add project member')
+  }
+
+  return (await response.json())
+}
+
+export async function removeProjectMember(projectId: string | number, userId: number) {
+  const authorization = await getAuthHeaderFromCookies()
+
+  if (!authorization) {
+    throw new Error('Unauthorized')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/projects/${projectId}/members/${userId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: authorization,
+    },
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to remove project member')
+  }
+
+  return true
+}
+
 export async function assignProjectManager(id: string | number, managerId: number) {
   const authorization = await getAuthHeaderFromCookies()
 
