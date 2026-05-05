@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import AppShell from '../../components/AppShell'
 import { fetchCurrentUser } from '../../lib/auth'
-import { fetchProject, type Project } from '../../lib/projects'
+import { fetchProject, fetchProjectMembers, type Project, type ProjectMember } from '../../lib/projects'
 import { fetchUsers } from '../../lib/users'
 import ProjectDetailClient from './ProjectDetailClient'
 
@@ -22,9 +22,11 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
   }
 
   let project: Project | null = null
+  let members: ProjectMember[] = []
   let managers: { id: number; username: string; full_name: string }[] = []
   try {
     project = await fetchProject(id)
+    members = await fetchProjectMembers(id)
     if (currentUser.role === 'admin') {
       const allUsers = await fetchUsers()
       managers = allUsers
@@ -74,8 +76,8 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                     </tr>
                   </thead>
                   <tbody>
-                    {project.members && project.members.length > 0 ? (
-                      project.members.map((member) => (
+                    {members && members.length > 0 ? (
+                      members.map((member) => (
                         <tr key={member.user_id} className='border-b border-zinc-100 dark:border-zinc-800'>
                           <td className='px-2 py-3 font-medium text-zinc-900 dark:text-zinc-100'>{member.full_name}</td>
                           <td className='px-2 py-3 text-zinc-600 capitalize dark:text-zinc-400'>{member.role}</td>

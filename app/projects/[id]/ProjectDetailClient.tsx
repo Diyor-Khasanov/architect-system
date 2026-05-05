@@ -1,7 +1,7 @@
 'use client'
 
 import { useActionState, useState, useTransition } from 'react'
-import { updateProjectAction, assignProjectManagerAction } from '../../actions/projects'
+import { updateProjectAction, assignProjectManagerAction, acceptProjectAction } from '../../actions/projects'
 import { cn } from '../../lib/utils'
 import { Edit, Play, Pause, CheckCircle2, Trash2, UserPlus } from 'lucide-react'
 import type { Project } from '../../lib/projects'
@@ -40,6 +40,7 @@ const STATUS_ICONS: Record<string, React.ReactNode> = {
   completed: <CheckCircle2 className="h-4 w-4" />,
   on_hold: <Pause className="h-4 w-4" />,
   archived: <Trash2 className="h-4 w-4" />,
+  accept: <CheckCircle2 className="h-4 w-4" />,
 }
 
 interface ProjectDetailClientProps {
@@ -65,6 +66,9 @@ export default function ProjectDetailClient({
   const assignManagerWithId = assignProjectManagerAction.bind(null, id)
   const [assignState] = useActionState(assignManagerWithId, {})
 
+  const acceptProjectWithId = acceptProjectAction.bind(null, id)
+  const [acceptState] = useActionState(acceptProjectWithId, {})
+
   const isAdmin = currentUser.role === 'admin'
   const isManager = currentUser.role === 'manager'
   const canUpdateStatus = isAdmin || isManager
@@ -84,6 +88,17 @@ export default function ProjectDetailClient({
       const result = await updateProjectWithId({}, formData)
       if (result.success) {
         toast(`Project status updated to ${STATUS_LABELS[newStatus] || newStatus}`, 'success')
+      } else if (result.error) {
+        toast(result.error, 'error')
+      }
+    })
+  }
+
+  const handleAcceptProject = async () => {
+    startTransition(async () => {
+      const result = await acceptProjectWithId({})
+      if (result.success) {
+        toast('Project accepted successfully', 'success')
       } else if (result.error) {
         toast(result.error, 'error')
       }
@@ -172,6 +187,17 @@ export default function ProjectDetailClient({
 
           {!isEditing && (
             <div className='flex flex-wrap gap-2'>
+              {isManager && currentStatus === 'assigned' && project.manager_id === currentUser.id && (
+                <button
+                  disabled={isPending}
+                  onClick={handleAcceptProject}
+                  className='flex items-center gap-1 rounded-md border border-emerald-200 bg-white px-3 py-1 text-sm font-medium text-emerald-600 hover:bg-emerald-50 dark:border-emerald-900 dark:bg-zinc-900 dark:text-emerald-400 dark:hover:bg-emerald-950/30 disabled:opacity-50'
+                >
+                  {STATUS_ICONS.accept}
+                  Accept Project
+                </button>
+              )}
+
               {canUpdateStatus &&
                 transitions.map((status) => (
                   <button
@@ -202,8 +228,8 @@ export default function ProjectDetailClient({
           )}
         </div>
       </div>
-      {(updateState?.error || assignState?.error) && (
-        <p className='mt-4 text-sm text-red-600'>{updateState?.error || assignState?.error}</p>
+      {(updateState?.error || assignState?.error || acceptState?.error) && (
+        <p className='mt-4 text-sm text-red-600'>{updateState?.error || assignState?.error || acceptState?.error}</p>
       )}
     </header>
   )
