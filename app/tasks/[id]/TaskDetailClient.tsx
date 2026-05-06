@@ -1,11 +1,13 @@
 'use client'
 
 import { useState, useActionState } from 'react'
-import { Task, TaskStatus } from '../../lib/tasks'
+import { Task, TaskStatus, TaskAssignment } from '../../lib/tasks'
+import { ProjectMember } from '../../lib/projects'
 import { Calendar, Tag, User, Folder, Clock, Edit2, CheckCircle2, Play, Search, StopCircle, Ban, AlertTriangle, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { updateTaskAction, updateTaskStatusAction } from '../../actions/tasks'
 import { useToast } from '../../context/ToastContext'
+import TaskAssignmentsClient from './TaskAssignmentsClient'
 
 const STATUS_TRANSITIONS: Record<TaskStatus, TaskStatus[]> = {
   TODO: ['IN_PROGRESS', 'CANCELED'],
@@ -34,7 +36,19 @@ const STATUS_ICONS: Record<TaskStatus, any> = {
   BLOCKED: AlertTriangle,
 }
 
-export default function TaskDetailClient({ task, currentUserId, currentUserRole }: { task: Task, currentUserId: number, currentUserRole: string }) {
+export default function TaskDetailClient({
+  task,
+  currentUserId,
+  currentUserRole,
+  assignments,
+  projectMembers,
+}: {
+  task: Task
+  currentUserId: number
+  currentUserRole: string
+  assignments: TaskAssignment[]
+  projectMembers: ProjectMember[]
+}) {
   const [isEditing, setIsEditing] = useState(false)
   const { toast } = useToast()
   const [updateState, updateAction, isPending] = useActionState(updateTaskAction.bind(null, task.id), null)
@@ -249,7 +263,14 @@ export default function TaskDetailClient({ task, currentUserId, currentUserRole 
         </aside>
 
         <main className='md:col-span-2 space-y-6'>
-           <section className='rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
+          <TaskAssignmentsClient
+            taskId={task.id}
+            assignments={assignments}
+            projectMembers={projectMembers}
+            canManage={isManagerOrAdmin}
+          />
+
+          <section className='rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
             <h2 className='text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 mb-4'>
               Timeline
             </h2>
