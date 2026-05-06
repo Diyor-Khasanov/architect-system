@@ -1,0 +1,35 @@
+
+> architect-system@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.4 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+✓ Ready in 1259ms
+
+ GET /login 200 in 1229ms (next.js: 620ms, application-code: 609ms)
+ POST /login 200 in 733ms (next.js: 5ms, application-code: 728ms)
+  └─ ƒ loginAction({}) in 520ms actions/login.ts
+ GET /dashboard 200 in 527ms (next.js: 32ms, application-code: 495ms)
+ GET /dashboard 200 in 483ms (next.js: 3ms, application-code: 480ms)
+ POST /dashboard 200 in 162ms (next.js: 15ms, application-code: 147ms)
+  └─ ƒ getUnreadCountAction() in 134ms actions/notifications.ts
+ POST /dashboard 200 in 147ms (next.js: 3ms, application-code: 143ms)
+  └─ ƒ getUnreadCountAction() in 134ms actions/notifications.ts
+ GET /tasks 200 in 354ms (next.js: 24ms, application-code: 331ms)
+ POST /tasks 200 in 149ms (next.js: 5ms, application-code: 144ms)
+  └─ ƒ getUnreadCountAction() in 134ms actions/notifications.ts
+ POST /tasks 200 in 152ms (next.js: 4ms, application-code: 148ms)
+  └─ ƒ getUnreadCountAction() in 138ms actions/notifications.ts
+ GET /login 200 in 101ms (next.js: 5ms, application-code: 96ms)
+ POST /login 200 in 737ms (next.js: 4ms, application-code: 733ms)
+  └─ ƒ loginAction({}) in 521ms actions/login.ts
+ GET /dashboard 200 in 454ms (next.js: 4ms, application-code: 451ms)
+ GET /dashboard 200 in 463ms (next.js: 3ms, application-code: 460ms)
+ POST /dashboard 200 in 161ms (next.js: 10ms, application-code: 152ms)
+  └─ ƒ getUnreadCountAction() in 141ms actions/notifications.ts
+ POST /dashboard 200 in 144ms (next.js: 3ms, application-code: 142ms)
+  └─ ƒ getUnreadCountAction() in 134ms actions/notifications.ts
+ GET /tasks 200 in 457ms (next.js: 3ms, application-code: 454ms)
+ POST /tasks 200 in 147ms (next.js: 3ms, application-code: 144ms)
+  └─ ƒ getUnreadCountAction() in 134ms actions/notifications.ts
