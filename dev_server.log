@@ -23,19 +23,3 @@
   └─ ƒ getUnreadCountAction() in 147ms actions/notifications.ts
  POST /tasks 200 in 149ms (next.js: 4ms, application-code: 145ms)
   └─ ƒ getUnreadCountAction() in 136ms actions/notifications.ts
-✓ Compiled in 770ms
- GET /login 200 in 732ms (next.js: 68ms, application-code: 665ms)
- POST /login 200 in 768ms (next.js: 14ms, application-code: 754ms)
-  └─ ƒ loginAction({}) in 528ms actions/login.ts
- GET /dashboard 200 in 570ms (next.js: 7ms, application-code: 563ms)
- GET /dashboard 200 in 595ms (next.js: 5ms, application-code: 591ms)
-[browser] Uncaught TypeError: Failed to execute 'measure' on 'Performance': '​LoginPage' cannot have a negative time stamp.
- POST /dashboard 200 in 171ms (next.js: 7ms, application-code: 164ms)
-  └─ ƒ getUnreadCountAction() in 135ms actions/notifications.ts
- POST /dashboard 200 in 147ms (next.js: 3ms, application-code: 144ms)
-  └─ ƒ getUnreadCountAction() in 135ms actions/notifications.ts
- GET /tasks 200 in 327ms (next.js: 14ms, application-code: 314ms)
- POST /tasks 200 in 150ms (next.js: 3ms, application-code: 147ms)
-  └─ ƒ getUnreadCountAction() in 137ms actions/notifications.ts
- POST /tasks 200 in 146ms (next.js: 3ms, application-code: 143ms)
-  └─ ƒ getUnreadCountAction() in 134ms actions/notifications.ts

@@ -22,15 +22,6 @@ export interface TaskAssignment {
   role_on_task: string
 }
 
-export interface TaskHistoryEntry {
-  id: number
-  task_id: number
-  user_id: number
-  action: string
-  changes: Record<string, any>
-  created_at: string
-}
-
 const API_BASE_URL = 'http://13.50.4.92/api/v1'
 
 function normalizeTasksResponse(payload: unknown): Task[] {
@@ -216,41 +207,6 @@ export async function unassignTaskWorker(taskId: string | number, userId: number
   }
 
   return true
-}
-
-export async function fetchTaskHistory(id: string | number): Promise<TaskHistoryEntry[]> {
-  const authorization = await getAuthHeaderFromCookies()
-
-  if (!authorization) {
-    throw new Error('Unauthorized')
-  }
-
-  const response = await fetch(`${API_BASE_URL}/tasks/${id}/history`, {
-    method: 'GET',
-    headers: {
-      Authorization: authorization,
-    },
-    cache: 'no-store',
-  })
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch task history')
-  }
-
-  const payload = await response.json()
-
-  if (Array.isArray(payload)) {
-    return payload as TaskHistoryEntry[]
-  }
-
-  if (payload && typeof payload === 'object') {
-    const data = (payload as any).items || (payload as any).data || (payload as any).results || (payload as any).history
-    if (Array.isArray(data)) {
-      return data as TaskHistoryEntry[]
-    }
-  }
-
-  return []
 }
 
 export async function updateTaskStatus(id: string | number, status: TaskStatus) {
