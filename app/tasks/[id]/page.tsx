@@ -2,7 +2,6 @@ import { notFound, redirect } from 'next/navigation'
 import AppShell from '../../components/AppShell'
 import { fetchCurrentUser } from '../../lib/auth'
 import { fetchTask } from '../../lib/tasks'
-import { fetchProjectMembers } from '../../lib/projects'
 import TaskDetailClient from './TaskDetailClient'
 
 export const dynamic = 'force-dynamic'
@@ -21,15 +20,12 @@ export default async function TaskDetailPage({
 
   try {
     const task = await fetchTask(id)
-    const projectMembers = await fetchProjectMembers(task.project_id)
-
     return (
       <AppShell currentUser={currentUser}>
         <TaskDetailClient
           task={task}
           currentUserId={currentUser.id}
           currentUserRole={currentUser.role}
-          projectMembers={projectMembers}
         />
       </AppShell>
     )

@@ -2,11 +2,10 @@
 
 import { useState, useActionState } from 'react'
 import { Task, TaskStatus } from '../../lib/tasks'
-import { Calendar, Tag, User, Folder, Clock, Edit2, CheckCircle2, Play, Search, StopCircle, Ban, AlertTriangle, ArrowRight, UserPlus, UserMinus } from 'lucide-react'
+import { Calendar, Tag, User, Folder, Clock, Edit2, CheckCircle2, Play, Search, StopCircle, Ban, AlertTriangle, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
-import { updateTaskAction, updateTaskStatusAction, assignTaskWorkerAction, unassignTaskWorkerAction } from '../../actions/tasks'
+import { updateTaskAction, updateTaskStatusAction } from '../../actions/tasks'
 import { useToast } from '../../context/ToastContext'
-import { ProjectMember } from '../../lib/projects'
 
 const STATUS_TRANSITIONS: Record<TaskStatus, TaskStatus[]> = {
   TODO: ['IN_PROGRESS', 'CANCELED'],
@@ -35,30 +34,15 @@ const STATUS_ICONS: Record<TaskStatus, any> = {
   BLOCKED: AlertTriangle,
 }
 
-export default function TaskDetailClient({
-  task,
-  currentUserId,
-  currentUserRole,
-  projectMembers = [],
-}: {
-  task: Task
-  currentUserId: number
-  currentUserRole: string
-  projectMembers?: ProjectMember[]
-}) {
+export default function TaskDetailClient({ task, currentUserId, currentUserRole }: { task: Task, currentUserId: number, currentUserRole: string }) {
   const [isEditing, setIsEditing] = useState(false)
-  const [assigningWorkerId, setAssigningWorkerId] = useState('')
-  const [roleOnTask, setRoleOnTask] = useState('')
-  const [isAssigning, setIsAssigning] = useState(false)
   const { toast } = useToast()
   const [updateState, updateAction, isPending] = useActionState(updateTaskAction.bind(null, task.id), null)
 
   const isManagerOrAdmin = currentUserRole === 'admin' || currentUserRole === 'manager'
-  const isManager = currentUserRole === 'manager'
   const isAssignee = task.assignee_id === currentUserId
   const canUpdateStatus = isAssignee || isManagerOrAdmin
   const canEditTask = isManagerOrAdmin
-  const canManageWorkers = isManager // Specific requirement: "for manager role only"
 
   // Handle case-insensitivity for status lookup
   const normalizedStatus = (task.status?.toUpperCase() || 'TODO') as TaskStatus
@@ -71,29 +55,6 @@ export default function TaskDetailClient({
       toast(res.error, 'error')
     } else {
       toast(`Task status updated to ${newStatus}`, 'success')
-    }
-  }
-
-  async function handleAssignWorker() {
-    if (!assigningWorkerId) return
-    setIsAssigning(true)
-    const res = await assignTaskWorkerAction(task.id, parseInt(assigningWorkerId), roleOnTask)
-    setIsAssigning(false)
-    if (res.error) {
-      toast(res.error, 'error')
-    } else {
-      toast('Worker assigned successfully', 'success')
-      setAssigningWorkerId('')
-      setRoleOnTask('')
-    }
-  }
-
-  async function handleUnassignWorker(userId: number) {
-    const res = await unassignTaskWorkerAction(task.id, userId)
-    if (res.error) {
-      toast(res.error, 'error')
-    } else {
-      toast('Worker unassigned successfully', 'success')
     }
   }
 
@@ -288,84 +249,6 @@ export default function TaskDetailClient({
         </aside>
 
         <main className='md:col-span-2 space-y-6'>
-          {canManageWorkers && (
-            <section className='rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
-              <h2 className='text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 mb-4'>
-                Worker Management
-              </h2>
-              <div className='space-y-6'>
-                <div className='flex flex-col gap-4 p-4 rounded-xl border border-zinc-100 dark:border-zinc-800'>
-                  <h3 className='text-sm font-medium text-zinc-900 dark:text-zinc-100 flex items-center gap-2'>
-                    <UserPlus className='h-4 w-4 text-zinc-400' />
-                    Assign New Worker
-                  </h3>
-                  <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-                    <div>
-                      <label className='block text-xs text-zinc-500 mb-1'>Worker</label>
-                      <select
-                        value={assigningWorkerId}
-                        onChange={(e) => setAssigningWorkerId(e.target.value)}
-                        className='w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100'
-                      >
-                        <option value=''>Select a worker...</option>
-                        {projectMembers
-                          .filter((m) => m.user_id !== task.assignee_id)
-                          .map((member) => (
-                            <option key={member.user_id} value={member.user_id}>
-                              {member.full_name || `User #${member.user_id}`}
-                            </option>
-                          ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className='block text-xs text-zinc-500 mb-1'>Role on task</label>
-                      <input
-                        type='text'
-                        value={roleOnTask}
-                        onChange={(e) => setRoleOnTask(e.target.value)}
-                        placeholder='e.g. Developer, QA'
-                        className='w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100'
-                      />
-                    </div>
-                  </div>
-                  <button
-                    onClick={handleAssignWorker}
-                    disabled={!assigningWorkerId || isAssigning}
-                    className='w-full sm:w-auto inline-flex justify-center rounded-lg bg-zinc-900 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200'
-                  >
-                    {isAssigning ? 'Assigning...' : 'Assign Worker'}
-                  </button>
-                </div>
-
-                {task.assignee_id && (
-                  <div className='space-y-3'>
-                    <h3 className='text-sm font-medium text-zinc-900 dark:text-zinc-100'>Current Assignee</h3>
-                    <div className='flex items-center justify-between p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-800'>
-                      <div className='flex items-center gap-3'>
-                        <div className='h-8 w-8 rounded-full bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center'>
-                          <User className='h-4 w-4 text-zinc-500' />
-                        </div>
-                        <div>
-                          <p className='text-sm font-medium text-zinc-900 dark:text-zinc-100'>
-                            {projectMembers.find((m) => m.user_id === task.assignee_id)?.full_name || `User #${task.assignee_id}`}
-                          </p>
-                          <p className='text-xs text-zinc-500'>Assigned Worker</p>
-                        </div>
-                      </div>
-                      <button
-                        onClick={() => handleUnassignWorker(task.assignee_id!)}
-                        className='p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors dark:text-red-400 dark:hover:bg-red-950/30'
-                        title='Unassign Worker'
-                      >
-                        <UserMinus className='h-5 w-5' />
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </section>
-          )}
-
            <section className='rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
             <h2 className='text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 mb-4'>
               Timeline

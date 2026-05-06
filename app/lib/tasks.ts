@@ -120,59 +120,6 @@ export async function createTask(projectId: string | number, payload: { title: s
   return (await response.json()) as Task
 }
 
-export async function assignTaskWorker(taskId: string | number, userId: number, roleOnTask: string) {
-  const authorization = await getAuthHeaderFromCookies()
-
-  if (!authorization) {
-    throw new Error('Unauthorized')
-  }
-
-  const response = await fetch(`${API_BASE_URL}/tasks/${taskId}/assign`, {
-    method: 'POST',
-    headers: {
-      Authorization: authorization,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      user_id: userId,
-      role_on_task: roleOnTask,
-    }),
-    cache: 'no-store',
-  })
-
-  if (!response.ok) {
-    throw new Error('Failed to assign worker to task')
-  }
-
-  return (await response.json())
-}
-
-export async function unassignTaskWorker(taskId: string | number, userId: number) {
-  const authorization = await getAuthHeaderFromCookies()
-
-  if (!authorization) {
-    throw new Error('Unauthorized')
-  }
-
-  const response = await fetch(`${API_BASE_URL}/tasks/${taskId}/unassign`, {
-    method: 'DELETE',
-    headers: {
-      Authorization: authorization,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      user_id: userId,
-    }),
-    cache: 'no-store',
-  })
-
-  if (!response.ok) {
-    throw new Error('Failed to unassign worker from task')
-  }
-
-  return true
-}
-
 export async function updateTaskStatus(id: string | number, status: TaskStatus) {
   const authorization = await getAuthHeaderFromCookies()
 
