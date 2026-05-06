@@ -1,0 +1,73 @@
+
+> architect-system@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.4 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+✓ Ready in 513ms
+
+○ Compiling /login ...
+ HEAD /login 200 in 4.2s (next.js: 3.8s, application-code: 313ms)
+ GET /login 200 in 161ms (next.js: 11ms, application-code: 150ms)
+ POST /login 200 in 770ms (next.js: 7ms, application-code: 762ms)
+  └─ ƒ loginAction({}) in 527ms actions/login.ts
+ GET /dashboard 200 in 1468ms (next.js: 930ms, application-code: 539ms)
+ GET /dashboard 200 in 527ms (next.js: 6ms, application-code: 521ms)
+ POST /dashboard 200 in 151ms (next.js: 4ms, application-code: 147ms)
+  └─ ƒ getUnreadCountAction() in 135ms actions/notifications.ts
+ POST /dashboard 200 in 159ms (next.js: 6ms, application-code: 152ms)
+  └─ ƒ getUnreadCountAction() in 135ms actions/notifications.ts
+ GET /login 200 in 89ms (next.js: 3ms, application-code: 86ms)
+ POST /login 200 in 718ms (next.js: 6ms, application-code: 712ms)
+  └─ ƒ loginAction({}) in 522ms actions/login.ts
+ GET /dashboard 200 in 472ms (next.js: 4ms, application-code: 468ms)
+ GET /dashboard 200 in 480ms (next.js: 4ms, application-code: 476ms)
+ POST /dashboard 200 in 163ms (next.js: 5ms, application-code: 158ms)
+  └─ ƒ getUnreadCountAction() in 139ms actions/notifications.ts
+ POST /dashboard 200 in 147ms (next.js: 3ms, application-code: 144ms)
+  └─ ƒ getUnreadCountAction() in 135ms actions/notifications.ts
+ GET /help-requests 200 in 1134ms (next.js: 800ms, application-code: 334ms)
+ POST /help-requests 200 in 148ms (next.js: 3ms, application-code: 145ms)
+  └─ ƒ getUnreadCountAction() in 135ms actions/notifications.ts
+ POST /help-requests 200 in 146ms (next.js: 3ms, application-code: 143ms)
+  └─ ƒ getUnreadCountAction() in 134ms actions/notifications.ts
+ GET /login 200 in 70ms (next.js: 3ms, application-code: 67ms)
+ POST /help-requests 303 in 95ms (next.js: 3ms, application-code: 92ms)
+  └─ ƒ logoutAction() in 3ms actions/login.ts
+ GET /login 200 in 100ms (next.js: 3ms, application-code: 96ms)
+ GET /login 200 in 85ms (next.js: 3ms, application-code: 81ms)
+ POST /login 200 in 595ms (next.js: 3ms, application-code: 592ms)
+  └─ ƒ loginAction({}) in 396ms actions/login.ts
+ GET /dashboard 200 in 450ms (next.js: 3ms, application-code: 447ms)
+ GET /dashboard 200 in 477ms (next.js: 3ms, application-code: 474ms)
+ POST /dashboard 200 in 147ms (next.js: 3ms, application-code: 144ms)
+  └─ ƒ getUnreadCountAction() in 134ms actions/notifications.ts
+ POST /dashboard 200 in 145ms (next.js: 3ms, application-code: 142ms)
+  └─ ƒ getUnreadCountAction() in 134ms actions/notifications.ts
+ GET /help-requests 200 in 316ms (next.js: 4ms, application-code: 312ms)
+ POST /help-requests 200 in 166ms (next.js: 8ms, application-code: 158ms)
+  └─ ƒ getUnreadCountAction() in 147ms actions/notifications.ts
+ POST /help-requests 200 in 147ms (next.js: 3ms, application-code: 144ms)
+  └─ ƒ getUnreadCountAction() in 135ms actions/notifications.ts
+ GET /login 200 in 65ms (next.js: 4ms, application-code: 62ms)
+ POST /help-requests 303 in 96ms (next.js: 4ms, application-code: 93ms)
+  └─ ƒ logoutAction() in 3ms actions/login.ts
+ GET /login 200 in 156ms (next.js: 4ms, application-code: 152ms)
+ GET /login 200 in 104ms (next.js: 3ms, application-code: 100ms)
+ POST /login 200 in 580ms (next.js: 8ms, application-code: 572ms)
+  └─ ƒ loginAction({}) in 392ms actions/login.ts
+ GET /dashboard 200 in 329ms (next.js: 3ms, application-code: 326ms)
+ GET /dashboard 200 in 480ms (next.js: 7ms, application-code: 473ms)
+ POST /dashboard 200 in 148ms (next.js: 4ms, application-code: 143ms)
+  └─ ƒ getUnreadCountAction() in 133ms actions/notifications.ts
+ POST /dashboard 200 in 144ms (next.js: 3ms, application-code: 141ms)
+  └─ ƒ getUnreadCountAction() in 134ms actions/notifications.ts
+ GET /help-requests 200 in 321ms (next.js: 5ms, application-code: 316ms)
+ POST /help-requests 200 in 145ms (next.js: 3ms, application-code: 142ms)
+  └─ ƒ getUnreadCountAction() in 134ms actions/notifications.ts
+ POST /help-requests 200 in 144ms (next.js: 3ms, application-code: 141ms)
+  └─ ƒ getUnreadCountAction() in 133ms actions/notifications.ts
+ GET /login 200 in 85ms (next.js: 12ms, application-code: 73ms)
+ POST /help-requests 303 in 110ms (next.js: 3ms, application-code: 108ms)
+  └─ ƒ logoutAction() in 5ms actions/login.ts

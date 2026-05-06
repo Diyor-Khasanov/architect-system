@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, FolderKanban, Users, BarChart3, Wrench, LogOut, Command, X, ClipboardList, HelpCircle, CheckSquare } from 'lucide-react'
+import { LayoutDashboard, FolderKanban, Users, BarChart3, Wrench, LogOut, Command, X, ClipboardList, HelpCircle } from 'lucide-react'
 import { logoutAction } from '../actions/login'
 import type { UserRole } from '../lib/auth'
 import { cn } from '../lib/utils'
