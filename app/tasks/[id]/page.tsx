@@ -22,7 +22,11 @@ export default async function TaskDetailPage({
     const task = await fetchTask(id)
     return (
       <AppShell currentUser={currentUser}>
-        <TaskDetailClient task={task} />
+        <TaskDetailClient
+          task={task}
+          currentUserId={currentUser.id}
+          currentUserRole={currentUser.role}
+        />
       </AppShell>
     )
   } catch (error) {
