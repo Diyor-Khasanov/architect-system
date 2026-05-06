@@ -1,10 +1,12 @@
 import { getAuthHeaderFromCookies } from './auth'
 
+export type TaskStatus = 'TODO' | 'IN_PROGRESS' | 'REVIEW' | 'DONE' | 'CANCELED' | 'BLOCKED'
+
 export interface Task {
   id: number
   title: string
   description: string
-  status: string
+  status: TaskStatus
   priority: string
   deadline: string
   project_id: number
@@ -113,6 +115,54 @@ export async function createTask(projectId: string | number, payload: { title: s
 
   if (!response.ok) {
     throw new Error('Failed to create task')
+  }
+
+  return (await response.json()) as Task
+}
+
+export async function updateTaskStatus(id: string | number, status: TaskStatus) {
+  const authorization = await getAuthHeaderFromCookies()
+
+  if (!authorization) {
+    throw new Error('Unauthorized')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/tasks/${id}/status`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: authorization,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ status }),
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to update task status')
+  }
+
+  return (await response.json()) as Task
+}
+
+export async function updateTask(id: string | number, payload: Partial<{ title: string; description: string; deadline: string }>) {
+  const authorization = await getAuthHeaderFromCookies()
+
+  if (!authorization) {
+    throw new Error('Unauthorized')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/tasks/${id}`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: authorization,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to update task')
   }
 
   return (await response.json()) as Task
