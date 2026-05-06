@@ -1,7 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { createTask, updateTask, updateTaskStatus, type TaskStatus } from '../lib/tasks'
+import { createTask, updateTask, updateTaskStatus, assignTaskWorker, unassignTaskWorker, type TaskStatus } from '../lib/tasks'
 
 export async function createTaskAction(projectId: string | number, prevState: any, formData: FormData) {
   const title = formData.get('title') as string
@@ -51,5 +51,32 @@ export async function updateTaskAction(taskId: string | number, prevState: any, 
     return { success: true }
   } catch (error: any) {
     return { error: error.message || 'Failed to update task.' }
+  }
+}
+
+export async function assignTaskWorkerAction(taskId: string | number, prevState: any, formData: FormData) {
+  const userId = formData.get('user_id') ? Number(formData.get('user_id')) : null
+  const roleOnTask = formData.get('role_on_task') as string
+
+  if (!userId || !roleOnTask) {
+    return { error: 'Worker and role are required.' }
+  }
+
+  try {
+    await assignTaskWorker(taskId, userId, roleOnTask)
+    revalidatePath(`/tasks/${taskId}`)
+    return { success: true }
+  } catch (error: any) {
+    return { error: error.message || 'Failed to assign worker.' }
+  }
+}
+
+export async function unassignTaskWorkerAction(taskId: string | number, userId: number) {
+  try {
+    await unassignTaskWorker(taskId, userId)
+    revalidatePath(`/tasks/${taskId}`)
+    return { success: true }
+  } catch (error: any) {
+    return { error: error.message || 'Failed to unassign worker.' }
   }
 }

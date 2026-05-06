@@ -5,31 +5,37 @@
 ▲ Next.js 16.2.4 (Turbopack)
 - Local:         http://localhost:3000
 - Network:       http://192.168.0.2:3000
-✓ Ready in 1259ms
+✓ Ready in 525ms
 
- GET /login 200 in 1229ms (next.js: 620ms, application-code: 609ms)
- POST /login 200 in 733ms (next.js: 5ms, application-code: 728ms)
-  └─ ƒ loginAction({}) in 520ms actions/login.ts
- GET /dashboard 200 in 527ms (next.js: 32ms, application-code: 495ms)
- GET /dashboard 200 in 483ms (next.js: 3ms, application-code: 480ms)
- POST /dashboard 200 in 162ms (next.js: 15ms, application-code: 147ms)
-  └─ ƒ getUnreadCountAction() in 134ms actions/notifications.ts
- POST /dashboard 200 in 147ms (next.js: 3ms, application-code: 143ms)
-  └─ ƒ getUnreadCountAction() in 134ms actions/notifications.ts
- GET /tasks 200 in 354ms (next.js: 24ms, application-code: 331ms)
- POST /tasks 200 in 149ms (next.js: 5ms, application-code: 144ms)
-  └─ ƒ getUnreadCountAction() in 134ms actions/notifications.ts
- POST /tasks 200 in 152ms (next.js: 4ms, application-code: 148ms)
-  └─ ƒ getUnreadCountAction() in 138ms actions/notifications.ts
- GET /login 200 in 101ms (next.js: 5ms, application-code: 96ms)
- POST /login 200 in 737ms (next.js: 4ms, application-code: 733ms)
-  └─ ƒ loginAction({}) in 521ms actions/login.ts
- GET /dashboard 200 in 454ms (next.js: 4ms, application-code: 451ms)
- GET /dashboard 200 in 463ms (next.js: 3ms, application-code: 460ms)
- POST /dashboard 200 in 161ms (next.js: 10ms, application-code: 152ms)
+○ Compiling /login ...
+ GET /login 200 in 6.1s (next.js: 5.5s, application-code: 558ms)
+ GET /login 200 in 267ms (next.js: 15ms, application-code: 252ms)
+ POST /login 200 in 836ms (next.js: 7ms, application-code: 829ms)
+  └─ ƒ loginAction({}) in 541ms actions/login.ts
+ GET /dashboard 200 in 2.5s (next.js: 1815ms, application-code: 715ms)
+ GET /dashboard 200 in 718ms (next.js: 7ms, application-code: 710ms)
+ POST /dashboard 200 in 175ms (next.js: 8ms, application-code: 168ms)
+  └─ ƒ getUnreadCountAction() in 140ms actions/notifications.ts
+ POST /dashboard 200 in 174ms (next.js: 8ms, application-code: 166ms)
   └─ ƒ getUnreadCountAction() in 141ms actions/notifications.ts
- POST /dashboard 200 in 144ms (next.js: 3ms, application-code: 142ms)
-  └─ ƒ getUnreadCountAction() in 134ms actions/notifications.ts
- GET /tasks 200 in 457ms (next.js: 3ms, application-code: 454ms)
- POST /tasks 200 in 147ms (next.js: 3ms, application-code: 144ms)
+ GET /tasks 200 in 1619ms (next.js: 1270ms, application-code: 348ms)
+ POST /tasks 200 in 164ms (next.js: 5ms, application-code: 159ms)
+  └─ ƒ getUnreadCountAction() in 147ms actions/notifications.ts
+ POST /tasks 200 in 149ms (next.js: 4ms, application-code: 145ms)
+  └─ ƒ getUnreadCountAction() in 136ms actions/notifications.ts
+✓ Compiled in 770ms
+ GET /login 200 in 732ms (next.js: 68ms, application-code: 665ms)
+ POST /login 200 in 768ms (next.js: 14ms, application-code: 754ms)
+  └─ ƒ loginAction({}) in 528ms actions/login.ts
+ GET /dashboard 200 in 570ms (next.js: 7ms, application-code: 563ms)
+ GET /dashboard 200 in 595ms (next.js: 5ms, application-code: 591ms)
+[browser] Uncaught TypeError: Failed to execute 'measure' on 'Performance': '​LoginPage' cannot have a negative time stamp.
+ POST /dashboard 200 in 171ms (next.js: 7ms, application-code: 164ms)
+  └─ ƒ getUnreadCountAction() in 135ms actions/notifications.ts
+ POST /dashboard 200 in 147ms (next.js: 3ms, application-code: 144ms)
+  └─ ƒ getUnreadCountAction() in 135ms actions/notifications.ts
+ GET /tasks 200 in 327ms (next.js: 14ms, application-code: 314ms)
+ POST /tasks 200 in 150ms (next.js: 3ms, application-code: 147ms)
+  └─ ƒ getUnreadCountAction() in 137ms actions/notifications.ts
+ POST /tasks 200 in 146ms (next.js: 3ms, application-code: 143ms)
   └─ ƒ getUnreadCountAction() in 134ms actions/notifications.ts
