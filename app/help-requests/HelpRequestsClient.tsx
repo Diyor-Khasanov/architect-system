@@ -3,8 +3,9 @@
 import { useState, useCallback } from 'react'
 import { HelpRequest } from '../lib/help-requests'
 import { Task } from '../lib/tasks'
-import { HelpCircle, Plus, X } from 'lucide-react'
+import { HelpCircle, Plus, X, ArrowRight } from 'lucide-react'
 import HelpRequestCreateForm from '../components/HelpRequestCreateForm'
+import Link from 'next/link'
 
 export default function HelpRequestsClient({
   helpRequests,
@@ -79,6 +80,7 @@ export default function HelpRequestsClient({
                   <th className='px-2 py-3'>Priority</th>
                   <th className='px-2 py-3'>User ID</th>
                   <th className='px-2 py-3'>Created</th>
+                  <th className='px-2 py-3 text-right'>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -98,18 +100,27 @@ export default function HelpRequestsClient({
                       </div>
                     </td>
                     <td className='px-2 py-3'>
-                      <span className='rounded-full bg-zinc-100 px-2 py-1 text-xs text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300'>
+                      <span className='rounded-full bg-zinc-100 px-2 py-1 text-xs text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 uppercase'>
                         {request.status}
                       </span>
                     </td>
                     <td className='px-2 py-3'>
-                      <span className='rounded-full bg-zinc-100 px-2 py-1 text-xs text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300'>
+                      <span className='rounded-full bg-zinc-100 px-2 py-1 text-xs text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 capitalize'>
                         {request.priority}
                       </span>
                     </td>
                     <td className='px-2 py-3 text-zinc-600 dark:text-zinc-300'>{request.user_id}</td>
                     <td className='px-2 py-3 text-zinc-500 dark:text-zinc-400'>
                       {new Date(request.created_at).toLocaleDateString()}
+                    </td>
+                    <td className='px-2 py-3 text-right'>
+                      <Link
+                        href={`/help-requests/${request.id}`}
+                        className='inline-flex items-center gap-1 text-sm font-medium text-zinc-900 hover:underline dark:text-zinc-100'
+                      >
+                        View
+                        <ArrowRight className='h-4 w-4' />
+                      </Link>
                     </td>
                   </tr>
                 ))}
