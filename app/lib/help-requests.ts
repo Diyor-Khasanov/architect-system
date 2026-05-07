@@ -53,6 +53,29 @@ export async function fetchHelpRequests() {
   return normalizeHelpRequestsResponse(payload)
 }
 
+export async function fetchHelpRequest(id: string | number) {
+  const authorization = await getAuthHeaderFromCookies()
+
+  if (!authorization) {
+    throw new Error('Unauthorized')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/help-requests/${id}`, {
+    method: 'GET',
+    headers: {
+      Authorization: authorization,
+    },
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    if (response.status === 404) return null
+    throw new Error('Failed to fetch help request')
+  }
+
+  return (await response.json()) as HelpRequest
+}
+
 export async function createHelpRequest(taskId: number) {
   const authorization = await getAuthHeaderFromCookies()
 
