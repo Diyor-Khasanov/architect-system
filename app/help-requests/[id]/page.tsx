@@ -27,7 +27,7 @@ export default async function HelpRequestDetailPage({
 
     return (
       <AppShell currentUser={currentUser}>
-        <HelpRequestDetailClient helpRequest={helpRequest} />
+        <HelpRequestDetailClient helpRequest={helpRequest} currentUser={currentUser} />
       </AppShell>
     )
   } catch (error) {

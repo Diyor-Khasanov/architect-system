@@ -1,7 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { createHelpRequest } from '../lib/help-requests'
+import { createHelpRequest, assignHelpRequest, resolveHelpRequest } from '../lib/help-requests'
 
 export async function createHelpRequestAction(prevState: any, formData: FormData) {
   const taskId = formData.get('task_id') ? Number(formData.get('task_id')) : null
@@ -16,5 +16,27 @@ export async function createHelpRequestAction(prevState: any, formData: FormData
     return { success: true }
   } catch (error: any) {
     return { error: error.message || 'Failed to create help request.' }
+  }
+}
+
+export async function assignHelpRequestAction(id: string | number) {
+  try {
+    await assignHelpRequest(id)
+    revalidatePath(`/help-requests/${id}`)
+    revalidatePath('/help-requests')
+    return { success: true }
+  } catch (error: any) {
+    return { error: error.message || 'Failed to assign help request.' }
+  }
+}
+
+export async function resolveHelpRequestAction(id: string | number) {
+  try {
+    await resolveHelpRequest(id)
+    revalidatePath(`/help-requests/${id}`)
+    revalidatePath('/help-requests')
+    return { success: true }
+  } catch (error: any) {
+    return { error: error.message || 'Failed to resolve help request.' }
   }
 }

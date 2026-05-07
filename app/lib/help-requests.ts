@@ -99,3 +99,47 @@ export async function createHelpRequest(taskId: number) {
 
   return await response.json()
 }
+
+export async function assignHelpRequest(id: string | number) {
+  const authorization = await getAuthHeaderFromCookies()
+
+  if (!authorization) {
+    throw new Error('Unauthorized')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/help-requests/${id}/assign`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: authorization,
+    },
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to assign help request')
+  }
+
+  return await response.json()
+}
+
+export async function resolveHelpRequest(id: string | number) {
+  const authorization = await getAuthHeaderFromCookies()
+
+  if (!authorization) {
+    throw new Error('Unauthorized')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/help-requests/${id}/resolve`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: authorization,
+    },
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to resolve help request')
+  }
+
+  return await response.json()
+}
