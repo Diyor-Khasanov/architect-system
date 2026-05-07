@@ -1,14 +1,45 @@
 'use client'
 
+import { useState, useTransition } from 'react'
 import { HelpRequest } from '../../lib/help-requests'
-import { Calendar, User, HelpCircle, ArrowLeft, Clock } from 'lucide-react'
+import { Calendar, User, HelpCircle, ArrowLeft, Clock, CheckCircle2, UserPlus } from 'lucide-react'
 import Link from 'next/link'
+import { MeResponse } from '../../lib/auth'
+import { assignHelpRequestAction, resolveHelpRequestAction } from '../../actions/help-requests'
 
 export default function HelpRequestDetailClient({
   helpRequest,
+  currentUser,
 }: {
   helpRequest: HelpRequest
+  currentUser: MeResponse
 }) {
+  const [isPending, startTransition] = useTransition()
+  const [error, setError] = useState<string | null>(null)
+
+  const isManagerOrAdmin = currentUser.role === 'manager' || currentUser.role === 'admin'
+  const isResolvable = helpRequest.status.toLowerCase() !== 'resolved' && helpRequest.status.toLowerCase() !== 'completed'
+
+  const handleAssign = () => {
+    setError(null)
+    startTransition(async () => {
+      const result = await assignHelpRequestAction(helpRequest.id)
+      if (result.error) {
+        setError(result.error)
+      }
+    })
+  }
+
+  const handleResolve = () => {
+    setError(null)
+    startTransition(async () => {
+      const result = await resolveHelpRequestAction(helpRequest.id)
+      if (result.error) {
+        setError(result.error)
+      }
+    })
+  }
+
   return (
     <div className='max-w-4xl space-y-6'>
       <header className='rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
@@ -23,7 +54,7 @@ export default function HelpRequestDetailClient({
           </div>
         </div>
 
-        <div className='flex items-start justify-between gap-4'>
+        <div className='flex flex-col md:flex-row md:items-start justify-between gap-4'>
           <div>
             <h1 className='text-2xl md:text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100'>
               {helpRequest.title}
@@ -38,7 +69,34 @@ export default function HelpRequestDetailClient({
               </span>
             </div>
           </div>
+
+          {isManagerOrAdmin && isResolvable && (
+            <div className='flex items-center gap-3'>
+              <button
+                onClick={handleAssign}
+                disabled={isPending}
+                className='flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-900 transition-all hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800'
+              >
+                <UserPlus className='h-4 w-4' />
+                Assign to Me
+              </button>
+              <button
+                onClick={handleResolve}
+                disabled={isPending}
+                className='flex items-center gap-2 rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-all hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200'
+              >
+                <CheckCircle2 className='h-4 w-4' />
+                Resolve
+              </button>
+            </div>
+          )}
         </div>
+
+        {error && (
+          <div className='mt-4 rounded-xl bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400'>
+            {error}
+          </div>
+        )}
 
         <p className='mt-6 text-zinc-600 dark:text-zinc-400 leading-relaxed whitespace-pre-wrap'>
           {helpRequest.description}
