@@ -1,15 +1,26 @@
 'use client'
 
+import { useState, useCallback } from 'react'
 import { HelpRequest } from '../lib/help-requests'
-import { HelpCircle } from 'lucide-react'
+import { Task } from '../lib/tasks'
+import { HelpCircle, Plus, X } from 'lucide-react'
+import HelpRequestCreateForm from '../components/HelpRequestCreateForm'
 
 export default function HelpRequestsClient({
   helpRequests,
+  tasks,
   fetchError,
 }: {
   helpRequests: HelpRequest[]
+  tasks: Task[]
   fetchError?: string
 }) {
+  const [isCreating, setIsCreating] = useState(false)
+
+  const handleSuccess = useCallback(() => {
+    setIsCreating(false)
+  }, [])
+
   return (
     <section className='space-y-6'>
       <header className='flex flex-col gap-4 md:flex-row md:items-center md:justify-between rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
@@ -21,7 +32,28 @@ export default function HelpRequestsClient({
             View and manage help requests from across the platform.
           </p>
         </div>
+
+        <button
+          onClick={() => setIsCreating(!isCreating)}
+          className='flex items-center justify-center gap-2 rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white transition-all hover:bg-zinc-800 active:scale-95 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200'
+        >
+          {isCreating ? (
+            <>
+              <X className='h-4 w-4' />
+              Cancel
+            </>
+          ) : (
+            <>
+              <Plus className='h-4 w-4' />
+              New Request
+            </>
+          )}
+        </button>
       </header>
+
+      {isCreating && (
+        <HelpRequestCreateForm tasks={tasks} onSuccess={handleSuccess} />
+      )}
 
       <article className='rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
         <h2 className='text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100'>

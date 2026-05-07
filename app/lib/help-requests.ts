@@ -52,3 +52,27 @@ export async function fetchHelpRequests() {
   const payload = (await response.json()) as unknown
   return normalizeHelpRequestsResponse(payload)
 }
+
+export async function createHelpRequest(taskId: number) {
+  const authorization = await getAuthHeaderFromCookies()
+
+  if (!authorization) {
+    throw new Error('Unauthorized')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/help-requests/`, {
+    method: 'POST',
+    headers: {
+      Authorization: authorization,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ task_id: taskId }),
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to create help request')
+  }
+
+  return await response.json()
+}
