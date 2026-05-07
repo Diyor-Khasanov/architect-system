@@ -88,6 +88,29 @@ export async function fetchTasks() {
   return normalizeTasksResponse(payload)
 }
 
+export async function fetchMyTasks() {
+  const authorization = await getAuthHeaderFromCookies()
+
+  if (!authorization) {
+    throw new Error('Unauthorized')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/my/tasks`, {
+    method: 'GET',
+    headers: {
+      Authorization: authorization,
+    },
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch my tasks')
+  }
+
+  const payload = (await response.json()) as unknown
+  return normalizeTasksResponse(payload)
+}
+
 export async function fetchTask(id: string | number) {
   const authorization = await getAuthHeaderFromCookies()
 
