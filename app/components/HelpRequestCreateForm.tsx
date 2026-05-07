@@ -15,7 +15,7 @@ export default function HelpRequestCreateForm({
 }) {
   const { toast } = useToast()
   const [state, formAction, isPending] = useActionState(
-    (prevState: any, formData: FormData) => createHelpRequestAction(prevState, formData),
+    (prevState: unknown, formData: FormData) => createHelpRequestAction(prevState, formData),
     null
   )
 

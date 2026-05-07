@@ -3,7 +3,7 @@
 import { useState, useActionState } from 'react'
 import { Task, TaskStatus, TaskAssignment, TaskHistoryEntry } from '../../lib/tasks'
 import { ProjectMember } from '../../lib/projects'
-import { Calendar, Tag, User, Folder, Clock, Edit2, CheckCircle2, Play, Search, StopCircle, Ban, AlertTriangle, ArrowRight } from 'lucide-react'
+import { Calendar, User, Folder, Clock, Edit2, CheckCircle2, Play, Search, Ban, AlertTriangle, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { updateTaskAction, updateTaskStatusAction } from '../../actions/tasks'
 import { useToast } from '../../context/ToastContext'
@@ -28,7 +28,9 @@ const STATUS_COLORS: Record<TaskStatus, string> = {
   BLOCKED: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
 }
 
-const STATUS_ICONS: Record<TaskStatus, any> = {
+import { LucideIcon } from 'lucide-react'
+
+const STATUS_ICONS: Record<TaskStatus, LucideIcon> = {
   TODO: Clock,
   IN_PROGRESS: Play,
   REVIEW: Search,
@@ -54,7 +56,7 @@ export default function TaskDetailClient({
 }) {
   const [isEditing, setIsEditing] = useState(false)
   const { toast } = useToast()
-  const [updateState, updateAction, isPending] = useActionState(updateTaskAction.bind(null, task.id), null)
+  const [, updateAction, isPending] = useActionState(updateTaskAction.bind(null, task.id), null)
 
   const isManagerOrAdmin = currentUserRole === 'admin' || currentUserRole === 'manager'
   const isAssignee = task.assignee_id === currentUserId

@@ -139,7 +139,7 @@ export async function fetchUserProjects(id: number) {
 
   if (!response.ok) throw new Error('Failed to fetch user projects')
   const payload = await response.json()
-  return normalizeGenericResponse<any>(payload)
+  return normalizeGenericResponse<unknown>(payload)
 }
 
 export async function fetchUserTasks(id: number) {
@@ -154,7 +154,7 @@ export async function fetchUserTasks(id: number) {
 
   if (!response.ok) throw new Error('Failed to fetch user tasks')
   const payload = await response.json()
-  return normalizeGenericResponse<any>(payload)
+  return normalizeGenericResponse<unknown>(payload)
 }
 
 export async function fetchUserReports(id: number) {

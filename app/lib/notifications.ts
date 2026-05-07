@@ -49,8 +49,11 @@ export async function fetchNotifications(): Promise<Notification[]> {
     const data = await response.json()
 
     if (Array.isArray(data)) return data as Notification[]
-    if (data && typeof data === 'object' && Array.isArray((data as any).items)) return (data as any).items as Notification[]
-    if (data && typeof data === 'object' && Array.isArray((data as any).data)) return (data as any).data as Notification[]
+    if (data && typeof data === 'object' && data !== null) {
+      const candidate = data as { items?: Notification[]; data?: Notification[] }
+      if (Array.isArray(candidate.items)) return candidate.items
+      if (Array.isArray(candidate.data)) return candidate.data
+    }
 
     return []
   } catch (error) {

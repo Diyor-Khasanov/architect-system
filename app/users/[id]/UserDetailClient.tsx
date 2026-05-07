@@ -36,9 +36,9 @@ export default function UserDetailClient({
 }: {
   user: User
   currentUserRole: UserRole
-  projects?: any[]
-  tasks?: any[]
-  reports?: any
+  projects?: { id: number; name: string; status: string; progress?: number }[]
+  tasks?: { id: number; name: string; status: string; deadline: string; days_overdue: number }[]
+  reports?: Record<string, unknown> | null
 }) {
   const [isEditing, setIsEditing] = useState(false)
   const [isResettingPassword, setIsResettingPassword] = useState(false)

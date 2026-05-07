@@ -170,10 +170,11 @@ export async function fetchProjectMembers(id: string | number): Promise<ProjectM
     return payload as ProjectMember[]
   }
 
-  if (payload && typeof payload === 'object') {
-    const data = (payload as any).items || (payload as any).data || (payload as any).results || (payload as any).members
+  if (payload && typeof payload === 'object' && payload !== null) {
+    const candidate = payload as { items?: ProjectMember[]; data?: ProjectMember[]; results?: ProjectMember[]; members?: ProjectMember[] }
+    const data = candidate.items || candidate.data || candidate.results || candidate.members
     if (Array.isArray(data)) {
-      return data as ProjectMember[]
+      return data
     }
   }
 

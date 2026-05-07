@@ -1,7 +1,7 @@
 'use client'
 
 import { TaskHistoryEntry } from '../../lib/tasks'
-import { History, User, Clock, Tag, AlertCircle } from 'lucide-react'
+import { History, User, Tag } from 'lucide-react'
 
 export default function TaskHistoryClient({ history }: { history: TaskHistoryEntry[] }) {
   if (!history || history.length === 0) {

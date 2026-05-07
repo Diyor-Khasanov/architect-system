@@ -18,20 +18,21 @@ export default async function HelpRequestDetailPage({
     redirect('/login')
   }
 
+  let helpRequest
   try {
-    const helpRequest = await fetchHelpRequest(id)
-
-    if (!helpRequest) {
-      return notFound()
-    }
-
-    return (
-      <AppShell currentUser={currentUser}>
-        <HelpRequestDetailClient helpRequest={helpRequest} currentUser={currentUser} />
-      </AppShell>
-    )
+    helpRequest = await fetchHelpRequest(id)
   } catch (error) {
     console.error('Help request fetch error:', error)
     return notFound()
   }
+
+  if (!helpRequest) {
+    return notFound()
+  }
+
+  return (
+    <AppShell currentUser={currentUser}>
+      <HelpRequestDetailClient helpRequest={helpRequest} currentUser={currentUser} />
+    </AppShell>
+  )
 }

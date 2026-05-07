@@ -27,7 +27,7 @@ export interface TaskHistoryEntry {
   task_id: number
   user_id: number
   action: string
-  changes: Record<string, any>
+  changes: Record<string, unknown>
   created_at: string
 }
 
@@ -38,7 +38,7 @@ function normalizeTasksResponse(payload: unknown): Task[] {
     return payload as Task[]
   }
 
-  if (payload && typeof payload === 'object') {
+  if (typeof payload === 'object' && payload !== null) {
     const candidate = payload as { items?: unknown; data?: unknown; results?: unknown; tasks?: unknown }
 
     if (Array.isArray(candidate.items)) return candidate.items as Task[]
@@ -206,10 +206,11 @@ export async function fetchTaskHistory(id: string | number): Promise<TaskHistory
     return payload as TaskHistoryEntry[]
   }
 
-  if (payload && typeof payload === 'object') {
-    const data = (payload as any).items || (payload as any).data || (payload as any).results || (payload as any).history
+  if (payload && typeof payload === 'object' && payload !== null) {
+    const candidate = payload as { items?: TaskHistoryEntry[]; data?: TaskHistoryEntry[]; results?: TaskHistoryEntry[]; history?: TaskHistoryEntry[] }
+    const data = candidate.items || candidate.data || candidate.results || candidate.history
     if (Array.isArray(data)) {
-      return data as TaskHistoryEntry[]
+      return data
     }
   }
 
@@ -241,10 +242,11 @@ export async function fetchTaskAssignments(id: string | number): Promise<TaskAss
     return payload as TaskAssignment[]
   }
 
-  if (payload && typeof payload === 'object') {
-    const data = (payload as any).items || (payload as any).data || (payload as any).results || (payload as any).assignments
+  if (payload && typeof payload === 'object' && payload !== null) {
+    const candidate = payload as { items?: TaskAssignment[]; data?: TaskAssignment[]; results?: TaskAssignment[]; assignments?: TaskAssignment[] }
+    const data = candidate.items || candidate.data || candidate.results || candidate.assignments
     if (Array.isArray(data)) {
-      return data as TaskAssignment[]
+      return data
     }
   }
 

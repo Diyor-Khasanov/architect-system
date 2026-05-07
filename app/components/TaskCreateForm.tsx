@@ -14,7 +14,7 @@ export default function TaskCreateForm({
 }) {
   const { toast } = useToast()
   const [state, formAction, isPending] = useActionState(
-    (prevState: any, formData: FormData) => createTaskAction(projectId, prevState, formData),
+    (prevState: unknown, formData: FormData) => createTaskAction(projectId, prevState, formData),
     null
   )
 
