@@ -2,9 +2,9 @@
 
 import { Task } from '../lib/tasks'
 import Link from 'next/link'
-import { CheckCircle2, Circle, Clock, AlertCircle } from 'lucide-react'
+import { CheckCircle2, Circle, Clock, AlertCircle, LucideIcon } from 'lucide-react'
 
-const STATUS_ICONS: Record<string, any> = {
+const STATUS_ICONS: Record<string, LucideIcon> = {
   todo: Circle,
   doing: Clock,
   done: CheckCircle2,
@@ -14,19 +14,23 @@ const STATUS_ICONS: Record<string, any> = {
 export default function TasksClient({
   tasks,
   fetchError,
+  title = 'Tasks',
+  subtitle = 'Overview of all tasks across projects.',
 }: {
   tasks: Task[]
   fetchError?: string
+  title?: string
+  subtitle?: string
 }) {
   return (
     <section className='space-y-6'>
       <header className='flex flex-col gap-4 md:flex-row md:items-center md:justify-between rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
         <div>
           <h1 className='text-2xl md:text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100'>
-            Tasks
+            {title}
           </h1>
           <p className='mt-2 text-sm text-zinc-600 dark:text-zinc-400'>
-            Overview of all tasks across projects.
+            {subtitle}
           </p>
         </div>
       </header>
