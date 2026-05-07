@@ -46,9 +46,9 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
   // Managers can only see data for workers
   const hasAccessToData = currentUser.role === 'admin' || (currentUser.role === 'manager' && user.role === 'worker')
 
-  let projects = []
-  let tasks = []
-  let reports = null
+  let projects: any[] = []
+  let tasks: any[] = []
+  let reports: any = null
 
   if (hasAccessToData) {
     try {

@@ -3,8 +3,8 @@ import {
   fetchProjectProgressAnalytics,
   fetchReportsAnalytics,
   fetchWorkloadAnalytics,
-  DeadlineAnalytics,
 } from '../../lib/analytics'
+import type { DeadlineAnalytics } from '../../lib/analytics'
 import { fetchCurrentUser } from '../../lib/auth'
 import { AlertCircle, Calendar, CheckCircle2, Clock, BarChart3, PieChart, Users } from 'lucide-react'
 
@@ -24,12 +24,13 @@ export default async function AnalyticsPage() {
   ])
 
   // Helper to safely extract arrays even if the API structure varies
+  const typedDeadlineData = deadlineData as (DeadlineAnalytics | null)
   const upcomingDeadlines =
-    (deadlineData as any)?.upcoming_deadlines || (Array.isArray((deadlineData as any)?.items) ? (deadlineData as any).items : [])
-  const overdueTasks = (deadlineData as any)?.overdue_tasks || []
-  const summary = (deadlineData as any)?.summary || {
+    typedDeadlineData?.upcoming_deadlines || (Array.isArray((deadlineData as { items?: any[] })?.items) ? (deadlineData as { items: any[] }).items : [])
+  const overdueTasks = typedDeadlineData?.overdue_tasks || []
+  const summary = typedDeadlineData?.summary || {
     total_active_tasks: upcomingDeadlines.length,
-    approaching_deadlines_count: upcomingDeadlines.filter((t: any) => t.days_left <= 7).length,
+    approaching_deadlines_count: upcomingDeadlines.filter((t: { days_left: number }) => t.days_left <= 7).length,
     overdue_count: overdueTasks.length,
   }
 
@@ -91,7 +92,7 @@ export default async function AnalyticsPage() {
           <div className='p-6'>
             {upcomingDeadlines.length > 0 ? (
               <div className='space-y-4'>
-                {upcomingDeadlines.map((task: any) => (
+                {upcomingDeadlines.map((task: { id: number; name: string; deadline: string; days_left: number }) => (
                   <div key={task.id} className='flex items-center justify-between rounded-xl border border-zinc-100 p-4 dark:border-zinc-800'>
                     <div>
                       <h3 className='font-medium text-zinc-900 dark:text-zinc-100'>{task.name}</h3>
@@ -122,7 +123,7 @@ export default async function AnalyticsPage() {
           <div className='p-6'>
             {overdueTasks.length > 0 ? (
               <div className='space-y-4'>
-                {overdueTasks.map((task: any) => (
+                {overdueTasks.map((task: { id: number; name: string; deadline: string; days_overdue: number }) => (
                   <div
                     key={task.id}
                     className='flex items-center justify-between rounded-xl border border-red-100 bg-red-50/30 p-4 dark:border-red-900/30 dark:bg-red-950/10'
@@ -155,9 +156,9 @@ export default async function AnalyticsPage() {
               </h2>
             </div>
             <div className='p-6'>
-              {progressData && (Array.isArray(progressData) || Array.isArray((progressData as any).items)) ? (
+              {progressData && (Array.isArray(progressData) || Array.isArray((progressData as { items?: unknown[] }).items)) ? (
                 <div className='space-y-6'>
-                  {(Array.isArray(progressData) ? progressData : (progressData as any).items).map((project: any) => (
+                  {(Array.isArray(progressData) ? (progressData as { id: number; name: string; progress: number }[]) : (progressData as { items: { id: number; name: string; progress: number }[] }).items).map((project) => (
                     <div key={project.id} className='space-y-2'>
                       <div className='flex justify-between text-sm'>
                         <span className='font-medium text-zinc-900 dark:text-zinc-100'>{project.name}</span>
@@ -187,9 +188,9 @@ export default async function AnalyticsPage() {
             </div>
             <div className='p-6'>
               {workloadData &&
-              (Array.isArray(workloadData) || Array.isArray((workloadData as any).items) || Array.isArray((workloadData as any).users)) ? (
+              (Array.isArray(workloadData) || Array.isArray((workloadData as { items?: unknown[] }).items) || Array.isArray((workloadData as { users?: unknown[] }).users)) ? (
                 <div className='space-y-4'>
-                  {(Array.isArray(workloadData) ? workloadData : (workloadData as any).items || (workloadData as any).users).map((user: any) => (
+                  {(Array.isArray(workloadData) ? (workloadData as { id?: number; user_id?: number; full_name?: string; username?: string; role: string; task_count?: number; tasks_count?: number }[]) : (workloadData as { items?: { id?: number; user_id?: number; full_name?: string; username?: string; role: string; task_count?: number; tasks_count?: number }[]; users?: { id?: number; user_id?: number; full_name?: string; username?: string; role: string; task_count?: number; tasks_count?: number }[] }).items || (workloadData as { items?: { id?: number; user_id?: number; full_name?: string; username?: string; role: string; task_count?: number; tasks_count?: number }[]; users?: { id?: number; user_id?: number; full_name?: string; username?: string; role: string; task_count?: number; tasks_count?: number }[] }).users || []).map((user) => (
                     <div
                       key={user.id || user.user_id}
                       className='flex items-center justify-between rounded-xl border border-zinc-100 p-4 dark:border-zinc-800'
@@ -228,7 +229,7 @@ export default async function AnalyticsPage() {
             <div className='p-6'>
               {reportsData && typeof reportsData === 'object' && !Array.isArray(reportsData) ? (
                 <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
-                  {Object.entries(reportsData).map(([key, value]: [string, any]) => (
+                  {Object.entries(reportsData as Record<string, unknown>).map(([key, value]) => (
                     <div key={key} className='rounded-xl bg-zinc-50 p-4 dark:bg-zinc-800/50'>
                       <p className='text-xs font-medium uppercase tracking-wider text-zinc-500 dark:text-zinc-400'>
                         {key.replace(/_/g, ' ')}

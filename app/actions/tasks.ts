@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { createTask, updateTask, updateTaskStatus, assignTaskWorker, unassignTaskWorker, type TaskStatus } from '../lib/tasks'
 
-export async function createTaskAction(projectId: string | number, prevState: any, formData: FormData) {
+export async function createTaskAction(projectId: string | number, prevState: unknown, formData: FormData) {
   const title = formData.get('title') as string
   const description = formData.get('description') as string
   const deadline = formData.get('deadline') as string
@@ -17,8 +17,8 @@ export async function createTaskAction(projectId: string | number, prevState: an
     revalidatePath(`/projects/${projectId}`)
     revalidatePath('/tasks')
     return { success: true }
-  } catch (error: any) {
-    return { error: error.message || 'Failed to create task.' }
+  } catch (error: unknown) {
+    return { error: (error as Error).message || 'Failed to create task.' }
   }
 }
 
@@ -29,12 +29,12 @@ export async function updateTaskStatusAction(taskId: string | number, status: Ta
     revalidatePath('/tasks')
     revalidatePath(`/projects/${updatedTask.project_id}`)
     return { success: true }
-  } catch (error: any) {
-    return { error: error.message || 'Failed to update task status.' }
+  } catch (error: unknown) {
+    return { error: (error as Error).message || 'Failed to update task status.' }
   }
 }
 
-export async function updateTaskAction(taskId: string | number, prevState: any, formData: FormData) {
+export async function updateTaskAction(taskId: string | number, prevState: unknown, formData: FormData) {
   const title = formData.get('title') as string
   const description = formData.get('description') as string
   const deadline = formData.get('deadline') as string
@@ -49,12 +49,12 @@ export async function updateTaskAction(taskId: string | number, prevState: any, 
     revalidatePath('/tasks')
     revalidatePath(`/projects/${updatedTask.project_id}`)
     return { success: true }
-  } catch (error: any) {
-    return { error: error.message || 'Failed to update task.' }
+  } catch (error: unknown) {
+    return { error: (error as Error).message || 'Failed to update task.' }
   }
 }
 
-export async function assignTaskWorkerAction(taskId: string | number, prevState: any, formData: FormData) {
+export async function assignTaskWorkerAction(taskId: string | number, prevState: unknown, formData: FormData) {
   const userId = formData.get('user_id') ? Number(formData.get('user_id')) : null
   const roleOnTask = formData.get('role_on_task') as string
 
@@ -66,8 +66,8 @@ export async function assignTaskWorkerAction(taskId: string | number, prevState:
     await assignTaskWorker(taskId, userId, roleOnTask)
     revalidatePath(`/tasks/${taskId}`)
     return { success: true }
-  } catch (error: any) {
-    return { error: error.message || 'Failed to assign worker.' }
+  } catch (error: unknown) {
+    return { error: (error as Error).message || 'Failed to assign worker.' }
   }
 }
 
@@ -76,7 +76,7 @@ export async function unassignTaskWorkerAction(taskId: string | number, userId: 
     await unassignTaskWorker(taskId, userId)
     revalidatePath(`/tasks/${taskId}`)
     return { success: true }
-  } catch (error: any) {
-    return { error: error.message || 'Failed to unassign worker.' }
+  } catch (error: unknown) {
+    return { error: (error as Error).message || 'Failed to unassign worker.' }
   }
 }

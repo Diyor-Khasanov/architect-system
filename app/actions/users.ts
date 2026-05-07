@@ -64,7 +64,7 @@ export async function createUserAction(_: ActionState, formData: FormData): Prom
     revalidatePath('/users')
     return { success: true }
   } catch (error) {
-    return { error: error instanceof Error ? error.message : 'Could not create user.' }
+    return { error: error instanceof Error ? (error as Error).message : 'Could not create user.' }
   }
 }
 
@@ -117,7 +117,7 @@ export async function updateUserAction(
     revalidatePath(`/users/${id}`)
     return { success: true }
   } catch (error) {
-    return { error: error instanceof Error ? error.message : 'Could not update user.' }
+    return { error: error instanceof Error ? (error as Error).message : 'Could not update user.' }
   }
 }
 
@@ -160,7 +160,7 @@ export async function resetPasswordAction(
 
     return { success: true }
   } catch (error) {
-    return { error: error instanceof Error ? error.message : 'Could not reset password.' }
+    return { error: error instanceof Error ? (error as Error).message : 'Could not reset password.' }
   }
 }
 
@@ -179,7 +179,7 @@ export async function deleteUserAction(id: number): Promise<ActionState> {
     revalidatePath('/users')
     return { success: true }
   } catch (error) {
-    return { error: error instanceof Error ? error.message : 'Could not deactivate user.' }
+    return { error: error instanceof Error ? (error as Error).message : 'Could not deactivate user.' }
   }
 }
 
@@ -214,7 +214,7 @@ export async function updateMyProfileAction(_: ActionState, formData: FormData):
 
     return { success: true }
   } catch (error) {
-    return { error: error instanceof Error ? error.message : 'Could not update profile.' }
+    return { error: error instanceof Error ? (error as Error).message : 'Could not update profile.' }
   }
 }
 
@@ -242,7 +242,7 @@ export async function updateMyProfileDetailsAction(_: ActionState, formData: For
     revalidatePath('/profile')
     return { success: true }
   } catch (error) {
-    return { error: error instanceof Error ? error.message : 'Could not update profile details.' }
+    return { error: error instanceof Error ? (error as Error).message : 'Could not update profile details.' }
   }
 }
 
@@ -263,6 +263,6 @@ export async function uploadAvatarAction(_: ActionState, formData: FormData): Pr
     revalidatePath('/profile')
     return { success: true, data: result }
   } catch (error) {
-    return { error: error instanceof Error ? error.message : 'Could not upload avatar.' }
+    return { error: error instanceof Error ? (error as Error).message : 'Could not upload avatar.' }
   }
 }

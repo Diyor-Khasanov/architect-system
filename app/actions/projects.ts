@@ -96,8 +96,7 @@ export async function updateProjectAction(
 }
 
 export async function acceptProjectAction(
-  id: string,
-  _: ActionState
+  id: string
 ): Promise<ActionState> {
   const currentUser = await fetchCurrentUser()
 

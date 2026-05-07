@@ -1,26 +1,6 @@
 import { fetchCurrentUser, type UserRole } from '../lib/auth'
 import { fetchDashboardData } from '../lib/dashboard'
 
-const roleContent: Record<
-  UserRole,
-  {
-    headline: string
-    description: string
-  }
-> = {
-  admin: {
-    headline: 'Platform Control Center',
-    description: 'Manage users, monitor activity, and keep operations healthy across all projects.',
-  },
-  manager: {
-    headline: 'Project Delivery Dashboard',
-    description: 'Track project status and assign priorities efficiently.',
-  },
-  worker: {
-    headline: 'My Work Dashboard',
-    description: 'Focus on assigned tasks, upcoming deadlines, and progress on your deliverables.',
-  },
-}
 
 function formatStats(role: UserRole, data: Record<string, number> | null) {
   if (!data) return []
@@ -69,7 +49,6 @@ export default async function DashboardPage() {
   }
 
   const dashboardData = await fetchDashboardData(currentUser.role)
-  const activeRoleContent = roleContent[currentUser.role]
   const stats = formatStats(currentUser.role, dashboardData)
 
   return (

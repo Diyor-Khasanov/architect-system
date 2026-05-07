@@ -19,26 +19,27 @@ export default async function TaskDetailPage({
     redirect('/login')
   }
 
+  let task, assignments, projectMembers, history
   try {
-    const task = await fetchTask(id)
-    const assignments = await fetchTaskAssignments(id)
-    const projectMembers = await fetchProjectMembers(task.project_id)
-    const history = await fetchTaskHistory(id)
-
-    return (
-      <AppShell currentUser={currentUser}>
-        <TaskDetailClient
-          task={task}
-          currentUserId={currentUser.id}
-          currentUserRole={currentUser.role}
-          assignments={assignments}
-          projectMembers={projectMembers}
-          history={history}
-        />
-      </AppShell>
-    )
+    task = await fetchTask(id)
+    assignments = await fetchTaskAssignments(id)
+    projectMembers = await fetchProjectMembers(task.project_id)
+    history = await fetchTaskHistory(id)
   } catch (error) {
     console.error('Task fetch error:', error)
     return notFound()
   }
+
+  return (
+    <AppShell currentUser={currentUser}>
+      <TaskDetailClient
+        task={task}
+        currentUserId={currentUser.id}
+        currentUserRole={currentUser.role}
+        assignments={assignments}
+        projectMembers={projectMembers}
+        history={history}
+      />
+    </AppShell>
+  )
 }

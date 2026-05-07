@@ -104,7 +104,7 @@ export default function ProjectDetailClient({
 
   const handleAcceptProject = async () => {
     startTransition(async () => {
-      const result = await acceptProjectWithId({})
+      const result = await acceptProjectWithId()
       if (result.success) {
         toast('Project accepted successfully', 'success')
       } else if (result.error) {

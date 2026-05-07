@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { createHelpRequest, assignHelpRequest, resolveHelpRequest } from '../lib/help-requests'
 
-export async function createHelpRequestAction(prevState: any, formData: FormData) {
+export async function createHelpRequestAction(prevState: unknown, formData: FormData) {
   const taskId = formData.get('task_id') ? Number(formData.get('task_id')) : null
 
   if (taskId === null || isNaN(taskId)) {
@@ -14,8 +14,8 @@ export async function createHelpRequestAction(prevState: any, formData: FormData
     await createHelpRequest(taskId)
     revalidatePath('/help-requests')
     return { success: true }
-  } catch (error: any) {
-    return { error: error.message || 'Failed to create help request.' }
+  } catch (error: unknown) {
+    return { error: (error as Error).message || 'Failed to create help request.' }
   }
 }
 
@@ -25,8 +25,8 @@ export async function assignHelpRequestAction(id: string | number) {
     revalidatePath(`/help-requests/${id}`)
     revalidatePath('/help-requests')
     return { success: true }
-  } catch (error: any) {
-    return { error: error.message || 'Failed to assign help request.' }
+  } catch (error: unknown) {
+    return { error: (error as Error).message || 'Failed to assign help request.' }
   }
 }
 
@@ -36,7 +36,7 @@ export async function resolveHelpRequestAction(id: string | number) {
     revalidatePath(`/help-requests/${id}`)
     revalidatePath('/help-requests')
     return { success: true }
-  } catch (error: any) {
-    return { error: error.message || 'Failed to resolve help request.' }
+  } catch (error: unknown) {
+    return { error: (error as Error).message || 'Failed to resolve help request.' }
   }
 }
