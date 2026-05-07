@@ -1,13 +1,14 @@
 'use client'
 
 import { useState, useActionState } from 'react'
-import { Task, TaskStatus, TaskAssignment } from '../../lib/tasks'
+import { Task, TaskStatus, TaskAssignment, TaskHistoryEntry } from '../../lib/tasks'
 import { ProjectMember } from '../../lib/projects'
 import { Calendar, Tag, User, Folder, Clock, Edit2, CheckCircle2, Play, Search, StopCircle, Ban, AlertTriangle, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { updateTaskAction, updateTaskStatusAction } from '../../actions/tasks'
 import { useToast } from '../../context/ToastContext'
 import TaskAssignmentsClient from './TaskAssignmentsClient'
+import TaskHistoryClient from './TaskHistoryClient'
 
 const STATUS_TRANSITIONS: Record<TaskStatus, TaskStatus[]> = {
   TODO: ['IN_PROGRESS', 'CANCELED'],
@@ -42,12 +43,14 @@ export default function TaskDetailClient({
   currentUserRole,
   assignments,
   projectMembers,
+  history,
 }: {
   task: Task
   currentUserId: number
   currentUserRole: string
   assignments: TaskAssignment[]
   projectMembers: ProjectMember[]
+  history: TaskHistoryEntry[]
 }) {
   const [isEditing, setIsEditing] = useState(false)
   const { toast } = useToast()
@@ -270,23 +273,7 @@ export default function TaskDetailClient({
             canManage={isManagerOrAdmin}
           />
 
-          <section className='rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
-            <h2 className='text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 mb-4'>
-              Timeline
-            </h2>
-            <div className='space-y-6 relative before:absolute before:left-2 before:top-2 before:bottom-2 before:w-px before:bg-zinc-200 dark:before:bg-zinc-800'>
-               <div className='relative pl-8'>
-                <div className='absolute left-0 top-1.5 h-4 w-4 rounded-full border-2 border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900' />
-                <p className='text-sm font-medium text-zinc-900 dark:text-zinc-100'>Task updated</p>
-                <p className='text-xs text-zinc-500 dark:text-zinc-400'>{new Date(task.updated_at).toLocaleString()}</p>
-              </div>
-              <div className='relative pl-8'>
-                <div className='absolute left-0 top-1.5 h-4 w-4 rounded-full border-2 border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900' />
-                <p className='text-sm font-medium text-zinc-900 dark:text-zinc-100'>Task created</p>
-                <p className='text-xs text-zinc-500 dark:text-zinc-400'>{new Date(task.created_at).toLocaleString()}</p>
-              </div>
-            </div>
-          </section>
+          <TaskHistoryClient history={history} />
         </main>
       </div>
     </div>

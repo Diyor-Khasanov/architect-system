@@ -1,7 +1,7 @@
 import { notFound, redirect } from 'next/navigation'
 import AppShell from '../../components/AppShell'
 import { fetchCurrentUser } from '../../lib/auth'
-import { fetchTask, fetchTaskAssignments } from '../../lib/tasks'
+import { fetchTask, fetchTaskAssignments, fetchTaskHistory } from '../../lib/tasks'
 import { fetchProjectMembers } from '../../lib/projects'
 import TaskDetailClient from './TaskDetailClient'
 
@@ -23,6 +23,7 @@ export default async function TaskDetailPage({
     const task = await fetchTask(id)
     const assignments = await fetchTaskAssignments(id)
     const projectMembers = await fetchProjectMembers(task.project_id)
+    const history = await fetchTaskHistory(id)
 
     return (
       <AppShell currentUser={currentUser}>
@@ -32,6 +33,7 @@ export default async function TaskDetailPage({
           currentUserRole={currentUser.role}
           assignments={assignments}
           projectMembers={projectMembers}
+          history={history}
         />
       </AppShell>
     )
