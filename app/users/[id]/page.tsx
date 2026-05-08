@@ -46,15 +46,15 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
   // Managers can only see data for workers
   const hasAccessToData = currentUser.role === 'admin' || (currentUser.role === 'manager' && user.role === 'worker')
 
-  let projects: any[] = []
-  let tasks: any[] = []
-  let reports: any = null
+  let projects: { id: number; name: string; status: string; progress?: number }[] = []
+  let tasks: { id: number; name: string; status: string; deadline: string; days_overdue: number }[] = []
+  let reports: Record<string, unknown> | null = null
 
   if (hasAccessToData) {
     try {
       const [projectsRes, tasksRes, reportsRes] = await Promise.all([
-        fetchUserProjects(user.id),
-        fetchUserTasks(user.id),
+        fetchUserProjects(user.id) as Promise<{ id: number; name: string; status: string; progress?: number }[]>,
+        fetchUserTasks(user.id) as Promise<{ id: number; name: string; status: string; deadline: string; days_overdue: number }[]>,
         fetchUserReports(user.id),
       ])
       projects = projectsRes
