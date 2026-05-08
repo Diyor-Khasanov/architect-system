@@ -66,7 +66,7 @@ export async function fetchFile(id: number | string) {
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}))
     const error = new Error(errorData.detail || 'Failed to fetch file')
-    // @ts-ignore
+    // @ts-expect-error - Adding status to Error object for better error handling
     error.status = response.status
     throw error
   }
@@ -77,6 +77,62 @@ export async function fetchFile(id: number | string) {
   return response
 }
 
+export async function deleteFile(id: number | string) {
+  const authorization = await getAuthHeaderFromCookies()
+
+  if (!authorization) {
+    throw new Error('Unauthorized')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/files/${id}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: authorization,
+    },
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}))
+    const error = new Error(errorData.detail || 'Failed to delete file')
+    // @ts-expect-error - Adding status to Error object for better error handling
+    error.status = response.status
+    throw error
+  }
+
+  if (response.status === 204) {
+    return { success: true }
+  }
+
+  return response.json().catch(() => ({ success: true }))
+}
+
+export async function downloadFile(id: number | string) {
+  const authorization = await getAuthHeaderFromCookies()
+
+  if (!authorization) {
+    throw new Error('Unauthorized')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/files/${id}/download`, {
+    method: 'GET',
+    headers: {
+      Authorization: authorization,
+    },
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}))
+    const error = new Error(errorData.detail || 'Failed to download file')
+    // @ts-expect-error - Adding status to Error object for better error handling
+    error.status = response.status
+    throw error
+  }
+
+  return response
+}
+
 export function getFileDownloadUrl(id: number | string) {
-    return `${API_BASE_URL}/files/${id}`
+  return `${API_BASE_URL}/files/${id}/download`
 }
