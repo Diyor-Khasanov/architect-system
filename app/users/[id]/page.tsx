@@ -32,10 +32,10 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
   if (!user) {
     return (
       <AppShell currentUser={currentUser}>
-        <div className='rounded-2xl border border-red-200 bg-red-50 p-6 text-red-700'>
+        <div className='rounded-2xl border border-red-200 bg-red-50 p-6 text-red-700 dark:border-red-900/30 dark:bg-red-900/20 dark:text-red-400'>
           <h2 className='text-lg font-semibold'>Error</h2>
           <p className='mt-2'>User not found or you don&apos;t have permission to view this profile.</p>
-          <Link href='/users' className='mt-4 inline-block text-sm font-medium underline'>
+          <Link href='/users' className='mt-4 inline-block text-sm font-medium underline dark:text-red-300'>
             Back to users
           </Link>
         </div>
