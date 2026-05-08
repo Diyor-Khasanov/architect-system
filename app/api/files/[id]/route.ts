@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { fetchFile } from '../../../lib/files'
+import { downloadFile } from '../../../lib/files'
 
 export async function GET(
   request: NextRequest,
@@ -7,11 +7,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params
-    const response = await fetchFile(id)
-
-    if (!response.ok) {
-      return NextResponse.json({ error: 'Failed to fetch file from backend' }, { status: response.status })
-    }
+    const response = await downloadFile(id)
 
     const blob = await response.blob()
     const headers = new Headers()
@@ -27,9 +23,9 @@ export async function GET(
       status: 200,
       headers,
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('File API Error:', error)
-    const status = error.status || 500
+    const status = (error as { status?: number }).status || 500
     const errorMessage = error.message || 'Internal Server Error'
     return NextResponse.json({ error: errorMessage }, { status })
   }
