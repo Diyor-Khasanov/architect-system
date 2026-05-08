@@ -20,7 +20,13 @@ function SubmitButton() {
 
 const initialState: { success?: boolean; error?: string } = {}
 
-export default function ProjectCreateForm({ onSuccess }: { onSuccess?: () => void }) {
+export default function ProjectCreateForm({
+  onSuccess,
+  availableManagers = [],
+}: {
+  onSuccess?: () => void
+  availableManagers?: { id: number; username: string; full_name: string }[]
+}) {
   const [state, formAction] = useActionState(async (prev: typeof initialState, formData: FormData) => {
     const res = await createProjectAction(prev, formData)
     if (res.success && onSuccess) onSuccess()
@@ -46,15 +52,19 @@ export default function ProjectCreateForm({ onSuccess }: { onSuccess?: () => voi
         </label>
 
         <label className='space-y-1 text-sm text-zinc-600 dark:text-zinc-400'>
-          Manager ID
-          <input
+          Manager
+          <select
             name='manager_id'
-            type='number'
-            min={1}
             required
             className='w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-zinc-700'
-            placeholder='12'
-          />
+          >
+            <option value=''>Select a manager</option>
+            {availableManagers.map((m) => (
+              <option key={m.id} value={m.id}>
+                {m.full_name} ({m.username})
+              </option>
+            ))}
+          </select>
         </label>
       </div>
 
