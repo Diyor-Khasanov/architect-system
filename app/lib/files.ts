@@ -133,6 +133,32 @@ export async function downloadFile(id: number | string) {
   return response
 }
 
+export async function fetchFileSignedUrl(id: number | string) {
+  const authorization = await getAuthHeaderFromCookies()
+
+  if (!authorization) {
+    throw new Error('Unauthorized')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/files/${id}/signed-url`, {
+    method: 'GET',
+    headers: {
+      Authorization: authorization,
+    },
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}))
+    const error = new Error(errorData.detail || 'Failed to fetch signed URL')
+    // @ts-expect-error - Adding status to Error object for better error handling
+    error.status = response.status
+    throw error
+  }
+
+  return (await response.json()) as { url: string }
+}
+
 export function getFileDownloadUrl(id: number | string) {
   return `${API_BASE_URL}/files/${id}/download`
 }
