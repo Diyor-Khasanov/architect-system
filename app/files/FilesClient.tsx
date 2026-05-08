@@ -1,24 +1,32 @@
 'use client'
 
 import { useActionState, useState, useEffect } from 'react'
-import { uploadFileAction } from '../actions/files'
+import { uploadFileAction, deleteFileAction } from '../actions/files'
 import { useToast } from '../context/ToastContext'
-import { Upload, FileText, Download, Loader2, Search, FileDown } from 'lucide-react'
+import { Upload, FileText, Download, Loader2, Search, FileDown, Trash2 } from 'lucide-react'
 
 export default function FilesClient() {
   const { toast } = useToast()
-  const [state, action, isPending] = useActionState(uploadFileAction, null)
+  const [uploadState, uploadAction, isUploading] = useActionState(uploadFileAction, null)
+  const [deleteState, deleteAction, isDeleting] = useActionState(deleteFileAction, null)
   const [fileId, setFileId] = useState('')
   const [isDownloading, setIsDownloading] = useState(false)
 
   useEffect(() => {
-    if (state?.success) {
-      toast(`File uploaded successfully! ID: ${state.data.id}`, 'success')
-      // Reset form could be handled here if needed
-    } else if (state?.error) {
-      toast(state.error, 'error')
+    if (uploadState?.success) {
+      toast(`File uploaded successfully! ID: ${uploadState.data?.id}`, 'success')
+    } else if (uploadState?.error) {
+      toast(uploadState.error, 'error')
     }
-  }, [state, toast])
+  }, [uploadState, toast])
+
+  useEffect(() => {
+    if (deleteState?.success) {
+      toast('File deleted successfully!', 'success')
+    } else if (deleteState?.error) {
+      toast(deleteState.error, 'error')
+    }
+  }, [deleteState, toast])
 
   const handleDownload = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -68,7 +76,7 @@ export default function FilesClient() {
             Upload File
           </h2>
 
-          <form action={action} className='space-y-4'>
+          <form action={uploadAction} className='space-y-4'>
             <div className='space-y-2'>
               <label htmlFor='report_id' className='text-sm font-medium text-zinc-700 dark:text-zinc-300'>
                 Report ID (required)
@@ -102,10 +110,10 @@ export default function FilesClient() {
 
             <button
               type='submit'
-              disabled={isPending}
+              disabled={isUploading}
               className='flex w-full items-center justify-center gap-2 rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-2 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200'
             >
-              {isPending ? (
+              {isUploading ? (
                 <>
                   <Loader2 className='h-4 w-4 animate-spin' />
                   Uploading...
@@ -169,29 +177,65 @@ export default function FilesClient() {
         </section>
       </div>
 
-      {state?.success && state.data && (
-        <section className='rounded-2xl border border-emerald-100 bg-emerald-50/30 p-6 dark:border-emerald-900/30 dark:bg-emerald-950/10'>
+      {/* Delete Section */}
+      <section className='rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 mt-8'>
+        <h2 className='mb-6 flex items-center gap-2 text-xl font-semibold text-zinc-900 dark:text-zinc-100'>
+          <Trash2 className='h-5 w-5 text-red-500' />
+          Delete File
+        </h2>
+
+        <div className='space-y-6'>
+          <form action={deleteAction} className='space-y-4'>
+            <div className='space-y-2'>
+              <label htmlFor='delete_file_id' className='text-sm font-medium text-zinc-700 dark:text-zinc-300'>
+                File ID
+              </label>
+              <div className='flex gap-2'>
+                <input
+                  type='text'
+                  id='delete_file_id'
+                  name='file_id'
+                  placeholder='Enter file ID to delete...'
+                  required
+                  className='block flex-1 rounded-lg border border-zinc-200 bg-white px-4 py-2 text-zinc-900 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100'
+                />
+                <button
+                  type='submit'
+                  disabled={isDeleting}
+                  className='flex items-center gap-2 rounded-lg bg-red-600 px-6 py-2 text-sm font-semibold text-white transition-all hover:bg-red-700 disabled:opacity-50'
+                >
+                  {isDeleting ? <Loader2 className='h-4 w-4 animate-spin' /> : <Trash2 className='h-4 w-4' />}
+                  Delete
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      {uploadState?.success && uploadState.data && (
+        <section className='rounded-2xl border border-emerald-100 bg-emerald-50/30 p-6 dark:border-emerald-900/30 dark:bg-emerald-950/10 mt-8'>
           <h3 className='text-lg font-semibold text-emerald-900 dark:text-emerald-100'>Last Upload Success</h3>
           <div className='mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
             <div className='space-y-1'>
               <p className='text-xs font-medium uppercase tracking-wider text-emerald-600/70'>File ID</p>
-              <p className='text-sm font-bold text-emerald-900 dark:text-emerald-100'>#{state.data.id}</p>
+              <p className='text-sm font-bold text-emerald-900 dark:text-emerald-100'>#{uploadState.data.id}</p>
             </div>
             <div className='space-y-1'>
               <p className='text-xs font-medium uppercase tracking-wider text-emerald-600/70'>Filename</p>
-              <p className='text-sm font-medium text-emerald-900 dark:text-emerald-100 truncate' title={state.data.filename}>
-                {state.data.filename}
+              <p className='text-sm font-medium text-emerald-900 dark:text-emerald-100 truncate' title={uploadState.data.filename}>
+                {uploadState.data.filename}
               </p>
             </div>
             <div className='space-y-1'>
               <p className='text-xs font-medium uppercase tracking-wider text-emerald-600/70'>Size</p>
               <p className='text-sm font-medium text-emerald-900 dark:text-emerald-100'>
-                {(state.data.size / 1024).toFixed(2)} KB
+                {(uploadState.data.size / 1024).toFixed(2)} KB
               </p>
             </div>
             <div className='space-y-1'>
               <p className='text-xs font-medium uppercase tracking-wider text-emerald-600/70'>Report ID</p>
-              <p className='text-sm font-medium text-emerald-900 dark:text-emerald-100'>{state.data.report_id}</p>
+              <p className='text-sm font-medium text-emerald-900 dark:text-emerald-100'>{uploadState.data.report_id}</p>
             </div>
           </div>
         </section>
