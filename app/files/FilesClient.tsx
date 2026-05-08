@@ -1,16 +1,18 @@
 'use client'
 
 import { useActionState, useState, useEffect } from 'react'
-import { uploadFileAction, deleteFileAction } from '../actions/files'
+import { uploadFileAction, deleteFileAction, getFileSignedUrlAction } from '../actions/files'
 import { useToast } from '../context/ToastContext'
-import { Upload, FileText, Download, Loader2, Search, FileDown, Trash2 } from 'lucide-react'
+import { Upload, FileText, Download, Loader2, Search, FileDown, Trash2, LinkIcon, Copy, Check } from 'lucide-react'
 
 export default function FilesClient() {
   const { toast } = useToast()
   const [uploadState, uploadAction, isUploading] = useActionState(uploadFileAction, null)
   const [deleteState, deleteAction, isDeleting] = useActionState(deleteFileAction, null)
+  const [signedUrlState, signedUrlAction, isFetchingUrl] = useActionState(getFileSignedUrlAction, null)
   const [fileId, setFileId] = useState('')
   const [isDownloading, setIsDownloading] = useState(false)
+  const [copied, setCopied] = useState(false)
 
   useEffect(() => {
     if (uploadState?.success) {
@@ -27,6 +29,23 @@ export default function FilesClient() {
       toast(deleteState.error, 'error')
     }
   }, [deleteState, toast])
+
+  useEffect(() => {
+    if (signedUrlState?.success) {
+      toast('Signed URL generated successfully!', 'success')
+    } else if (signedUrlState?.error) {
+      toast(signedUrlState.error, 'error')
+    }
+  }, [signedUrlState, toast])
+
+  const handleCopyUrl = () => {
+    if (signedUrlState?.url) {
+      navigator.clipboard.writeText(signedUrlState.url)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+      toast('URL copied to clipboard!', 'success')
+    }
+  }
 
   const handleDownload = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -136,31 +155,66 @@ export default function FilesClient() {
           </h2>
 
           <div className='space-y-6'>
-            <form onSubmit={handleDownload} className='space-y-4'>
+            <div className='space-y-4'>
               <div className='space-y-2'>
                 <label htmlFor='file_id' className='text-sm font-medium text-zinc-700 dark:text-zinc-300'>
                   File ID
                 </label>
+                <input
+                  type='text'
+                  id='file_id'
+                  value={fileId}
+                  onChange={(e) => setFileId(e.target.value)}
+                  placeholder='Enter file ID...'
+                  className='block w-full rounded-lg border border-zinc-200 bg-white px-4 py-2 text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100'
+                />
+              </div>
+
+              <div className='flex gap-3'>
+                <button
+                  onClick={handleDownload}
+                  disabled={isDownloading || !fileId}
+                  className='flex flex-1 items-center justify-center gap-2 rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200'
+                >
+                  {isDownloading ? <Loader2 className='h-4 w-4 animate-spin' /> : <Download className='h-4 w-4' />}
+                  Download
+                </button>
+                <form action={signedUrlAction} className='flex-1'>
+                  <input type='hidden' name='file_id' value={fileId} />
+                  <button
+                    type='submit'
+                    disabled={isFetchingUrl || !fileId}
+                    className='flex w-full items-center justify-center gap-2 rounded-lg border border-zinc-200 bg-white px-4 py-2.5 text-sm font-semibold text-zinc-900 transition-all hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800'
+                  >
+                    {isFetchingUrl ? <Loader2 className='h-4 w-4 animate-spin' /> : <LinkIcon className='h-4 w-4' />}
+                    Signed URL
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            {signedUrlState?.success && signedUrlState.url && (
+              <div className='space-y-2 animate-in fade-in slide-in-from-top-2 duration-300'>
+                <label className='text-sm font-medium text-zinc-700 dark:text-zinc-300'>
+                  Signed URL (valid for limited time)
+                </label>
                 <div className='flex gap-2'>
                   <input
                     type='text'
-                    id='file_id'
-                    value={fileId}
-                    onChange={(e) => setFileId(e.target.value)}
-                    placeholder='Enter file ID...'
-                    className='block flex-1 rounded-lg border border-zinc-200 bg-white px-4 py-2 text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100'
+                    readOnly
+                    value={signedUrlState.url}
+                    className='block flex-1 rounded-lg border border-zinc-200 bg-zinc-50 px-4 py-2 text-sm text-zinc-600 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-400'
                   />
                   <button
-                    type='submit'
-                    disabled={isDownloading || !fileId}
-                    className='flex items-center gap-2 rounded-lg bg-zinc-900 px-6 py-2 text-sm font-semibold text-white transition-all hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200'
+                    onClick={handleCopyUrl}
+                    className='flex items-center gap-2 rounded-lg bg-zinc-100 px-3 py-2 text-sm font-medium text-zinc-900 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-100 dark:hover:bg-zinc-700'
+                    title='Copy to clipboard'
                   >
-                    {isDownloading ? <Loader2 className='h-4 w-4 animate-spin' /> : <Download className='h-4 w-4' />}
-                    Download
+                    {copied ? <Check className='h-4 w-4 text-emerald-500' /> : <Copy className='h-4 w-4' />}
                   </button>
                 </div>
               </div>
-            </form>
+            )}
 
             <div className='rounded-xl bg-zinc-50 p-4 dark:bg-zinc-800/50'>
               <div className='flex items-start gap-3'>
