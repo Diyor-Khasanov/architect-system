@@ -26,7 +26,7 @@ export async function GET(
   } catch (error: unknown) {
     console.error('File API Error:', error)
     const status = (error as { status?: number }).status || 500
-    const errorMessage = error instanceof Error ? error.message : 'Internal Server Error'
+    const errorMessage = error.message || 'Internal Server Error'
     return NextResponse.json({ error: errorMessage }, { status })
   }
 }
