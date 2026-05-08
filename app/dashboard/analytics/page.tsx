@@ -26,7 +26,7 @@ export default async function AnalyticsPage() {
   // Helper to safely extract arrays even if the API structure varies
   const typedDeadlineData = deadlineData as (DeadlineAnalytics | null)
   const upcomingDeadlines =
-    typedDeadlineData?.upcoming_deadlines || (Array.isArray((deadlineData as { items?: any[] })?.items) ? (deadlineData as { items: any[] }).items : [])
+    typedDeadlineData?.upcoming_deadlines || (Array.isArray((deadlineData as { items?: { id: number; name: string; deadline: string; days_left: number }[] })?.items) ? (deadlineData as { items: { id: number; name: string; deadline: string; days_left: number }[] }).items : [])
   const overdueTasks = typedDeadlineData?.overdue_tasks || []
   const summary = typedDeadlineData?.summary || {
     total_active_tasks: upcomingDeadlines.length,
