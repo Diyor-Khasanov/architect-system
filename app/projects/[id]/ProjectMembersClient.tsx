@@ -6,6 +6,7 @@ import type { ProjectMember } from '../../lib/projects'
 import type { User } from '../../lib/users'
 import { UserPlus, UserMinus, Loader2 } from 'lucide-react'
 import { useToast } from '../../context/ToastContext'
+import Combobox from '../../components/Combobox'
 
 interface ProjectMembersClientProps {
   projectId: string
@@ -54,18 +55,16 @@ export default function ProjectMembersClient({
 
         {canManage && selectableWorkers.length > 0 && (
           <form action={addFormAction} className='flex items-center gap-2'>
-            <select
+            <Combobox
               name='user_id'
               required
-              className='rounded-md border border-zinc-200 bg-white px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100'
-            >
-              <option value=''>Select a worker...</option>
-              {selectableWorkers.map((worker) => (
-                <option key={worker.id} value={worker.id}>
-                  {worker.profile?.full_name || worker.username}
-                </option>
-              ))}
-            </select>
+              placeholder='Select a worker...'
+              className='min-w-[200px]'
+              options={selectableWorkers.map((worker) => ({
+                id: worker.id,
+                label: worker.profile?.full_name || worker.username,
+              }))}
+            />
             <button
               type='submit'
               disabled={isPending}
@@ -86,7 +85,7 @@ export default function ProjectMembersClient({
         <table className='w-full text-left text-sm'>
           <thead className='border-b border-zinc-200 text-xs uppercase tracking-wide text-zinc-500 dark:border-zinc-800 dark:text-zinc-400'>
             <tr>
-              <th className='px-2 py-3'>Worker Id</th>
+              <th className='px-2 py-3'>Name</th>
               <th className='px-2 py-3'>Role</th>
               {canManage && <th className='px-2 py-3 text-right'>Actions</th>}
             </tr>
@@ -96,7 +95,7 @@ export default function ProjectMembersClient({
               members.map((member) => (
                 <tr key={member.user_id} className='group hover:bg-zinc-50/50 dark:hover:bg-zinc-800/50'>
                   <td className='px-2 py-3 font-medium text-zinc-900 dark:text-zinc-100'>
-                    #{member.user_id}
+                    {member.full_name}
                   </td>
                   <td className='px-2 py-3 text-zinc-600 capitalize dark:text-zinc-400'>
                     {member.role}

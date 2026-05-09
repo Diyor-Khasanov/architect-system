@@ -12,6 +12,7 @@ import type { Project } from '../../lib/projects'
 import type { MeResponse } from '../../lib/auth'
 import { useToast } from '../../context/ToastContext'
 import TaskCreateForm from '../../components/TaskCreateForm'
+import Combobox from '../../components/Combobox'
 
 const STATUS_LABELS: Record<string, string> = {
   draft: 'Draft',
@@ -146,17 +147,14 @@ export default function ProjectDetailClient({
                   <label className='block text-xs font-medium text-zinc-500 uppercase mb-1 dark:text-zinc-400'>
                     Manager
                   </label>
-                  <select
+                  <Combobox
                     name='manager_id'
                     defaultValue={project.manager_id}
-                    className='block w-full text-sm border border-zinc-200 rounded-md p-2 focus:outline-none focus:border-zinc-900 bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-zinc-700'
-                  >
-                    {availableManagers.map((m) => (
-                      <option key={m.id} value={m.id}>
-                        {m.full_name} ({m.username})
-                      </option>
-                    ))}
-                  </select>
+                    options={availableManagers.map((m) => ({
+                      id: m.id,
+                      label: `${m.full_name} (${m.username})`,
+                    }))}
+                  />
                 </div>
 
                 <div className='flex gap-2'>

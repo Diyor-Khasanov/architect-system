@@ -3,6 +3,7 @@
 import { useActionState } from 'react'
 import { useFormStatus } from 'react-dom'
 import { createProjectAction } from '../actions/projects'
+import Combobox from './Combobox'
 
 function SubmitButton() {
   const { pending } = useFormStatus()
@@ -51,21 +52,18 @@ export default function ProjectCreateForm({
           />
         </label>
 
-        <label className='space-y-1 text-sm text-zinc-600 dark:text-zinc-400'>
-          Manager
-          <select
+        <div className='space-y-1 text-sm text-zinc-600 dark:text-zinc-400'>
+          <span>Manager</span>
+          <Combobox
             name='manager_id'
             required
-            className='w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-zinc-700'
-          >
-            <option value=''>Select a manager</option>
-            {availableManagers.map((m) => (
-              <option key={m.id} value={m.id}>
-                {m.full_name} ({m.username})
-              </option>
-            ))}
-          </select>
-        </label>
+            placeholder='Select a manager'
+            options={availableManagers.map((m) => ({
+              id: m.id,
+              label: `${m.full_name} (${m.username})`,
+            }))}
+          />
+        </div>
       </div>
 
       <label className='space-y-1 text-sm text-zinc-600 dark:text-zinc-400'>

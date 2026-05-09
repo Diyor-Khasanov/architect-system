@@ -6,6 +6,7 @@ import type { TaskAssignment } from '../../lib/tasks'
 import type { ProjectMember } from '../../lib/projects'
 import { UserPlus, UserMinus, Loader2 } from 'lucide-react'
 import { useToast } from '../../context/ToastContext'
+import Combobox from '../../components/Combobox'
 
 interface TaskAssignmentsClientProps {
   taskId: number | string
@@ -56,18 +57,16 @@ export default function TaskAssignmentsClient({
 
         {canManage && selectableWorkers.length > 0 && (
           <form action={assignFormAction} className='flex items-center gap-2 flex-wrap'>
-            <select
+            <Combobox
               name='user_id'
               required
-              className='rounded-md border border-zinc-200 bg-white px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100'
-            >
-              <option value=''>Select a worker...</option>
-              {selectableWorkers.map((member) => (
-                <option key={member.user_id} value={member.user_id}>
-                  {member.full_name}
-                </option>
-              ))}
-            </select>
+              placeholder='Select a worker...'
+              className='min-w-[200px]'
+              options={selectableWorkers.map((member) => ({
+                id: member.user_id,
+                label: member.full_name,
+              }))}
+            />
             <input
               name='role_on_task'
               type='text'
