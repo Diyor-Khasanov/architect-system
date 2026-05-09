@@ -1,0 +1,211 @@
+
+> architect-system@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.4 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+✓ Ready in 541ms
+
+○ Compiling /login ...
+ GET /login 200 in 5.7s (next.js: 5.2s, application-code: 554ms)
+ POST /login 200 in 777ms (next.js: 7ms, application-code: 770ms)
+  └─ ƒ loginAction({}) in 533ms actions/login.ts
+ GET /dashboard 200 in 1563ms (next.js: 1072ms, application-code: 490ms)
+ GET /dashboard 200 in 518ms (next.js: 7ms, application-code: 511ms)
+ POST /dashboard 200 in 192ms (next.js: 4ms, application-code: 188ms)
+  └─ ƒ getUnreadCountAction() in 143ms actions/notifications.ts
+ POST /dashboard 200 in 182ms (next.js: 12ms, application-code: 170ms)
+  └─ ƒ getUnreadCountAction() in 149ms actions/notifications.ts
+ GET /tasks 200 in 1425ms (next.js: 912ms, application-code: 512ms)
+ POST /tasks 200 in 150ms (next.js: 4ms, application-code: 147ms)
+  └─ ƒ getUnreadCountAction() in 135ms actions/notifications.ts
+ GET /login 200 in 103ms (next.js: 6ms, application-code: 97ms)
+ POST /login 200 in 794ms (next.js: 5ms, application-code: 789ms)
+  └─ ƒ loginAction({}) in 526ms actions/login.ts
+ GET /dashboard 200 in 483ms (next.js: 4ms, application-code: 479ms)
+ GET /dashboard 200 in 495ms (next.js: 10ms, application-code: 485ms)
+ POST /dashboard 200 in 157ms (next.js: 5ms, application-code: 151ms)
+  └─ ƒ getUnreadCountAction() in 139ms actions/notifications.ts
+ POST /dashboard 200 in 150ms (next.js: 3ms, application-code: 147ms)
+  └─ ƒ getUnreadCountAction() in 138ms actions/notifications.ts
+ GET /tasks 200 in 407ms (next.js: 3ms, application-code: 404ms)
+ POST /tasks 200 in 152ms (next.js: 3ms, application-code: 149ms)
+  └─ ƒ getUnreadCountAction() in 137ms actions/notifications.ts
+ GET /login 200 in 422ms (next.js: 90ms, application-code: 332ms)
+ GET /dashboard 200 in 513ms (next.js: 9ms, application-code: 503ms)
+ POST /dashboard 200 in 162ms (next.js: 6ms, application-code: 156ms)
+  └─ ƒ getUnreadCountAction() in 141ms actions/notifications.ts
+ GET /login 200 in 110ms (next.js: 5ms, application-code: 106ms)
+ POST /login 200 in 721ms (next.js: 3ms, application-code: 718ms)
+  └─ ƒ loginAction({}) in 522ms actions/login.ts
+ GET /dashboard 200 in 469ms (next.js: 4ms, application-code: 465ms)
+ GET /dashboard 200 in 474ms (next.js: 3ms, application-code: 471ms)
+ POST /dashboard 200 in 150ms (next.js: 6ms, application-code: 144ms)
+  └─ ƒ getUnreadCountAction() in 136ms actions/notifications.ts
+ POST /dashboard 200 in 149ms (next.js: 3ms, application-code: 146ms)
+  └─ ƒ getUnreadCountAction() in 138ms actions/notifications.ts
+ GET /tasks 200 in 365ms (next.js: 3ms, application-code: 362ms)
+ POST /tasks 200 in 149ms (next.js: 3ms, application-code: 146ms)
+  └─ ƒ getUnreadCountAction() in 136ms actions/notifications.ts
+ GET /profile 200 in 1434ms (next.js: 984ms, application-code: 450ms)
+ GET /login 200 in 211ms (next.js: 3ms, application-code: 208ms)
+ GET /dashboard 200 in 353ms (next.js: 3ms, application-code: 350ms)
+ POST /dashboard 200 in 148ms (next.js: 3ms, application-code: 145ms)
+  └─ ƒ getUnreadCountAction() in 136ms actions/notifications.ts
+ GET /login 200 in 98ms (next.js: 4ms, application-code: 94ms)
+ POST /login 200 in 749ms (next.js: 3ms, application-code: 746ms)
+  └─ ƒ loginAction({}) in 522ms actions/login.ts
+ GET /dashboard 200 in 467ms (next.js: 3ms, application-code: 463ms)
+ GET /dashboard 200 in 465ms (next.js: 3ms, application-code: 462ms)
+ POST /dashboard 200 in 149ms (next.js: 4ms, application-code: 145ms)
+  └─ ƒ getUnreadCountAction() in 137ms actions/notifications.ts
+ POST /dashboard 200 in 146ms (next.js: 3ms, application-code: 143ms)
+  └─ ƒ getUnreadCountAction() in 136ms actions/notifications.ts
+ GET /help-requests 200 in 1074ms (next.js: 638ms, application-code: 436ms)
+ POST /help-requests 200 in 150ms (next.js: 3ms, application-code: 146ms)
+  └─ ƒ getUnreadCountAction() in 137ms actions/notifications.ts
+ GET /tasks 200 in 622ms (next.js: 4ms, application-code: 618ms)
+ POST /tasks 200 in 155ms (next.js: 3ms, application-code: 152ms)
+  └─ ƒ getUnreadCountAction() in 143ms actions/notifications.ts
+Task fetch error: Error: Failed to fetch task assignments
+    at fetchTaskAssignments (app/lib/tasks.ts:236:11)
+    at async TaskDetailPage (app/tasks/[id]/page.tsx:26:19)
+  234 |
+  235 |   if (!response.ok) {
+> 236 |     throw new Error('Failed to fetch task assignments')
+      |           ^
+  237 |   }
+  238 |
+  239 |   const payload = await response.json()
+ GET /tasks/1 200 in 2.2s (next.js: 1575ms, application-code: 623ms)
+ GET /help-requests 200 in 376ms (next.js: 4ms, application-code: 372ms)
+ POST /help-requests 200 in 146ms (next.js: 3ms, application-code: 143ms)
+  └─ ƒ getUnreadCountAction() in 135ms actions/notifications.ts
+ GET /dashboard 200 in 327ms (next.js: 3ms, application-code: 324ms)
+ POST /dashboard 200 in 147ms (next.js: 3ms, application-code: 144ms)
+  └─ ƒ getUnreadCountAction() in 136ms actions/notifications.ts
+ POST /dashboard 200 in 148ms (next.js: 3ms, application-code: 145ms)
+  └─ ƒ getUnreadCountAction() in 136ms actions/notifications.ts
+ GET /login 200 in 92ms (next.js: 4ms, application-code: 88ms)
+ POST /login 200 in 711ms (next.js: 4ms, application-code: 707ms)
+  └─ ƒ loginAction({}) in 516ms actions/login.ts
+ GET /dashboard 200 in 473ms (next.js: 5ms, application-code: 468ms)
+ GET /dashboard 200 in 482ms (next.js: 4ms, application-code: 478ms)
+ POST /dashboard 200 in 157ms (next.js: 7ms, application-code: 149ms)
+  └─ ƒ getUnreadCountAction() in 135ms actions/notifications.ts
+ POST /dashboard 200 in 149ms (next.js: 6ms, application-code: 143ms)
+  └─ ƒ getUnreadCountAction() in 134ms actions/notifications.ts
+ GET /help-requests 200 in 368ms (next.js: 3ms, application-code: 365ms)
+ POST /help-requests 200 in 146ms (next.js: 3ms, application-code: 143ms)
+  └─ ƒ getUnreadCountAction() in 135ms actions/notifications.ts
+ GET /tasks 200 in 942ms (next.js: 479ms, application-code: 463ms)
+ POST /tasks 200 in 154ms (next.js: 5ms, application-code: 149ms)
+  └─ ƒ getUnreadCountAction() in 135ms actions/notifications.ts
+Task fetch error: Error: Failed to fetch task assignments
+    at fetchTaskAssignments (app/lib/tasks.ts:236:11)
+    at async TaskDetailPage (app/tasks/[id]/page.tsx:26:19)
+  234 |
+  235 |   if (!response.ok) {
+> 236 |     throw new Error('Failed to fetch task assignments')
+      |           ^
+  237 |   }
+  238 |
+  239 |   const payload = await response.json()
+ GET /tasks/1 200 in 630ms (next.js: 36ms, application-code: 594ms)
+ GET /help-requests 200 in 375ms (next.js: 15ms, application-code: 361ms)
+ POST /help-requests 200 in 145ms (next.js: 3ms, application-code: 142ms)
+  └─ ƒ getUnreadCountAction() in 133ms actions/notifications.ts
+ GET /login 200 in 175ms (next.js: 3ms, application-code: 172ms)
+ POST /login 200 in 711ms (next.js: 3ms, application-code: 708ms)
+  └─ ƒ loginAction({}) in 519ms actions/login.ts
+ GET /dashboard 200 in 452ms (next.js: 3ms, application-code: 448ms)
+ GET /dashboard 200 in 470ms (next.js: 3ms, application-code: 467ms)
+ POST /dashboard 200 in 150ms (next.js: 4ms, application-code: 145ms)
+  └─ ƒ getUnreadCountAction() in 136ms actions/notifications.ts
+ POST /dashboard 200 in 145ms (next.js: 3ms, application-code: 142ms)
+  └─ ƒ getUnreadCountAction() in 134ms actions/notifications.ts
+Task fetch error: Error: Failed to fetch task assignments
+    at fetchTaskAssignments (app/lib/tasks.ts:236:11)
+    at async TaskDetailPage (app/tasks/[id]/page.tsx:26:19)
+  234 |
+  235 |   if (!response.ok) {
+> 236 |     throw new Error('Failed to fetch task assignments')
+      |           ^
+  237 |   }
+  238 |
+  239 |   const payload = await response.json()
+ GET /tasks/1 200 in 545ms (next.js: 36ms, application-code: 509ms)
+ GET /help-requests 200 in 357ms (next.js: 4ms, application-code: 353ms)
+ POST /help-requests 200 in 148ms (next.js: 3ms, application-code: 145ms)
+  └─ ƒ getUnreadCountAction() in 136ms actions/notifications.ts
+ GET /login 200 in 85ms (next.js: 4ms, application-code: 81ms)
+ POST /login 200 in 704ms (next.js: 3ms, application-code: 701ms)
+  └─ ƒ loginAction({}) in 520ms actions/login.ts
+ GET /dashboard 200 in 453ms (next.js: 3ms, application-code: 450ms)
+ GET /dashboard 200 in 458ms (next.js: 3ms, application-code: 455ms)
+ POST /dashboard 200 in 151ms (next.js: 3ms, application-code: 149ms)
+  └─ ƒ getUnreadCountAction() in 136ms actions/notifications.ts
+ POST /dashboard 200 in 151ms (next.js: 5ms, application-code: 145ms)
+  └─ ƒ getUnreadCountAction() in 136ms actions/notifications.ts
+ GET /projects 200 in 1323ms (next.js: 737ms, application-code: 586ms)
+ POST /projects 200 in 161ms (next.js: 3ms, application-code: 158ms)
+  └─ ƒ getUnreadCountAction() in 137ms actions/notifications.ts
+ GET /login 200 in 96ms (next.js: 3ms, application-code: 92ms)
+ POST /login 200 in 706ms (next.js: 4ms, application-code: 702ms)
+  └─ ƒ loginAction({}) in 520ms actions/login.ts
+ GET /dashboard 200 in 453ms (next.js: 3ms, application-code: 451ms)
+ GET /dashboard 200 in 459ms (next.js: 3ms, application-code: 456ms)
+ POST /dashboard 200 in 148ms (next.js: 3ms, application-code: 144ms)
+  └─ ƒ getUnreadCountAction() in 135ms actions/notifications.ts
+ POST /dashboard 200 in 148ms (next.js: 3ms, application-code: 145ms)
+  └─ ƒ getUnreadCountAction() in 137ms actions/notifications.ts
+ GET /tasks 200 in 395ms (next.js: 3ms, application-code: 392ms)
+ POST /tasks 200 in 147ms (next.js: 3ms, application-code: 144ms)
+  └─ ƒ getUnreadCountAction() in 136ms actions/notifications.ts
+Task fetch error: Error: Failed to fetch task assignments
+    at fetchTaskAssignments (app/lib/tasks.ts:236:11)
+    at async TaskDetailPage (app/tasks/[id]/page.tsx:26:19)
+  234 |
+  235 |   if (!response.ok) {
+> 236 |     throw new Error('Failed to fetch task assignments')
+      |           ^
+  237 |   }
+  238 |
+  239 |   const payload = await response.json()
+ GET /tasks/1 200 in 549ms (next.js: 28ms, application-code: 520ms)
+ GET /login 200 in 104ms (next.js: 4ms, application-code: 100ms)
+ POST /login 200 in 719ms (next.js: 3ms, application-code: 716ms)
+  └─ ƒ loginAction({}) in 519ms actions/login.ts
+ GET /dashboard 200 in 462ms (next.js: 4ms, application-code: 458ms)
+ GET /dashboard 200 in 471ms (next.js: 3ms, application-code: 468ms)
+ POST /dashboard 200 in 159ms (next.js: 4ms, application-code: 155ms)
+  └─ ƒ getUnreadCountAction() in 134ms actions/notifications.ts
+ POST /dashboard 200 in 145ms (next.js: 3ms, application-code: 143ms)
+  └─ ƒ getUnreadCountAction() in 135ms actions/notifications.ts
+ GET /tasks 200 in 392ms (next.js: 3ms, application-code: 389ms)
+ POST /tasks 200 in 150ms (next.js: 4ms, application-code: 146ms)
+  └─ ƒ getUnreadCountAction() in 137ms actions/notifications.ts
+Task fetch error: Error: Failed to fetch task assignments
+    at fetchTaskAssignments (app/lib/tasks.ts:236:11)
+    at async TaskDetailPage (app/tasks/[id]/page.tsx:26:19)
+  234 |
+  235 |   if (!response.ok) {
+> 236 |     throw new Error('Failed to fetch task assignments')
+      |           ^
+  237 |   }
+  238 |
+  239 |   const payload = await response.json()
+ GET /tasks/1 200 in 591ms (next.js: 29ms, application-code: 562ms)
+ GET /login 200 in 101ms (next.js: 4ms, application-code: 97ms)
+ POST /login 200 in 709ms (next.js: 4ms, application-code: 705ms)
+  └─ ƒ loginAction({}) in 519ms actions/login.ts
+ GET /dashboard 200 in 469ms (next.js: 6ms, application-code: 463ms)
+ GET /dashboard 200 in 485ms (next.js: 7ms, application-code: 479ms)
+ POST /dashboard 200 in 152ms (next.js: 5ms, application-code: 147ms)
+  └─ ƒ getUnreadCountAction() in 137ms actions/notifications.ts
+ POST /dashboard 200 in 146ms (next.js: 3ms, application-code: 144ms)
+  └─ ƒ getUnreadCountAction() in 136ms actions/notifications.ts
+ GET /help-requests 200 in 379ms (next.js: 3ms, application-code: 376ms)
+ POST /help-requests 200 in 148ms (next.js: 3ms, application-code: 145ms)
+  └─ ƒ getUnreadCountAction() in 136ms actions/notifications.ts

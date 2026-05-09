@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { HelpRequest } from '../../lib/help-requests'
-import { Calendar, User, HelpCircle, ArrowLeft, Clock, CheckCircle2, UserPlus } from 'lucide-react'
+import { Calendar, User, HelpCircle, ArrowLeft, Clock, CheckCircle2, UserPlus, ClipboardList } from 'lucide-react'
 import Link from 'next/link'
 import { MeResponse } from '../../lib/auth'
 import { assignHelpRequestAction, resolveHelpRequestAction } from '../../actions/help-requests'
@@ -129,14 +129,26 @@ export default function HelpRequestDetailClient({
 
           <section className='rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
             <h2 className='text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-4'>
-              Requester
+              Context
             </h2>
             <div className='space-y-4'>
               <div className='flex items-center gap-3 text-sm'>
                 <User className='h-4 w-4 text-zinc-400' />
-                <span className='text-zinc-500 dark:text-zinc-400 w-20'>User ID:</span>
-                <span className='font-medium text-zinc-900 dark:text-zinc-100'>#{helpRequest.user_id}</span>
+                <span className='text-zinc-500 dark:text-zinc-400 w-20'>Requester:</span>
+                <span className='font-medium text-zinc-900 dark:text-zinc-100'>User #{helpRequest.user_id}</span>
               </div>
+              {helpRequest.task_id && (
+                <div className='flex items-center gap-3 text-sm'>
+                  <ClipboardList className='h-4 w-4 text-zinc-400' />
+                  <span className='text-zinc-500 dark:text-zinc-400 w-20'>Task:</span>
+                  <Link
+                    href={`/tasks/${helpRequest.task_id}`}
+                    className='font-medium text-zinc-900 hover:underline dark:text-zinc-100'
+                  >
+                    Task #{helpRequest.task_id}
+                  </Link>
+                </div>
+              )}
             </div>
           </section>
         </aside>

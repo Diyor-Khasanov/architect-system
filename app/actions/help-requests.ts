@@ -13,6 +13,7 @@ export async function createHelpRequestAction(prevState: unknown, formData: Form
   try {
     await createHelpRequest(taskId)
     revalidatePath('/help-requests')
+    revalidatePath(`/tasks/${taskId}`)
     return { success: true }
   } catch (error: unknown) {
     return { error: (error as Error).message || 'Failed to create help request.' }

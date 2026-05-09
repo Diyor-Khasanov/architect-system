@@ -7,6 +7,7 @@ export interface HelpRequest {
   status: string
   priority: string
   user_id: number
+  task_id?: number
   created_at: string
   updated_at: string
 }

@@ -34,27 +34,8 @@ export default function HelpRequestsClient({
           </p>
         </div>
 
-        <button
-          onClick={() => setIsCreating(!isCreating)}
-          className='flex items-center justify-center gap-2 rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white transition-all hover:bg-zinc-800 active:scale-95 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200'
-        >
-          {isCreating ? (
-            <>
-              <X className='h-4 w-4' />
-              Cancel
-            </>
-          ) : (
-            <>
-              <Plus className='h-4 w-4' />
-              New Request
-            </>
-          )}
-        </button>
       </header>
 
-      {isCreating && (
-        <HelpRequestCreateForm tasks={tasks} onSuccess={handleSuccess} />
-      )}
 
       <article className='rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
         <h2 className='text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100'>
