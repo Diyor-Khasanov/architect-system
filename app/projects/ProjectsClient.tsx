@@ -87,7 +87,7 @@ export default function ProjectsClient({
                   <th className='px-2 py-3'>ID</th>
                   <th className='px-2 py-3'>Name</th>
                   <th className='px-2 py-3 text-center'>Members</th>
-                  <th className='px-2 py-3'>Manager ID</th>
+                  <th className='px-2 py-3'>Manager</th>
                   <th className='px-2 py-3'>Status</th>
                   <th className='px-2 py-3'>Deadline</th>
                   <th className='px-2 py-3'>Created</th>
@@ -115,7 +115,8 @@ export default function ProjectsClient({
                       {project.members?.length ?? 0}
                     </td>
                     <td className='px-2 py-3 text-zinc-600 dark:text-zinc-300'>
-                      {project.manager_id}
+                      {availableManagers.find((m) => m.id === project.manager_id)?.full_name ||
+                        `#${project.manager_id}`}
                     </td>
                     <td className='px-2 py-3'>
                       <span

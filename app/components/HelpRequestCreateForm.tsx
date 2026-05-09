@@ -5,6 +5,7 @@ import { createHelpRequestAction } from '../actions/help-requests'
 import { useToast } from '../context/ToastContext'
 import { useEffect } from 'react'
 import { Task } from '../lib/tasks'
+import Combobox from './Combobox'
 
 export default function HelpRequestCreateForm({
   tasks,
@@ -43,21 +44,18 @@ export default function HelpRequestCreateForm({
           <label htmlFor='task_id' className='text-sm font-medium text-zinc-700 dark:text-zinc-300'>
             Related Task
           </label>
-          <select
-            id='task_id'
+          <Combobox
             name='task_id'
             required
-            className='w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-zinc-900 dark:border-zinc-800 dark:bg-zinc-900 dark:focus:ring-zinc-100'
-          >
-            <option value=''>Select a task...</option>
-            {tasks.map((task) => (
-              <option key={task.id} value={task.id}>
-                #{task.id} - {task.title}
-              </option>
-            ))}
-            {/* Fallback option for 0 if allowed by backend as a generic request */}
-            <option value='0'>General / No specific task</option>
-          </select>
+            placeholder='Select a task...'
+            options={[
+              ...tasks.map((task) => ({
+                id: task.id,
+                label: `#${task.id} - ${task.title}`,
+              })),
+              { id: 0, label: 'General / No specific task' }
+            ]}
+          />
         </div>
       )}
 

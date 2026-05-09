@@ -91,8 +91,11 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                   <dd className='font-medium text-zinc-900 dark:text-zinc-100'>{project.id}</dd>
                 </div>
                 <div>
-                  <dt className='text-zinc-500 dark:text-zinc-400'>Manager ID</dt>
-                  <dd className='font-medium text-zinc-900 dark:text-zinc-100'>{project.manager_id}</dd>
+                  <dt className='text-zinc-500 dark:text-zinc-400'>Manager</dt>
+                  <dd className='font-medium text-zinc-900 dark:text-zinc-100'>
+                    {managers.find((m) => m.id === project?.manager_id)?.full_name ||
+                      `#${project.manager_id}`}
+                  </dd>
                 </div>
                 <div>
                   <dt className='text-zinc-500 dark:text-zinc-400'>Deadline</dt>
