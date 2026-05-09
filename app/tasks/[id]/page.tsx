@@ -3,6 +3,7 @@ import AppShell from '../../components/AppShell'
 import { fetchCurrentUser } from '../../lib/auth'
 import { fetchTask, fetchTaskAssignments, fetchTaskHistory } from '../../lib/tasks'
 import { fetchProjectMembers } from '../../lib/projects'
+import { fetchHelpRequests } from '../../lib/help-requests'
 import TaskDetailClient from './TaskDetailClient'
 
 export const dynamic = 'force-dynamic'
@@ -19,12 +20,13 @@ export default async function TaskDetailPage({
     redirect('/login')
   }
 
-  let task, assignments, projectMembers, history
+  let task, assignments, projectMembers, history, helpRequests
   try {
     task = await fetchTask(id)
     assignments = await fetchTaskAssignments(id)
     projectMembers = await fetchProjectMembers(task.project_id)
     history = await fetchTaskHistory(id)
+    helpRequests = await fetchHelpRequests()
   } catch (error) {
     console.error('Task fetch error:', error)
     return notFound()
@@ -39,6 +41,7 @@ export default async function TaskDetailPage({
         assignments={assignments}
         projectMembers={projectMembers}
         history={history}
+        helpRequests={helpRequests}
       />
     </AppShell>
   )
