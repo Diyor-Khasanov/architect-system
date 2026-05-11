@@ -38,13 +38,14 @@ export async function updateTaskAction(taskId: string | number, prevState: unkno
   const title = formData.get('title') as string
   const description = formData.get('description') as string
   const deadline = formData.get('deadline') as string
+  const priority = formData.get('priority') as string
 
-  if (!title || !description || !deadline) {
+  if (!title || !description || !deadline || !priority) {
     return { error: 'All fields are required.' }
   }
 
   try {
-    const updatedTask = await updateTask(taskId, { title, description, deadline })
+    const updatedTask = await updateTask(taskId, { title, description, deadline, priority })
     revalidatePath(`/tasks/${taskId}`)
     revalidatePath('/tasks')
     revalidatePath(`/projects/${updatedTask.project_id}`)

@@ -2,7 +2,7 @@
 
 import { useState, useActionState, useCallback } from 'react'
 import { Task, TaskStatus, TaskAssignment, TaskHistoryEntry } from '../../lib/tasks'
-import { ProjectMember } from '../../lib/projects'
+import { Project, ProjectMember } from '../../lib/projects'
 import { HelpRequest } from '../../lib/help-requests'
 import { Calendar, User, Folder, Clock, Edit2, CheckCircle2, Play, Search, Ban, AlertTriangle, ArrowRight, HelpCircle, X } from 'lucide-react'
 import Link from 'next/link'
@@ -49,6 +49,8 @@ export default function TaskDetailClient({
   projectMembers,
   history,
   helpRequests,
+  project,
+  userNameMap,
 }: {
   task: Task
   currentUserId: number
@@ -57,6 +59,8 @@ export default function TaskDetailClient({
   projectMembers: ProjectMember[]
   history: TaskHistoryEntry[]
   helpRequests: HelpRequest[]
+  project?: Project
+  userNameMap: Record<number, string>
 }) {
   const [isEditing, setIsEditing] = useState(false)
   const [isRequestingHelp, setIsRequestingHelp] = useState(false)
@@ -64,8 +68,8 @@ export default function TaskDetailClient({
   const [, updateAction, isPending] = useActionState(updateTaskAction.bind(null, task.id), null)
 
   const isManagerOrAdmin = currentUserRole === 'admin' || currentUserRole === 'manager'
-  const isAssignee = task.assignee_id === currentUserId
-  const canUpdateStatus = isAssignee || isManagerOrAdmin
+  const isWorkerOnTask = assignments.some((a) => a.user_id === currentUserId)
+  const canUpdateStatus = isWorkerOnTask || isManagerOrAdmin
   const canEditTask = isManagerOrAdmin
 
   // Handle case-insensitivity for status lookup
@@ -98,6 +102,12 @@ export default function TaskDetailClient({
             <div className='flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400'>
               <Link href='/tasks' className='hover:text-zinc-900 dark:hover:text-zinc-100'>Tasks</Link>
               <span>/</span>
+            {project && (
+               <>
+                <span className='truncate max-w-[100px] md:max-w-[200px]'>{project.name}</span>
+                <span>/</span>
+               </>
+            )}
               <span className='text-zinc-900 dark:text-zinc-100'>Edit Task #{task.id}</span>
             </div>
             <button
@@ -135,16 +145,32 @@ export default function TaskDetailClient({
                 className='mt-1 block w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100'
               />
             </div>
-            <div>
-              <label htmlFor='deadline' className='block text-sm font-medium text-zinc-700 dark:text-zinc-300'>Deadline</label>
-              <input
-                type='date'
-                name='deadline'
-                id='deadline'
-                defaultValue={task.deadline ? new Date(task.deadline).toISOString().split('T')[0] : ''}
-                required
-                className='mt-1 block w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100'
-              />
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+              <div>
+                <label htmlFor='deadline' className='block text-sm font-medium text-zinc-700 dark:text-zinc-300'>Deadline</label>
+                <input
+                  type='date'
+                  name='deadline'
+                  id='deadline'
+                  defaultValue={task.deadline ? new Date(task.deadline).toISOString().split('T')[0] : ''}
+                  required
+                  className='mt-1 block w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100'
+                />
+              </div>
+              <div>
+                <label htmlFor='priority' className='block text-sm font-medium text-zinc-700 dark:text-zinc-300'>Priority</label>
+                <select
+                  name='priority'
+                  id='priority'
+                  defaultValue={task.priority}
+                  required
+                  className='mt-1 block w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100'
+                >
+                  <option value='low'>Low</option>
+                  <option value='medium'>Medium</option>
+                  <option value='high'>High</option>
+                </select>
+              </div>
             </div>
             <div className='pt-2'>
               <button
@@ -168,6 +194,12 @@ export default function TaskDetailClient({
           <div className='flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400'>
             <Link href='/tasks' className='hover:text-zinc-900 dark:hover:text-zinc-100'>Tasks</Link>
             <span>/</span>
+            {project && (
+               <>
+                <span className='truncate max-w-[100px] md:max-w-[200px]'>{project.name}</span>
+                <span>/</span>
+               </>
+            )}
             <span className='text-zinc-900 dark:text-zinc-100'>Task #{task.id}</span>
           </div>
           {canEditTask && (
@@ -190,7 +222,11 @@ export default function TaskDetailClient({
                 <StatusIcon className='h-3.5 w-3.5' />
                 <span className='uppercase'>{task.status.replace('_', ' ')}</span>
               </span>
-              <span className='rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400 uppercase'>
+              <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium uppercase ${
+                task.priority === 'high' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' :
+                task.priority === 'medium' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' :
+                'bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300'
+              }`}>
                 {task.priority} Priority
               </span>
             </div>
@@ -244,9 +280,15 @@ export default function TaskDetailClient({
                <div className='flex items-center gap-3 text-sm'>
                 <Folder className='h-4 w-4 text-zinc-400' />
                 <span className='text-zinc-500 dark:text-zinc-400 w-20'>Project:</span>
-                <Link href={`/projects/${task.project_id}`} className='font-medium text-zinc-900 hover:underline dark:text-zinc-100'>
-                  Project #{task.project_id}
-                </Link>
+                {isManagerOrAdmin ? (
+                  <Link href={`/projects/${task.project_id}`} className='font-medium text-zinc-900 hover:underline dark:text-zinc-100'>
+                    {project?.name || `Project #${task.project_id}`}
+                  </Link>
+                ) : (
+                  <span className='font-medium text-zinc-900 dark:text-zinc-100'>
+                    {project?.name || `Project #${task.project_id}`}
+                  </span>
+                )}
               </div>
             </div>
           </section>
@@ -259,13 +301,17 @@ export default function TaskDetailClient({
               <div className='flex items-center gap-3 text-sm'>
                 <User className='h-4 w-4 text-zinc-400' />
                 <span className='text-zinc-500 dark:text-zinc-400 w-20'>Creator:</span>
-                <span className='font-medium text-zinc-900 dark:text-zinc-100'>User #{task.creator_id}</span>
+                <span className='font-medium text-zinc-900 dark:text-zinc-100 truncate'>
+                  {userNameMap[task.creator_id] || `User #${task.creator_id}`}
+                </span>
               </div>
               {task.assignee_id ? (
                 <div className='flex items-center gap-3 text-sm'>
                   <User className='h-4 w-4 text-zinc-400' />
                   <span className='text-zinc-500 dark:text-zinc-400 w-20'>Assignee:</span>
-                  <span className='font-medium text-zinc-900 dark:text-zinc-100'>User #{task.assignee_id}</span>
+                  <span className='font-medium text-zinc-900 dark:text-zinc-100 truncate'>
+                    {userNameMap[task.assignee_id] || `User #${task.assignee_id}`}
+                  </span>
                 </div>
               ) : (
                 <div className='flex items-center gap-3 text-sm'>
@@ -358,7 +404,7 @@ export default function TaskDetailClient({
             )}
           </section>
 
-          <TaskHistoryClient history={history} />
+          <TaskHistoryClient history={history} userNameMap={userNameMap} />
         </main>
       </div>
     </div>
