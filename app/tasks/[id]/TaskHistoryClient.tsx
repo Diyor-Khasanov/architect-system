@@ -3,7 +3,13 @@
 import { TaskHistoryEntry } from '../../lib/tasks'
 import { History, User, Tag } from 'lucide-react'
 
-export default function TaskHistoryClient({ history }: { history: TaskHistoryEntry[] }) {
+export default function TaskHistoryClient({
+  history,
+  userNameMap
+}: {
+  history: TaskHistoryEntry[],
+  userNameMap: Record<number, string>
+}) {
   if (!history || history.length === 0) {
     return (
       <section className='rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
@@ -38,7 +44,7 @@ export default function TaskHistoryClient({ history }: { history: TaskHistoryEnt
               </div>
               <div className='flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400'>
                 <User className='h-3 w-3' />
-                <span>User #{entry.user_id}</span>
+                <span>{userNameMap[entry.user_id] || `User #${entry.user_id}`}</span>
               </div>
 
               {entry.changes && Object.keys(entry.changes).length > 0 && (

@@ -1,14 +1,25 @@
 'use client'
 
-import { Task } from '../lib/tasks'
+import { Task, TaskStatus } from '../lib/tasks'
 import Link from 'next/link'
-import { CheckCircle2, Circle, Clock, AlertCircle, LucideIcon } from 'lucide-react'
+import { CheckCircle2, Circle, Clock, AlertCircle, Play, Search, Ban, AlertTriangle, LucideIcon } from 'lucide-react'
 
-const STATUS_ICONS: Record<string, LucideIcon> = {
-  todo: Circle,
-  doing: Clock,
-  done: CheckCircle2,
-  blocked: AlertCircle,
+const STATUS_ICONS: Record<TaskStatus, LucideIcon> = {
+  TODO: Clock,
+  IN_PROGRESS: Play,
+  REVIEW: Search,
+  DONE: CheckCircle2,
+  CANCELED: Ban,
+  BLOCKED: AlertTriangle,
+}
+
+const STATUS_COLORS: Record<TaskStatus, string> = {
+  TODO: 'bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300',
+  IN_PROGRESS: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+  REVIEW: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400',
+  DONE: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+  CANCELED: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+  BLOCKED: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
 }
 
 export default function TasksClient({
@@ -63,7 +74,10 @@ export default function TasksClient({
               </thead>
               <tbody>
                 {tasks.map((task) => {
-                  const Icon = STATUS_ICONS[task.status.toLowerCase()] || Circle
+                  const normalizedStatus = (task.status?.toUpperCase() || 'TODO') as TaskStatus
+                  const Icon = STATUS_ICONS[normalizedStatus] || Clock
+                  const statusColor = STATUS_COLORS[normalizedStatus] || STATUS_COLORS.TODO
+
                   return (
                     <tr
                       key={task.id}
@@ -83,8 +97,10 @@ export default function TasksClient({
                       </td>
                       <td className='px-2 py-3'>
                         <div className='flex items-center gap-1.5'>
-                          <Icon className='h-3.5 w-3.5 text-zinc-500' />
-                          <span className='capitalize'>{task.status}</span>
+                           <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium ${statusColor}`}>
+                            <Icon className='h-3 w-3' />
+                            <span className='uppercase'>{task.status.replace('_', ' ')}</span>
+                          </span>
                         </div>
                       </td>
                       <td className='px-2 py-3'>

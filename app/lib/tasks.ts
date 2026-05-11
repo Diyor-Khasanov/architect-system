@@ -325,7 +325,7 @@ export async function updateTaskStatus(id: string | number, status: TaskStatus) 
   return (await response.json()) as Task
 }
 
-export async function updateTask(id: string | number, payload: Partial<{ title: string; description: string; deadline: string }>) {
+export async function updateTask(id: string | number, payload: Partial<{ title: string; description: string; deadline: string; priority: string }>) {
   const authorization = await getAuthHeaderFromCookies()
 
   if (!authorization) {
