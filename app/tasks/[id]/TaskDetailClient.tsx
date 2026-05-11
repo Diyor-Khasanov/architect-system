@@ -11,6 +11,9 @@ import { useToast } from '../../context/ToastContext'
 import TaskAssignmentsClient from './TaskAssignmentsClient'
 import TaskHistoryClient from './TaskHistoryClient'
 import HelpRequestCreateForm from '../../components/HelpRequestCreateForm'
+import TaskReportClient from './TaskReportClient'
+import { Report } from '../../lib/reports'
+import { FileResponse } from '../../lib/files'
 
 const STATUS_TRANSITIONS: Record<TaskStatus, TaskStatus[]> = {
   TODO: ['IN_PROGRESS', 'CANCELED'],
@@ -51,6 +54,8 @@ export default function TaskDetailClient({
   helpRequests,
   project,
   userNameMap,
+  report,
+  reportFiles,
 }: {
   task: Task
   currentUserId: number
@@ -61,6 +66,8 @@ export default function TaskDetailClient({
   helpRequests: HelpRequest[]
   project?: Project
   userNameMap: Record<number, string>
+  report: Report | null
+  reportFiles: FileResponse[]
 }) {
   const [isEditing, setIsEditing] = useState(false)
   const [isRequestingHelp, setIsRequestingHelp] = useState(false)
@@ -325,6 +332,13 @@ export default function TaskDetailClient({
         </aside>
 
         <main className='lg:col-span-3 space-y-6'>
+          <TaskReportClient
+            taskId={task.id}
+            report={report}
+            files={reportFiles}
+            canEdit={currentUserRole === 'worker' && isWorkerOnTask}
+          />
+
           <TaskAssignmentsClient
             taskId={task.id}
             assignments={assignments}
