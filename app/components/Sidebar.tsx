@@ -28,7 +28,6 @@ const roleMenu: Record<UserRole, MenuItem[]> = {
     { name: 'Audit Logs', href: '/audit-logs', icon: ClipboardList },
     { name: 'Tasks', href: '/tasks', icon: CheckCircle2 },
     { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
-    { name: 'Files', href: '/files', icon: Files },
     { name: 'Help Requests', href: '/help-requests', icon: HelpCircle },
   ],
   manager: [
@@ -37,14 +36,12 @@ const roleMenu: Record<UserRole, MenuItem[]> = {
     { name: 'Team', href: '/users', icon: Users },
     { name: 'Tasks', href: '/tasks', icon: CheckCircle2 },
     { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
-    { name: 'Files', href: '/files', icon: Files },
     { name: 'Help Requests', href: '/help-requests', icon: HelpCircle },
   ],
   worker: [
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Tasks', href: '/tasks', icon: CheckCircle2 },
     { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
-    { name: 'Files', href: '/files', icon: Files },
     { name: 'Help Requests', href: '/help-requests', icon: HelpCircle },
   ],
 }

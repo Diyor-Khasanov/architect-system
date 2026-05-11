@@ -6,6 +6,7 @@ import { fetchProject, fetchProjectMembers } from '../../lib/projects'
 import { fetchHelpRequests } from '../../lib/help-requests'
 import { fetchUsers, type User } from '../../lib/users'
 import TaskDetailClient from './TaskDetailClient'
+import { fetchTaskReport, fetchReportFiles } from '../../lib/reports'
 
 export const dynamic = 'force-dynamic'
 
@@ -28,6 +29,8 @@ export default async function TaskDetailPage({
   let helpRequests
   let project
   let users: User[] = []
+  let report = null
+  let reportFiles = []
 
   try {
     const fetchedTask = await fetchTask(id)
@@ -36,12 +39,13 @@ export default async function TaskDetailPage({
     }
     task = fetchedTask
 
-    const [fetchedAssignments, fetchedMembers, fetchedHistory, fetchedHelp, fetchedProject] = await Promise.all([
+    const [fetchedAssignments, fetchedMembers, fetchedHistory, fetchedHelp, fetchedProject, fetchedReport] = await Promise.all([
       fetchTaskAssignments(id).catch(() => []),
       fetchProjectMembers(fetchedTask.project_id || 0).catch(() => []),
       fetchTaskHistory(id).catch(() => []),
       fetchHelpRequests().catch(() => []),
       fetchProject((fetchedTask.project_id || 0).toString()).catch(() => undefined),
+      fetchTaskReport(id).catch(() => null),
     ])
 
     assignments = fetchedAssignments
@@ -49,6 +53,11 @@ export default async function TaskDetailPage({
     history = fetchedHistory
     helpRequests = fetchedHelp
     project = fetchedProject
+    report = fetchedReport
+
+    if (report) {
+      reportFiles = await fetchReportFiles(report.id).catch(() => [])
+    }
 
     // Attempt to fetch all users for name mapping
     try {
@@ -96,6 +105,8 @@ export default async function TaskDetailPage({
         helpRequests={helpRequests}
         project={project}
         userNameMap={userNameMap}
+        report={report}
+        reportFiles={reportFiles}
       />
     </AppShell>
   )
