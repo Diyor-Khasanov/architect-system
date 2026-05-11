@@ -96,7 +96,7 @@ export default function TaskDetailClient({
 
   if (isEditing) {
     return (
-      <div className='max-w-4xl space-y-6'>
+      <div className='max-w-7xl space-y-6'>
         <header className='rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
            <div className='flex items-center justify-between mb-4'>
             <div className='flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400'>
@@ -188,7 +188,7 @@ export default function TaskDetailClient({
   }
 
   return (
-    <div className='max-w-4xl space-y-6'>
+    <div className='max-w-7xl space-y-6'>
       <header className='rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
         <div className='flex items-center justify-between mb-4'>
           <div className='flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400'>
@@ -237,8 +237,8 @@ export default function TaskDetailClient({
         </p>
       </header>
 
-      <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
-        <aside className='md:col-span-1 space-y-6'>
+      <div className='grid grid-cols-1 lg:grid-cols-4 gap-6'>
+        <aside className='lg:col-span-1 space-y-6'>
           {canUpdateStatus && allowedTransitions.length > 0 && (
             <section className='rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
               <h2 className='text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-4'>
@@ -281,12 +281,12 @@ export default function TaskDetailClient({
                 <Folder className='h-4 w-4 text-zinc-400' />
                 <span className='text-zinc-500 dark:text-zinc-400 w-20'>Project:</span>
                 {isManagerOrAdmin ? (
-                  <Link href={`/projects/${task.project_id}`} className='font-medium text-zinc-900 hover:underline dark:text-zinc-100'>
-                    {project?.name || `Project #${task.project_id}`}
+                  <Link href={`/projects/${task.project_id || 0}`} className='font-medium text-zinc-900 hover:underline dark:text-zinc-100'>
+                    {project?.name || `Project #${task.project_id || 'undefined'}`}
                   </Link>
                 ) : (
                   <span className='font-medium text-zinc-900 dark:text-zinc-100'>
-                    {project?.name || `Project #${task.project_id}`}
+                    {project?.name || `Project #${task.project_id || 'undefined'}`}
                   </span>
                 )}
               </div>
@@ -302,7 +302,7 @@ export default function TaskDetailClient({
                 <User className='h-4 w-4 text-zinc-400' />
                 <span className='text-zinc-500 dark:text-zinc-400 w-20'>Creator:</span>
                 <span className='font-medium text-zinc-900 dark:text-zinc-100 truncate'>
-                  {userNameMap[task.creator_id] || `User #${task.creator_id}`}
+                  {userNameMap[task.creator_id] || `User #${task.creator_id || 'undefined'}`}
                 </span>
               </div>
               {task.assignee_id ? (
@@ -324,7 +324,7 @@ export default function TaskDetailClient({
           </section>
         </aside>
 
-        <main className='md:col-span-2 space-y-6'>
+        <main className='lg:col-span-3 space-y-6'>
           <TaskAssignmentsClient
             taskId={task.id}
             assignments={assignments}

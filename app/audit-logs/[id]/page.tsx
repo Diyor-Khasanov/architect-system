@@ -41,7 +41,7 @@ export default async function AuditLogDetailPage({ params }: PageProps) {
 
   return (
     <AppShell currentUser={currentUser}>
-      <div className='mx-auto max-w-4xl space-y-6'>
+      <div className='mx-auto max-w-7xl space-y-6'>
         <Link
           href='/audit-logs'
           className='inline-flex items-center gap-2 text-sm font-medium text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100'

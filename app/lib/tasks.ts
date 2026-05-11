@@ -33,36 +33,54 @@ export interface TaskHistoryEntry {
 
 const API_BASE_URL = 'http://13.50.4.92/api/v1'
 
-function normalizeTasksResponse(payload: unknown): Task[] {
-  if (Array.isArray(payload)) {
-    return payload as Task[]
+function normalizeTaskResponse(payload: unknown): Task {
+  let taskData: Record<string, unknown> | null = null
+
+  if (payload && typeof payload === 'object' && 'id' in payload) {
+    taskData = payload as Record<string, unknown>
+  } else if (payload && typeof payload === 'object') {
+    const candidate = payload as { data?: Record<string, unknown>; item?: Record<string, unknown>; task?: Record<string, unknown> }
+    taskData = candidate.data || candidate.item || candidate.task || null
   }
 
-  if (typeof payload === 'object' && payload !== null) {
-    const candidate = payload as { items?: unknown; data?: unknown; results?: unknown; tasks?: unknown }
-
-    if (Array.isArray(candidate.items)) return candidate.items as Task[]
-    if (Array.isArray(candidate.data)) return candidate.data as Task[]
-    if (Array.isArray(candidate.results)) return candidate.results as Task[]
-    if (Array.isArray(candidate.tasks)) return candidate.tasks as Task[]
+  if (!taskData || typeof taskData !== 'object') {
+    throw new Error('Invalid task response')
   }
 
-  return []
+  // Ensure snake_case fields even if backend returns camelCase
+  return {
+    ...taskData,
+    id: taskData.id as number,
+    title: taskData.title as string,
+    description: taskData.description as string,
+    status: (taskData.status as TaskStatus) || 'TODO',
+    priority: (taskData.priority as string) || 'medium',
+    deadline: taskData.deadline as string,
+    project_id: (taskData.project_id ?? taskData.projectId) as number,
+    creator_id: (taskData.creator_id ?? taskData.creatorId) as number,
+    assignee_id: (taskData.assignee_id ?? taskData.assigneeId) as number | undefined,
+    created_at: (taskData.created_at ?? taskData.createdAt) as string,
+    updated_at: (taskData.updated_at ?? taskData.updatedAt) as string,
+  } as Task
 }
 
-function normalizeTaskResponse(payload: unknown): Task {
-  if (payload && typeof payload === 'object' && 'id' in payload) {
-    return payload as Task
+function normalizeTasksResponse(payload: unknown): Task[] {
+  let items: unknown[] = []
+
+  if (Array.isArray(payload)) {
+    items = payload
+  } else if (typeof payload === 'object' && payload !== null) {
+    const candidate = payload as { items?: unknown[]; data?: unknown[]; results?: unknown[]; tasks?: unknown[] }
+    items = candidate.items || candidate.data || candidate.results || candidate.tasks || []
   }
 
-  if (payload && typeof payload === 'object') {
-    const candidate = payload as { data?: Task; item?: Task; task?: Task }
-    if (candidate.data) return candidate.data
-    if (candidate.item) return candidate.item
-    if (candidate.task) return candidate.task
-  }
-
-  throw new Error('Invalid task response')
+  return items.map((item) => {
+    try {
+      return normalizeTaskResponse(item)
+    } catch {
+      return item as Task
+    }
+  })
 }
 
 export async function fetchTasks() {
