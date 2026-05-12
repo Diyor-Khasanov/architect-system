@@ -52,8 +52,8 @@ export default function DailyReportDetailClient({
   }, [state, toast])
 
   return (
-    <section className='mx-auto max-w-4xl space-y-6'>
-      <header className='flex items-center justify-between rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
+    <div className='mx-auto max-w-4xl space-y-6'>
+      <div className='flex items-center justify-between'>
         <Link
           href='/daily-reports'
           className='flex items-center gap-2 text-sm font-medium text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100'
@@ -70,9 +70,9 @@ export default function DailyReportDetailClient({
             Edit Report
           </button>
         )}
-      </header>
+      </div>
 
-      <article className='overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
+      <div className='overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
         <div className='border-b border-zinc-100 p-6 dark:border-zinc-800/50'>
           <div className='mb-4 flex items-center justify-between'>
             <div className='flex items-center gap-3'>
@@ -154,7 +154,7 @@ export default function DailyReportDetailClient({
             Last updated: {format(new Date(report.updated_at), 'PPp')}
           </p>
         </div>
-      </article>
-    </section>
+      </div>
+    </div>
   )
 }

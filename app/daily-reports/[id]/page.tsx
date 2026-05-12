@@ -5,7 +5,6 @@ import { fetchProject } from '../../lib/projects'
 import { fetchTask } from '../../lib/tasks'
 import DailyReportDetailClient from './DailyReportDetailClient'
 import { redirect, notFound } from 'next/navigation'
-import AppShell from '../../components/AppShell'
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -38,16 +37,14 @@ export default async function DailyReportDetailPage({ params }: PageProps) {
   const taskName = task?.title || `Task #${report.task_id}`
 
   return (
-    <AppShell currentUser={user}>
-      <div className='container mx-auto'>
-        <DailyReportDetailClient
-          report={report}
-          canEdit={user.role === 'worker' && user.id === report.user_id}
-          userName={userName}
-          projectName={projectName}
-          taskName={taskName}
-        />
-      </div>
-    </AppShell>
+    <div className='container mx-auto p-6'>
+      <DailyReportDetailClient
+        report={report}
+        canEdit={user.role === 'worker' && user.id === report.user_id}
+        userName={userName}
+        projectName={projectName}
+        taskName={taskName}
+      />
+    </div>
   )
 }

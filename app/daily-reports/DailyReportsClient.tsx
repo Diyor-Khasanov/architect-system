@@ -21,26 +21,22 @@ export default function DailyReportsClient({
   taskNameMap
 }: DailyReportsClientProps) {
   return (
-    <div className='space-y-6'>
-      <header className='flex flex-col gap-4 md:flex-row md:items-center md:justify-between rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
+    <div className='space-y-8'>
+      <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
         <div>
-          <h1 className='text-2xl md:text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100'>
-            Daily Reports
-          </h1>
-          <p className='mt-2 text-sm text-zinc-600 dark:text-zinc-400'>
-            View and manage daily work progress reports.
-          </p>
+          <h1 className='text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100'>Daily Reports</h1>
+          <p className='text-zinc-500 dark:text-zinc-400'>View and manage daily work progress reports.</p>
         </div>
         {canCreate && (
           <Link
             href='/daily-reports/create'
-            className='flex items-center justify-center gap-2 rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90 dark:bg-zinc-100 dark:text-zinc-900'
+            className='flex items-center justify-center gap-2 rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200'
           >
             <Plus className='h-4 w-4' />
             Create Report
           </Link>
         )}
-      </header>
+      </div>
 
       <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
         {reports.length > 0 ? (
