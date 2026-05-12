@@ -5,10 +5,11 @@ import { fetchProjects } from '../lib/projects'
 import { fetchTasks } from '../lib/tasks'
 import DailyReportsClient from './DailyReportsClient'
 import { redirect } from 'next/navigation'
+import AppShell from '../components/AppShell'
 
 export default async function DailyReportsPage() {
-  const user = await fetchCurrentUser()
-  if (!user) {
+  const currentUser = await fetchCurrentUser()
+  if (!currentUser) {
     redirect('/login')
   }
 
@@ -22,14 +23,14 @@ export default async function DailyReportsPage() {
   const taskNameMap = Object.fromEntries(tasks.map((t) => [t.id, t.title]))
 
   return (
-    <div className='container mx-auto p-6'>
+    <AppShell currentUser={currentUser}>
       <DailyReportsClient
         reports={reports}
-        canCreate={user.role === 'worker'}
+        canCreate={currentUser.role === 'worker'}
         userNameMap={userNameMap}
         projectNameMap={projectNameMap}
         taskNameMap={taskNameMap}
       />
-    </div>
+    </AppShell>
   )
 }
