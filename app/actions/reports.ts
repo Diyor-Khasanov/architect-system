@@ -1,7 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { createReport, updateReport, fetchTaskReport } from '../lib/reports'
+import { createReport, updateReport, fetchTaskReport, createDailyReport, updateDailyReport } from '../lib/reports'
 import { uploadFile } from '../lib/files'
 
 export async function submitReportAction(taskId: number, prevState: unknown, formData: FormData) {
@@ -35,5 +35,44 @@ export async function uploadReportAttachmentAction(reportId: number, prevState: 
     return { success: true }
   } catch (error: unknown) {
     return { error: error instanceof Error ? error.message : 'Failed to upload attachment.' }
+  }
+}
+
+export async function createDailyReportAction(prevState: unknown, formData: FormData) {
+  const projectId = parseInt(formData.get('project_id') as string)
+  const taskId = parseInt(formData.get('task_id') as string)
+  const text = formData.get('text') as string
+
+  if (isNaN(projectId) || isNaN(taskId) || !text) {
+    return { error: 'Project, task, and report content are required.' }
+  }
+
+  try {
+    const report = await createDailyReport({
+      project_id: projectId,
+      task_id: taskId,
+      text,
+    })
+    revalidatePath('/daily-reports')
+    return { success: true, reportId: report.id }
+  } catch (error: unknown) {
+    return { error: error instanceof Error ? error.message : 'Failed to create daily report.' }
+  }
+}
+
+export async function updateDailyReportAction(id: number, prevState: unknown, formData: FormData) {
+  const text = formData.get('text') as string
+
+  if (!text) {
+    return { error: 'Report content is required.' }
+  }
+
+  try {
+    await updateDailyReport(id, text)
+    revalidatePath('/daily-reports')
+    revalidatePath(`/daily-reports/${id}`)
+    return { success: true }
+  } catch (error: unknown) {
+    return { error: error instanceof Error ? error.message : 'Failed to update daily report.' }
   }
 }

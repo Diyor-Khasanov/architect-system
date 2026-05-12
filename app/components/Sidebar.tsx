@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, FolderKanban, Users, BarChart3, LogOut, Command, X, ClipboardList, HelpCircle, CheckCircle2, Files } from 'lucide-react'
+import { LayoutDashboard, FolderKanban, Users, BarChart3, LogOut, Command, X, ClipboardList, HelpCircle, CheckCircle2, FileText } from 'lucide-react'
 import { logoutAction } from '../actions/login'
 import type { UserRole } from '../lib/auth'
 import { cn } from '../lib/utils'
@@ -27,6 +27,7 @@ const roleMenu: Record<UserRole, MenuItem[]> = {
     { name: 'Projects', href: '/projects', icon: FolderKanban },
     { name: 'Audit Logs', href: '/audit-logs', icon: ClipboardList },
     { name: 'Tasks', href: '/tasks', icon: CheckCircle2 },
+    { name: 'Daily Reports', href: '/daily-reports', icon: FileText },
     { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
     { name: 'Help Requests', href: '/help-requests', icon: HelpCircle },
   ],
@@ -35,12 +36,14 @@ const roleMenu: Record<UserRole, MenuItem[]> = {
     { name: 'Projects', href: '/projects', icon: FolderKanban },
     { name: 'Team', href: '/users', icon: Users },
     { name: 'Tasks', href: '/tasks', icon: CheckCircle2 },
+    { name: 'Daily Reports', href: '/daily-reports', icon: FileText },
     { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
     { name: 'Help Requests', href: '/help-requests', icon: HelpCircle },
   ],
   worker: [
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Tasks', href: '/tasks', icon: CheckCircle2 },
+    { name: 'Daily Reports', href: '/daily-reports', icon: FileText },
     { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
     { name: 'Help Requests', href: '/help-requests', icon: HelpCircle },
   ],
