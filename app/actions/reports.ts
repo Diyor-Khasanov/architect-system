@@ -1,7 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { createReport, updateReport, fetchTaskReport, createDailyReport, updateDailyReport } from '../lib/reports'
+import { createReport, updateReport, fetchTaskReport, createDailyReport, updateDailyReport, generateMonthlyReport, submitMonthlyReport } from '../lib/reports'
 import { uploadFile } from '../lib/files'
 import { fetchCurrentUser } from '../lib/auth'
 
@@ -85,5 +85,59 @@ export async function updateDailyReportAction(id: number, prevState: unknown, fo
     return { success: true }
   } catch (error: unknown) {
     return { error: error instanceof Error ? error.message : 'Failed to update daily report.' }
+  }
+}
+
+export async function generateMonthlyReportAction(prevState: unknown, formData: FormData) {
+  const currentUser = await fetchCurrentUser()
+  if (!currentUser || currentUser.role !== 'admin') {
+    return { error: 'Only admins can generate monthly reports.' }
+  }
+
+  const projectId = parseInt(formData.get('project_id') as string)
+  const year = parseInt(formData.get('year') as string)
+  const month = parseInt(formData.get('month') as string)
+
+  if (isNaN(projectId) || isNaN(year) || isNaN(month)) {
+    return { error: 'Project, year, and month are required.' }
+  }
+
+  try {
+    const report = await generateMonthlyReport({
+      project_id: projectId,
+      year,
+      month,
+    })
+    revalidatePath('/monthly-reports')
+    return { success: true, reportId: report.id }
+  } catch (error: unknown) {
+    return { error: error instanceof Error ? error.message : 'Failed to generate monthly report.' }
+  }
+}
+
+export async function submitMonthlyReportAction(prevState: unknown, formData: FormData) {
+  const currentUser = await fetchCurrentUser()
+  if (!currentUser || currentUser.role !== 'worker') {
+    return { error: 'Only workers can submit monthly reports.' }
+  }
+
+  const projectId = parseInt(formData.get('project_id') as string)
+  const year = parseInt(formData.get('year') as string)
+  const month = parseInt(formData.get('month') as string)
+
+  if (isNaN(projectId) || isNaN(year) || isNaN(month)) {
+    return { error: 'Project, year, and month are required.' }
+  }
+
+  try {
+    const report = await submitMonthlyReport({
+      project_id: projectId,
+      year,
+      month,
+    })
+    revalidatePath('/monthly-reports')
+    return { success: true, reportId: report.id }
+  } catch (error: unknown) {
+    return { error: error instanceof Error ? error.message : 'Failed to submit monthly report.' }
   }
 }
