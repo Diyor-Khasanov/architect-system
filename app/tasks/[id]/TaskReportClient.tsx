@@ -38,6 +38,7 @@ export default function TaskReportClient({ taskId, report, files, canEdit }: Tas
   useEffect(() => {
     if (submitState?.success) {
       toast('Report submitted successfully', 'success')
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsEditing(false)
     } else if (submitState?.error) {
       toast(submitState.error, 'error')
@@ -47,6 +48,7 @@ export default function TaskReportClient({ taskId, report, files, canEdit }: Tas
   useEffect(() => {
     if (uploadState?.success) {
       toast('File uploaded successfully', 'success')
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsUploading(false)
     } else if (uploadState?.error) {
       toast(uploadState.error, 'error')
