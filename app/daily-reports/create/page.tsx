@@ -7,7 +7,11 @@ import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import AppShell from '../../components/AppShell'
 
-export default async function CreateDailyReportPage() {
+export default async function CreateDailyReportPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ project_id?: string; task_id?: string }>
+}) {
   const currentUser = await fetchCurrentUser()
   if (!currentUser) {
     redirect('/login')
@@ -19,6 +23,7 @@ export default async function CreateDailyReportPage() {
 
   const projects = await fetchProjects()
   const tasks = await fetchMyTasks()
+  const { project_id, task_id } = await searchParams
 
   return (
     <AppShell currentUser={currentUser}>
@@ -36,7 +41,12 @@ export default async function CreateDailyReportPage() {
         </div>
 
         <div className='rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
-          <DailyReportCreateForm projects={projects} tasks={tasks} />
+          <DailyReportCreateForm
+            projects={projects}
+            tasks={tasks}
+            defaultProjectId={project_id ? Number(project_id) : undefined}
+            defaultTaskId={task_id ? Number(task_id) : undefined}
+          />
         </div>
       </div>
     </AppShell>

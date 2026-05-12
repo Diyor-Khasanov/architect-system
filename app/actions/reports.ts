@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { createReport, updateReport, fetchTaskReport, createDailyReport, updateDailyReport } from '../lib/reports'
 import { uploadFile } from '../lib/files'
+import { fetchCurrentUser } from '../lib/auth'
 
 export async function submitReportAction(taskId: number, prevState: unknown, formData: FormData) {
   const content = formData.get('content') as string
@@ -39,6 +40,11 @@ export async function uploadReportAttachmentAction(reportId: number, prevState: 
 }
 
 export async function createDailyReportAction(prevState: unknown, formData: FormData) {
+  const currentUser = await fetchCurrentUser()
+  if (!currentUser || currentUser.role !== 'worker') {
+    return { error: 'Only workers can create daily reports.' }
+  }
+
   const projectId = parseInt(formData.get('project_id') as string)
   const taskId = parseInt(formData.get('task_id') as string)
   const text = formData.get('text') as string
@@ -61,6 +67,11 @@ export async function createDailyReportAction(prevState: unknown, formData: Form
 }
 
 export async function updateDailyReportAction(id: number, prevState: unknown, formData: FormData) {
+  const currentUser = await fetchCurrentUser()
+  if (!currentUser || currentUser.role !== 'worker') {
+    return { error: 'Only workers can update daily reports.' }
+  }
+
   const text = formData.get('text') as string
 
   if (!text) {

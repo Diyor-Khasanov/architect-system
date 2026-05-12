@@ -7,19 +7,28 @@ import { useToast } from '../context/ToastContext'
 import { Project } from '../lib/projects'
 import { Task } from '../lib/tasks'
 import { Loader2, Send } from 'lucide-react'
+import Combobox from './Combobox'
 
 interface DailyReportCreateFormProps {
   projects: Project[]
   tasks: Task[]
+  defaultProjectId?: number
+  defaultTaskId?: number
 }
 
-export default function DailyReportCreateForm({ projects, tasks }: DailyReportCreateFormProps) {
+export default function DailyReportCreateForm({
+  projects,
+  tasks,
+  defaultProjectId,
+  defaultTaskId,
+}: DailyReportCreateFormProps) {
   const { toast } = useToast()
   const router = useRouter()
-  const [selectedProjectId, setSelectedProjectId] = useState<number | ''>('')
+  const [selectedProjectId, setSelectedProjectId] = useState<number | ''>(defaultProjectId || '')
+  const [selectedTaskId, setSelectedTaskId] = useState<number | ''>(defaultTaskId || '')
 
-  const filteredTasks = tasks.filter(task =>
-    selectedProjectId === '' || task.project_id === Number(selectedProjectId)
+  const filteredTasks = tasks.filter(
+    (task) => selectedProjectId === '' || task.project_id === Number(selectedProjectId)
   )
 
   const [state, action, isPending] = useActionState(createDailyReportAction, null)
@@ -40,40 +49,29 @@ export default function DailyReportCreateForm({ projects, tasks }: DailyReportCr
           <label htmlFor='project_id' className='text-sm font-medium text-zinc-900 dark:text-zinc-100'>
             Project
           </label>
-          <select
-            id='project_id'
+          <Combobox
             name='project_id'
-            required
+            options={projects.map((p) => ({ id: p.id, label: p.name }))}
             value={selectedProjectId}
-            onChange={(e) => setSelectedProjectId(e.target.value ? Number(e.target.value) : '')}
-            className='w-full rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm focus:border-zinc-900 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-zinc-100'
-          >
-            <option value=''>Select a project</option>
-            {projects.map((project) => (
-              <option key={project.id} value={project.id}>
-                {project.name}
-              </option>
-            ))}
-          </select>
+            onChange={(val) => {
+              setSelectedProjectId(val as number)
+              setSelectedTaskId('') // Reset task when project changes
+            }}
+            placeholder='Select a project'
+          />
         </div>
 
         <div className='space-y-2'>
           <label htmlFor='task_id' className='text-sm font-medium text-zinc-900 dark:text-zinc-100'>
             Task
           </label>
-          <select
-            id='task_id'
+          <Combobox
             name='task_id'
-            required
-            className='w-full rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm focus:border-zinc-900 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-zinc-100'
-          >
-            <option value=''>Select a task</option>
-            {filteredTasks.map((task) => (
-              <option key={task.id} value={task.id}>
-                {task.title}
-              </option>
-            ))}
-          </select>
+            options={filteredTasks.map((t) => ({ id: t.id, label: t.title }))}
+            value={selectedTaskId}
+            onChange={(val) => setSelectedTaskId(val as number)}
+            placeholder='Select a task'
+          />
         </div>
       </div>
 

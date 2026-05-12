@@ -5,6 +5,9 @@ import { fetchProject, fetchProjectMembers, fetchProjectProgress, type Project, 
 import { fetchUsers, type User } from '../../lib/users'
 import ProjectDetailClient from './ProjectDetailClient'
 import ProjectMembersClient from './ProjectMembersClient'
+import ProjectDailyReportsClient from './ProjectDailyReportsClient'
+import { fetchDailyReports, type DailyReport } from '../../lib/reports'
+import { fetchTasks } from '../../lib/tasks'
 
 interface ProjectPageProps {
   params: Promise<{ id: string }>
@@ -27,15 +30,35 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
   let progress: number | null = null
   let managers: { id: number; username: string; full_name: string }[] = []
   let availableWorkers: User[] = []
+  let dailyReports: DailyReport[] = []
+  let taskNameMap: Record<number, string> = {}
+  let userNameMap: Record<number, string> = {}
 
   try {
     project = await fetchProject(id)
-    members = await fetchProjectMembers(id)
-    progress = await fetchProjectProgress(id)
+    const [fetchedMembers, fetchedProgress, allDailyReports, allTasks, allUsers] = await Promise.all([
+      fetchProjectMembers(id).catch(() => []),
+      fetchProjectProgress(id).catch(() => 0),
+      fetchDailyReports().catch(() => []),
+      fetchTasks().catch(() => []),
+      fetchUsers().catch(() => [])
+    ])
+
+    members = fetchedMembers
+    progress = fetchedProgress
+    dailyReports = (allDailyReports as DailyReport[]).filter(
+      (dr) => dr.project_id === Number(id)
+    )
+    taskNameMap = Object.fromEntries((allTasks as any[]).map((t) => [t.id, t.title]))
+    userNameMap = Object.fromEntries(
+      (allUsers as any[]).map((u) => [
+        u.id,
+        u.profile?.full_name || u.username,
+      ])
+    )
 
     if (['admin', 'manager'].includes(currentUser.role)) {
-      const allUsers = await fetchUsers()
-      managers = allUsers
+      managers = (allUsers as any[])
         .filter((u) => u.role === 'manager')
         .map((u) => ({
           id: u.id,
@@ -43,7 +66,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
           full_name: u.profile?.full_name || u.username,
         }))
 
-      availableWorkers = allUsers.filter((u) => u.role === 'worker')
+      availableWorkers = (allUsers as any[]).filter((u) => u.role === 'worker') as User[]
     }
   } catch {
     // Error handled by null check below
@@ -74,6 +97,12 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
 
         <div className='grid gap-6 lg:grid-cols-3'>
           <article className='lg:col-span-2 space-y-6'>
+            <ProjectDailyReportsClient
+              reports={dailyReports}
+              userNameMap={userNameMap}
+              taskNameMap={taskNameMap}
+            />
+
             <ProjectMembersClient
               projectId={id}
               members={members}

@@ -119,21 +119,48 @@ export async function fetchReportFiles(reportId: string | number) {
   return await response.json()
 }
 
+function normalizeDailyReport(payload: unknown): DailyReport {
+  if (!payload || typeof payload !== 'object') {
+    throw new Error('Invalid daily report payload')
+  }
+  const data = payload as Record<string, unknown>
+  return {
+    id: data.id as number,
+    project_id: (data.project_id ?? data.projectId) as number,
+    task_id: (data.task_id ?? data.taskId) as number,
+    user_id: (data.user_id ?? data.userId) as number,
+    text: (data.text ?? data.content) as string,
+    created_at: (data.created_at ?? data.createdAt) as string,
+    updated_at: (data.updated_at ?? data.updatedAt) as string,
+  }
+}
+
 function normalizeDailyReportsResponse(payload: unknown): DailyReport[] {
+  let items: unknown[] = []
+
   if (Array.isArray(payload)) {
-    return payload as DailyReport[]
+    items = payload
+  } else if (payload && typeof payload === 'object') {
+    const candidate = payload as {
+      items?: unknown
+      data?: unknown
+      results?: unknown
+      reports?: unknown
+    }
+
+    if (Array.isArray(candidate.items)) items = candidate.items
+    else if (Array.isArray(candidate.data)) items = candidate.data
+    else if (Array.isArray(candidate.results)) items = candidate.results
+    else if (Array.isArray(candidate.reports)) items = candidate.reports
   }
 
-  if (payload && typeof payload === 'object') {
-    const candidate = payload as { items?: unknown; data?: unknown; results?: unknown; reports?: unknown }
-
-    if (Array.isArray(candidate.items)) return candidate.items as DailyReport[]
-    if (Array.isArray(candidate.data)) return candidate.data as DailyReport[]
-    if (Array.isArray(candidate.results)) return candidate.results as DailyReport[]
-    if (Array.isArray(candidate.reports)) return candidate.reports as DailyReport[]
-  }
-
-  return []
+  return items.map((item) => {
+    try {
+      return normalizeDailyReport(item)
+    } catch {
+      return item as DailyReport
+    }
+  })
 }
 
 export async function fetchDailyReports(): Promise<DailyReport[]> {
@@ -178,10 +205,15 @@ export async function fetchDailyReport(id: string | number): Promise<DailyReport
     throw new Error('Failed to fetch daily report')
   }
 
-  return (await response.json()) as DailyReport
+  const payload = await response.json()
+  return normalizeDailyReport(payload)
 }
 
-export async function createDailyReport(payload: { project_id: number; task_id: number; text: string }): Promise<DailyReport> {
+export async function createDailyReport(payload: {
+  project_id: number
+  task_id: number
+  text: string
+}): Promise<DailyReport> {
   const authorization = await getAuthHeaderFromCookies()
 
   if (!authorization) {
@@ -203,7 +235,8 @@ export async function createDailyReport(payload: { project_id: number; task_id: 
     throw new Error(errorData.detail || 'Failed to create daily report')
   }
 
-  return (await response.json()) as DailyReport
+  const data = await response.json()
+  return normalizeDailyReport(data)
 }
 
 export async function updateDailyReport(id: string | number, text: string): Promise<DailyReport> {
@@ -228,5 +261,6 @@ export async function updateDailyReport(id: string | number, text: string): Prom
     throw new Error(errorData.detail || 'Failed to update daily report')
   }
 
-  return (await response.json()) as DailyReport
+  const data = await response.json()
+  return normalizeDailyReport(data)
 }
