@@ -6,7 +6,7 @@ import { fetchProject, fetchProjectMembers } from '../../lib/projects'
 import { fetchHelpRequests } from '../../lib/help-requests'
 import { fetchUsers, type User } from '../../lib/users'
 import TaskDetailClient from './TaskDetailClient'
-import { fetchTaskReport, fetchReportFiles } from '../../lib/reports'
+import { fetchTaskReport, fetchReportFiles, fetchDailyReports, type DailyReport } from '../../lib/reports'
 
 export const dynamic = 'force-dynamic'
 
@@ -31,6 +31,7 @@ export default async function TaskDetailPage({
   let users: User[] = []
   let report = null
   let reportFiles = []
+  let dailyReports = []
 
   try {
     const fetchedTask = await fetchTask(id)
@@ -39,13 +40,14 @@ export default async function TaskDetailPage({
     }
     task = fetchedTask
 
-    const [fetchedAssignments, fetchedMembers, fetchedHistory, fetchedHelp, fetchedProject, fetchedReport] = await Promise.all([
+    const [fetchedAssignments, fetchedMembers, fetchedHistory, fetchedHelp, fetchedProject, fetchedReport, allDailyReports] = await Promise.all([
       fetchTaskAssignments(id).catch(() => []),
       fetchProjectMembers(fetchedTask.project_id || 0).catch(() => []),
       fetchTaskHistory(id).catch(() => []),
       fetchHelpRequests().catch(() => []),
       fetchProject((fetchedTask.project_id || 0).toString()).catch(() => undefined),
       fetchTaskReport(id).catch(() => null),
+      fetchDailyReports().catch(() => []),
     ])
 
     assignments = fetchedAssignments
@@ -54,6 +56,9 @@ export default async function TaskDetailPage({
     helpRequests = fetchedHelp
     project = fetchedProject
     report = fetchedReport
+    dailyReports = (allDailyReports as DailyReport[]).filter(
+      (dr) => dr.task_id === Number(id)
+    )
 
     if (report) {
       reportFiles = await fetchReportFiles(report.id).catch(() => [])
@@ -107,6 +112,7 @@ export default async function TaskDetailPage({
         userNameMap={userNameMap}
         report={report}
         reportFiles={reportFiles}
+        dailyReports={dailyReports}
       />
     </AppShell>
   )

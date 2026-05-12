@@ -4,7 +4,7 @@ import { useState, useActionState, useCallback } from 'react'
 import { Task, TaskStatus, TaskAssignment, TaskHistoryEntry } from '../../lib/tasks'
 import { Project, ProjectMember } from '../../lib/projects'
 import { HelpRequest } from '../../lib/help-requests'
-import { Calendar, User, Folder, Clock, Edit2, CheckCircle2, Play, Search, Ban, AlertTriangle, ArrowRight, HelpCircle, X } from 'lucide-react'
+import { Calendar, User, Folder, Clock, Edit2, CheckCircle2, Play, Search, Ban, AlertTriangle, ArrowRight, HelpCircle, X, Plus } from 'lucide-react'
 import Link from 'next/link'
 import { updateTaskAction, updateTaskStatusAction } from '../../actions/tasks'
 import { useToast } from '../../context/ToastContext'
@@ -12,7 +12,8 @@ import TaskAssignmentsClient from './TaskAssignmentsClient'
 import TaskHistoryClient from './TaskHistoryClient'
 import HelpRequestCreateForm from '../../components/HelpRequestCreateForm'
 import TaskReportClient from './TaskReportClient'
-import { Report } from '../../lib/reports'
+import TaskDailyReportsClient from './TaskDailyReportsClient'
+import { Report, DailyReport } from '../../lib/reports'
 import { FileResponse } from '../../lib/files'
 
 const STATUS_TRANSITIONS: Record<TaskStatus, TaskStatus[]> = {
@@ -56,6 +57,7 @@ export default function TaskDetailClient({
   userNameMap,
   report,
   reportFiles,
+  dailyReports,
 }: {
   task: Task
   currentUserId: number
@@ -68,6 +70,7 @@ export default function TaskDetailClient({
   userNameMap: Record<number, string>
   report: Report | null
   reportFiles: FileResponse[]
+  dailyReports: DailyReport[]
 }) {
   const [isEditing, setIsEditing] = useState(false)
   const [isRequestingHelp, setIsRequestingHelp] = useState(false)
@@ -339,6 +342,11 @@ export default function TaskDetailClient({
             canEdit={currentUserRole === 'worker' && isWorkerOnTask}
           />
 
+          <TaskDailyReportsClient
+            reports={dailyReports}
+            userNameMap={userNameMap}
+          />
+
           <TaskAssignmentsClient
             taskId={task.id}
             assignments={assignments}
@@ -352,22 +360,31 @@ export default function TaskDetailClient({
                 Help Requests
               </h2>
               {currentUserRole === 'worker' && (
-                <button
-                  onClick={() => setIsRequestingHelp(!isRequestingHelp)}
-                  className='flex items-center gap-2 rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-all hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200'
-                >
-                  {isRequestingHelp ? (
-                    <>
-                      <X className='h-4 w-4' />
-                      Cancel
-                    </>
-                  ) : (
-                    <>
-                      <HelpCircle className='h-4 w-4' />
-                      Need Help?
-                    </>
-                  )}
-                </button>
+                <div className='flex items-center gap-2'>
+                  <Link
+                    href={`/daily-reports/create?project_id=${task.project_id}&task_id=${task.id}`}
+                    className='flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-900 transition-all hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800'
+                  >
+                    <Plus className='h-4 w-4' />
+                    Log Progress
+                  </Link>
+                  <button
+                    onClick={() => setIsRequestingHelp(!isRequestingHelp)}
+                    className='flex items-center gap-2 rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-all hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200'
+                  >
+                    {isRequestingHelp ? (
+                      <>
+                        <X className='h-4 w-4' />
+                        Cancel
+                      </>
+                    ) : (
+                      <>
+                        <HelpCircle className='h-4 w-4' />
+                        Need Help?
+                      </>
+                    )}
+                  </button>
+                </div>
               )}
             </div>
 

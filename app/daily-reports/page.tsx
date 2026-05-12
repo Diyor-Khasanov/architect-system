@@ -13,10 +13,17 @@ export default async function DailyReportsPage() {
     redirect('/login')
   }
 
-  const reports = await fetchDailyReports()
-  const users = await fetchUsers()
-  const projects = await fetchProjects()
-  const tasks = await fetchTasks()
+  const [reportsResult, usersResult, projectsResult, tasksResult] = await Promise.allSettled([
+    fetchDailyReports(),
+    fetchUsers(),
+    fetchProjects(),
+    fetchTasks()
+  ])
+
+  const reports = reportsResult.status === 'fulfilled' ? reportsResult.value : []
+  const users = usersResult.status === 'fulfilled' ? usersResult.value : []
+  const projects = projectsResult.status === 'fulfilled' ? projectsResult.value : []
+  const tasks = tasksResult.status === 'fulfilled' ? tasksResult.value : []
 
   const userNameMap = Object.fromEntries(users.map((u) => [u.id, u.profile?.full_name || u.username]))
   const projectNameMap = Object.fromEntries(projects.map((p) => [p.id, p.name]))

@@ -14,6 +14,8 @@ interface ComboboxProps {
   options: Option[]
   placeholder?: string
   defaultValue?: string | number
+  value?: string | number
+  onChange?: (value: string | number) => void
   required?: boolean
   className?: string
 }
@@ -23,18 +25,29 @@ export default function Combobox({
   options,
   placeholder = 'Select an option...',
   defaultValue,
+  value,
+  onChange,
   required = false,
   className,
 }: ComboboxProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedId, setSelectedId] = useState<string | number | undefined>(defaultValue)
+  const [internalSelectedId, setInternalSelectedId] = useState<string | number | undefined>(defaultValue)
+
+  const selectedId = value !== undefined ? value : internalSelectedId
   const containerRef = useRef<HTMLDivElement>(null)
 
   const selectedOption = useMemo(
     () => options.find((opt) => opt.id.toString() === selectedId?.toString()),
     [options, selectedId]
   )
+
+  useEffect(() => {
+    if (value !== undefined) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setInternalSelectedId(value)
+    }
+  }, [value])
 
   const filteredOptions = useMemo(() => {
     return options.filter((opt) =>
@@ -53,7 +66,11 @@ export default function Combobox({
   }, [])
 
   const handleSelect = (id: string | number) => {
-    setSelectedId(id)
+    if (onChange) {
+      onChange(id)
+    } else {
+      setInternalSelectedId(id)
+    }
     setIsOpen(false)
     setSearchQuery('')
   }
