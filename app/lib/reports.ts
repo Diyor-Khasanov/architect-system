@@ -9,6 +9,16 @@ export interface Report {
   updated_at: string
 }
 
+export interface MonthlyReport {
+  id: number
+  year: number
+  month: number
+  project_id: number
+  user_id: number
+  created_at: string
+  updated_at: string
+}
+
 export interface DailyReport {
   id: number
   project_id: number
@@ -237,6 +247,156 @@ export async function createDailyReport(payload: {
 
   const data = await response.json()
   return normalizeDailyReport(data)
+}
+
+function normalizeMonthlyReport(payload: unknown): MonthlyReport {
+  if (!payload || typeof payload !== 'object') {
+    throw new Error('Invalid monthly report payload')
+  }
+  const data = payload as Record<string, unknown>
+  return {
+    id: data.id as number,
+    year: (data.year ?? 0) as number,
+    month: (data.month ?? 0) as number,
+    project_id: (data.project_id ?? data.projectId) as number,
+    user_id: (data.user_id ?? data.userId) as number,
+    created_at: (data.created_at ?? data.createdAt) as string,
+    updated_at: (data.updated_at ?? data.updatedAt) as string,
+  }
+}
+
+function normalizeMonthlyReportsResponse(payload: unknown): MonthlyReport[] {
+  let items: unknown[] = []
+
+  if (Array.isArray(payload)) {
+    items = payload
+  } else if (payload && typeof payload === 'object') {
+    const candidate = payload as {
+      items?: unknown
+      data?: unknown
+      results?: unknown
+      reports?: unknown
+    }
+
+    if (Array.isArray(candidate.items)) items = candidate.items
+    else if (Array.isArray(candidate.data)) items = candidate.data
+    else if (Array.isArray(candidate.results)) items = candidate.results
+    else if (Array.isArray(candidate.reports)) items = candidate.reports
+  }
+
+  return items.map((item) => {
+    try {
+      return normalizeMonthlyReport(item)
+    } catch {
+      return item as MonthlyReport
+    }
+  })
+}
+
+export async function fetchMonthlyReports(): Promise<MonthlyReport[]> {
+  const authorization = await getAuthHeaderFromCookies()
+
+  if (!authorization) {
+    throw new Error('Unauthorized')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/reports/monthly`, {
+    method: 'GET',
+    headers: {
+      Authorization: authorization,
+    },
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch monthly reports')
+  }
+
+  const payload = await response.json()
+  return normalizeMonthlyReportsResponse(payload)
+}
+
+export async function fetchMonthlyReport(id: string | number): Promise<MonthlyReport> {
+  const authorization = await getAuthHeaderFromCookies()
+
+  if (!authorization) {
+    throw new Error('Unauthorized')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/reports/monthly/${id}`, {
+    method: 'GET',
+    headers: {
+      Authorization: authorization,
+    },
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch monthly report')
+  }
+
+  const payload = await response.json()
+  return normalizeMonthlyReport(payload)
+}
+
+export async function generateMonthlyReport(payload: {
+  year: number
+  month: number
+  project_id: number
+}): Promise<MonthlyReport> {
+  const authorization = await getAuthHeaderFromCookies()
+
+  if (!authorization) {
+    throw new Error('Unauthorized')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/reports/monthly/generate`, {
+    method: 'POST',
+    headers: {
+      Authorization: authorization,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}))
+    throw new Error(errorData.detail || 'Failed to generate monthly report')
+  }
+
+  const data = await response.json()
+  return normalizeMonthlyReport(data)
+}
+
+export async function submitMonthlyReport(payload: {
+  year: number
+  month: number
+  project_id: number
+}): Promise<MonthlyReport> {
+  const authorization = await getAuthHeaderFromCookies()
+
+  if (!authorization) {
+    throw new Error('Unauthorized')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/reports/monthly/submit`, {
+    method: 'POST',
+    headers: {
+      Authorization: authorization,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+    cache: 'no-store',
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}))
+    throw new Error(errorData.detail || 'Failed to submit monthly report')
+  }
+
+  const data = await response.json()
+  return normalizeMonthlyReport(data)
 }
 
 export async function updateDailyReport(id: string | number, text: string): Promise<DailyReport> {
