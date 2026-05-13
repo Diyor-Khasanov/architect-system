@@ -16,9 +16,8 @@ export default async function AnalyticsPage() {
 
   const isAdvanced = user.role === 'admin' || user.role === 'manager'
 
-  const [deadlineData, progressData, reportsData, workloadData] = await Promise.all([
+  const [deadlineData, reportsData, workloadData] = await Promise.all([
     fetchDeadlineAnalytics(),
-    isAdvanced ? fetchProjectProgressAnalytics() : Promise.resolve(null),
     isAdvanced ? fetchReportsAnalytics() : Promise.resolve(null),
     isAdvanced ? fetchWorkloadAnalytics() : Promise.resolve(null),
   ])
@@ -146,36 +145,6 @@ export default async function AnalyticsPage() {
           </div>
         </section>
 
-        {/* Project Progress - Admin/Manager Only */}
-        {isAdvanced && (
-          <section className='rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
-            <div className='border-b border-zinc-100 p-6 dark:border-zinc-800'>
-              <h2 className='flex items-center gap-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100'>
-                <BarChart3 className='h-5 w-5 text-zinc-500' />
-                Project Progress
-              </h2>
-            </div>
-            <div className='p-6'>
-              {progressData && (Array.isArray(progressData) || Array.isArray((progressData as { items?: unknown[] }).items)) ? (
-                <div className='space-y-6'>
-                  {(Array.isArray(progressData) ? (progressData as { id: number; name: string; progress: number }[]) : (progressData as { items: { id: number; name: string; progress: number }[] }).items).map((project) => (
-                    <div key={project.id} className='space-y-2'>
-                      <div className='flex justify-between text-sm'>
-                        <span className='font-medium text-zinc-900 dark:text-zinc-100'>{project.name}</span>
-                        <span className='text-zinc-500'>{project.progress}%</span>
-                      </div>
-                      <div className='h-2 w-full overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800'>
-                        <div className='h-full bg-blue-500 transition-all' style={{ width: `${project.progress}%` }} />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className='text-sm text-zinc-500 dark:text-zinc-400'>No progress data available.</p>
-              )}
-            </div>
-          </section>
-        )}
 
         {/* Workload - Admin/Manager Only */}
         {isAdvanced && (

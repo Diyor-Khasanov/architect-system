@@ -18,7 +18,7 @@ export default function TaskDailyReportsClient({ reports, userNameMap }: TaskDai
           Daily Progress Reports
         </h2>
         <p className='text-sm text-zinc-500 dark:text-zinc-400 italic'>
-          No daily progress reports logged for this task yet.
+          No daily reports logged for this task yet.
         </p>
       </section>
     )

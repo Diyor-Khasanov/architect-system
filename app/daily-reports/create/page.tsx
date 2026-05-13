@@ -37,7 +37,7 @@ export default async function CreateDailyReportPage({
             Back to Reports
           </Link>
           <h1 className='text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100'>Submit Daily Report</h1>
-          <p className='text-zinc-500 dark:text-zinc-400'>Record your progress for today&apos;s assigned tasks.</p>
+          <p className='text-zinc-500 dark:text-zinc-400'>Record your work for today&apos;s assigned tasks.</p>
         </div>
 
         <div className='rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>

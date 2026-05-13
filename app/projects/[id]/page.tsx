@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import AppShell from '../../components/AppShell'
 import { fetchCurrentUser } from '../../lib/auth'
-import { fetchProject, fetchProjectMembers, fetchProjectProgress, type Project, type ProjectMember } from '../../lib/projects'
+import { fetchProject, fetchProjectMembers, type Project, type ProjectMember } from '../../lib/projects'
 import { fetchUsers, type User } from '../../lib/users'
 import ProjectDetailClient from './ProjectDetailClient'
 import ProjectMembersClient from './ProjectMembersClient'
@@ -27,7 +27,6 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
 
   let project: Project | null = null
   let members: ProjectMember[] = []
-  let progress: number | null = null
   let managers: { id: number; username: string; full_name: string }[] = []
   let availableWorkers: User[] = []
   let dailyReports: DailyReport[] = []
@@ -36,16 +35,14 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
 
   try {
     project = await fetchProject(id)
-    const [fetchedMembers, fetchedProgress, allDailyReports, allTasks, allUsers] = await Promise.all([
+    const [fetchedMembers, allDailyReports, allTasks, allUsers] = await Promise.all([
       fetchProjectMembers(id).catch(() => []),
-      fetchProjectProgress(id).catch(() => 0),
       fetchDailyReports().catch(() => []),
       fetchTasks().catch(() => []),
       fetchUsers().catch(() => [])
     ])
 
     members = fetchedMembers
-    progress = fetchedProgress
     dailyReports = (allDailyReports as DailyReport[]).filter(
       (dr) => dr.project_id === Number(id)
     )
@@ -92,7 +89,6 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
           currentUser={currentUser}
           id={id}
           availableManagers={managers}
-          progress={progress}
         />
 
         <div className='grid gap-6 lg:grid-cols-3'>

@@ -25,7 +25,7 @@ export default function DailyReportsClient({
       <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
         <div>
           <h1 className='text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100'>Daily Reports</h1>
-          <p className='text-zinc-500 dark:text-zinc-400'>View and manage daily work progress reports.</p>
+          <p className='text-zinc-500 dark:text-zinc-400'>View and manage daily work reports.</p>
         </div>
         {canCreate && (
           <Link
