@@ -36,7 +36,7 @@ export default function UserDetailClient({
 }: {
   user: User
   currentUserRole: UserRole
-  projects?: { id: number; name: string; status: string; progress?: number }[]
+  projects?: { id: number; name: string; status: string }[]
   tasks?: { id: number; name: string; status: string; deadline: string; days_overdue: number }[]
   reports?: Record<string, unknown> | null
 }) {
@@ -291,14 +291,6 @@ export default function UserDetailClient({
                         <h3 className='font-medium text-zinc-900 dark:text-zinc-100'>{project.name}</h3>
                         <p className='text-sm text-zinc-500 dark:text-zinc-400'>Status: <span className='capitalize'>{project.status}</span></p>
                       </div>
-                      {project.progress !== undefined && (
-                        <div className='text-right'>
-                          <span className='text-sm font-medium text-zinc-900 dark:text-zinc-100'>{project.progress}%</span>
-                          <div className='mt-1 h-1.5 w-20 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800'>
-                            <div className='h-full bg-blue-500' style={{ width: `${project.progress}%` }} />
-                          </div>
-                        </div>
-                      )}
                     </div>
                   ))}
                 </div>
