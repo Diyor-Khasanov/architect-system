@@ -227,7 +227,12 @@ export async function updateMyProfileDetailsAction(_: ActionState, formData: For
 
     const full_name = String(formData.get('full_name') ?? '').trim()
     const phone = String(formData.get('phone') ?? '').trim()
-    const avatar_file_id = Number(formData.get('avatar_file_id') ?? 0)
+    const avatar_file_id_raw = formData.get('avatar_file_id')
+    const avatar_file_id = avatar_file_id_raw ? Number(avatar_file_id_raw) : 0
+
+    if (avatar_file_id_raw && avatar_file_id < 1) {
+      return { error: 'Avatar File ID must be a positive number.' }
+    }
 
     if (!full_name) {
       return { error: 'Full name is required.' }

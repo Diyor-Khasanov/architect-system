@@ -9,6 +9,11 @@ export type UploadFileState = {
 }
 
 export async function uploadFileAction(prevState: UploadFileState | null, formData: FormData) {
+  const reportId = formData.get('report_id')
+  if (reportId && Number(reportId) < 1) {
+    return { error: 'Report ID must be a positive number' }
+  }
+
   try {
     const result = await uploadFile(formData)
     return { success: true, data: result }
@@ -27,6 +32,7 @@ export type GetSignedUrlState = {
 export async function getFileSignedUrlAction(prevState: GetSignedUrlState | null, formData: FormData) {
   const id = formData.get('file_id') as string
   if (!id) return { error: 'File ID is required' }
+  if (Number(id) < 1) return { error: 'File ID must be a positive number' }
 
   try {
     const result = await fetchFileSignedUrl(id)
@@ -45,6 +51,7 @@ export type DeleteFileState = {
 export async function deleteFileAction(prevState: DeleteFileState | null, formData: FormData) {
   const id = formData.get('file_id') as string
   if (!id) return { error: 'File ID is required' }
+  if (Number(id) < 1) return { error: 'File ID must be a positive number' }
 
   try {
     await deleteFile(id)

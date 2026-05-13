@@ -1,17 +1,17 @@
 'use client'
 
 import { useActionState, useState, useEffect } from 'react'
-import { uploadFileAction } from '../actions/files'
+import { uploadFileAction, getFileSignedUrlAction, deleteFileAction } from '../actions/files'
 import { useToast } from '../context/ToastContext'
 import {
-  Upload,
   Download,
   FileUp,
   Search,
   Loader2,
   FileText,
-  AlertCircle,
-  FileDown
+  FileDown,
+  Link,
+  Trash2
 } from 'lucide-react'
 
 export default function FilesClient() {
@@ -21,15 +21,33 @@ export default function FilesClient() {
   const [dragActive, setDragActive] = useState(false)
 
   const [uploadState, uploadAction, isUploading] = useActionState(uploadFileAction, null)
+  const [signedUrlState, signedUrlAction, isGettingUrl] = useActionState(getFileSignedUrlAction, null)
+  const [deleteState, deleteAction, isDeleting] = useActionState(deleteFileAction, null)
 
   useEffect(() => {
     if (uploadState?.success) {
       toast('File uploaded successfully', 'success')
-      // Reset form if needed, but since it's a server action, might be easier to just let it be or use a key to remount
     } else if (uploadState?.error) {
       toast(uploadState.error, 'error')
     }
   }, [uploadState, toast])
+
+  useEffect(() => {
+    if (signedUrlState?.success && signedUrlState.url) {
+      window.open(signedUrlState.url, '_blank')
+      toast('Signed URL opened in new tab', 'success')
+    } else if (signedUrlState?.error) {
+      toast(signedUrlState.error, 'error')
+    }
+  }, [signedUrlState, toast])
+
+  useEffect(() => {
+    if (deleteState?.success) {
+      toast('File deleted successfully', 'success')
+    } else if (deleteState?.error) {
+      toast(deleteState.error, 'error')
+    }
+  }, [deleteState, toast])
 
   const handleDownload = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -120,6 +138,7 @@ export default function FilesClient() {
                 name='report_id'
                 type='number'
                 required
+                min='1'
                 placeholder='0'
                 className='w-full rounded-xl border border-zinc-200 bg-zinc-50 p-3 text-sm focus:border-zinc-900 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-zinc-100'
               />
@@ -176,24 +195,29 @@ export default function FilesClient() {
             <h2 className='text-xl font-semibold text-zinc-900 dark:text-zinc-100'>Retrieve File</h2>
           </div>
 
-          <form onSubmit={handleDownload} className='space-y-6'>
-            <div className='space-y-2'>
-              <label htmlFor='file_id' className='text-sm font-medium text-zinc-700 dark:text-zinc-300'>
-                File ID
-              </label>
-              <div className='flex gap-3'>
+          <div className='space-y-6'>
+            <div className='space-y-4'>
+              <div className='space-y-2'>
+                <label htmlFor='file_id' className='text-sm font-medium text-zinc-700 dark:text-zinc-300'>
+                  File ID
+                </label>
                 <input
                   id='file_id'
-                  type='text'
+                  type='number'
+                  min='1'
                   value={downloadId}
                   onChange={(e) => setDownloadId(e.target.value)}
                   placeholder='Enter file ID...'
-                  className='flex-1 rounded-xl border border-zinc-200 bg-zinc-50 p-3 text-sm focus:border-zinc-900 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-zinc-100'
+                  className='w-full rounded-xl border border-zinc-200 bg-zinc-50 p-3 text-sm focus:border-zinc-900 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-zinc-100'
                 />
+              </div>
+
+              <div className='flex gap-3'>
                 <button
-                  type='submit'
+                  type='button'
+                  onClick={handleDownload}
                   disabled={isDownloading || !downloadId}
-                  className='flex items-center gap-2 rounded-xl bg-zinc-200 px-6 py-3 text-sm font-semibold text-zinc-900 transition-all hover:bg-zinc-300 disabled:opacity-50 dark:bg-zinc-800 dark:text-zinc-100 dark:hover:bg-zinc-700'
+                  className='flex-1 flex items-center justify-center gap-2 rounded-xl bg-zinc-500 py-3 text-sm font-semibold text-white transition-all hover:bg-zinc-600 disabled:opacity-50'
                 >
                   {isDownloading ? (
                     <Loader2 className='h-4 w-4 animate-spin' />
@@ -202,6 +226,21 @@ export default function FilesClient() {
                   )}
                   Download
                 </button>
+                <form action={signedUrlAction} className='flex-1'>
+                  <input type='hidden' name='file_id' value={downloadId} />
+                  <button
+                    type='submit'
+                    disabled={isGettingUrl || !downloadId}
+                    className='w-full flex items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white py-3 text-sm font-semibold text-zinc-700 transition-all hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800'
+                  >
+                    {isGettingUrl ? (
+                      <Loader2 className='h-4 w-4 animate-spin' />
+                    ) : (
+                      <Link className='h-4 w-4' />
+                    )}
+                    Signed URL
+                  </button>
+                </form>
               </div>
             </div>
 
@@ -216,8 +255,49 @@ export default function FilesClient() {
                 </div>
               </div>
             </div>
-          </form>
+          </div>
         </div>
+      </div>
+
+      {/* Delete Card */}
+      <div className='rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900/50'>
+        <div className='flex items-center gap-3 mb-8'>
+          <div className='rounded-lg bg-red-50 p-2 dark:bg-red-900/20'>
+            <Trash2 className='h-5 w-5 text-red-600 dark:text-red-400' />
+          </div>
+          <h2 className='text-xl font-semibold text-zinc-900 dark:text-zinc-100'>Delete File</h2>
+        </div>
+
+        <form action={deleteAction} className='space-y-4'>
+          <div className='space-y-2'>
+            <label htmlFor='delete_file_id' className='text-sm font-medium text-zinc-700 dark:text-zinc-300'>
+              File ID
+            </label>
+            <div className='flex gap-3'>
+              <input
+                id='delete_file_id'
+                name='file_id'
+                type='number'
+                min='1'
+                required
+                placeholder='Enter file ID to delete...'
+                className='flex-1 rounded-xl border border-zinc-200 bg-zinc-50 p-3 text-sm focus:border-zinc-900 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-zinc-100'
+              />
+              <button
+                type='submit'
+                disabled={isDeleting}
+                className='flex items-center gap-2 rounded-xl bg-red-600 px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-red-700 disabled:opacity-50'
+              >
+                {isDeleting ? (
+                  <Loader2 className='h-4 w-4 animate-spin' />
+                ) : (
+                  <Trash2 className='h-4 w-4' />
+                )}
+                Delete
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
   )
