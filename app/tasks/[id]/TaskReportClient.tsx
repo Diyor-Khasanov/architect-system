@@ -165,7 +165,7 @@ export default function TaskReportClient({ taskId, report, files, canEdit }: Tas
                   <div className='flex items-center gap-2'>
                     <input
                       type='file'
-                      name='files'
+                      name='file'
                       required
                       className='block w-full text-sm text-zinc-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-zinc-100 file:text-zinc-700 hover:file:bg-zinc-200 dark:file:bg-zinc-800 dark:file:text-zinc-300'
                     />
