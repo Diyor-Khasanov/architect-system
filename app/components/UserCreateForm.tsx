@@ -4,6 +4,7 @@ import { useActionState, useEffect } from 'react'
 import { useFormStatus } from 'react-dom'
 import { createUserAction } from '../actions/users'
 import { type UserRole } from '../lib/auth'
+import Combobox from './Combobox'
 
 function SubmitButton() {
   const { pending } = useFormStatus()
@@ -97,21 +98,23 @@ export default function UserCreateForm({
           />
         </label>
 
-        <label className='space-y-1 text-sm text-zinc-600 dark:text-zinc-400'>
+        <label htmlFor='role' className='space-y-1 text-sm text-zinc-600 dark:text-zinc-400'>
           Role
-          <select
+          <Combobox
+            id='role'
             name='role'
             required
-            className='w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-zinc-700'
-          >
-            <option value='worker'>Worker</option>
-            {currentUserRole === 'admin' && (
-              <>
-                <option value='manager'>Manager</option>
-                <option value='admin'>Admin</option>
-              </>
-            )}
-          </select>
+            defaultValue='worker'
+            options={[
+              { id: 'worker', label: 'Worker' },
+              ...(currentUserRole === 'admin'
+                ? [
+                    { id: 'manager', label: 'Manager' },
+                    { id: 'admin', label: 'Admin' },
+                  ]
+                : []),
+            ]}
+          />
         </label>
       </div>
 

@@ -6,6 +6,7 @@ import { MonthlyReport } from '../lib/reports'
 import { BarChart3, Plus, Calendar, User, Folder, Loader2 } from 'lucide-react'
 import { format } from 'date-fns'
 import { Project } from '../lib/projects'
+import Combobox from '../components/Combobox'
 import { MeResponse as UserType } from '../lib/auth'
 import { generateMonthlyReportAction, submitMonthlyReportAction } from '../actions/reports'
 import { useToast } from '../context/ToastContext'
@@ -168,29 +169,35 @@ export default function MonthlyReportsClient({
             <h2 className='text-xl font-bold text-zinc-900 dark:text-zinc-100 mb-4'>Generate Monthly Report</h2>
             <form action={generateAction} className='space-y-4'>
               <div>
-                <label className='block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1'>Project</label>
-                <select name='project_id' className='w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-500 dark:border-zinc-800 dark:bg-zinc-800 dark:text-zinc-100' required>
-                  {projects.map(project => (
-                    <option key={project.id} value={project.id}>{project.name}</option>
-                  ))}
-                </select>
+                <label htmlFor='gen_project_id' className='block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1'>Project</label>
+                <Combobox
+                  id='gen_project_id'
+                  name='project_id'
+                  required
+                  options={projects.map(p => ({ id: p.id, label: p.name }))}
+                  placeholder="Select a project..."
+                />
               </div>
               <div className='grid grid-cols-2 gap-4'>
                 <div>
-                  <label className='block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1'>Year</label>
-                  <select name='year' className='w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-500 dark:border-zinc-800 dark:bg-zinc-800 dark:text-zinc-100' required defaultValue={currentYear}>
-                    {years.map(year => (
-                      <option key={year} value={year}>{year}</option>
-                    ))}
-                  </select>
+                  <label htmlFor='gen_year' className='block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1'>Year</label>
+                  <Combobox
+                    id='gen_year'
+                    name='year'
+                    required
+                    defaultValue={currentYear}
+                    options={years.map(y => ({ id: y, label: y.toString() }))}
+                  />
                 </div>
                 <div>
-                  <label className='block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1'>Month</label>
-                  <select name='month' className='w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-500 dark:border-zinc-800 dark:bg-zinc-800 dark:text-zinc-100' required defaultValue={new Date().getMonth() + 1}>
-                    {months.map(month => (
-                      <option key={month.value} value={month.value}>{month.label}</option>
-                    ))}
-                  </select>
+                  <label htmlFor='gen_month' className='block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1'>Month</label>
+                  <Combobox
+                    id='gen_month'
+                    name='month'
+                    required
+                    defaultValue={new Date().getMonth() + 1}
+                    options={months.map(m => ({ id: m.value, label: m.label }))}
+                  />
                 </div>
               </div>
               <div className='flex gap-3 pt-2'>
@@ -222,29 +229,35 @@ export default function MonthlyReportsClient({
             <h2 className='text-xl font-bold text-zinc-900 dark:text-zinc-100 mb-4'>Submit Monthly Report</h2>
             <form action={submitAction} className='space-y-4'>
               <div>
-                <label className='block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1'>Project</label>
-                <select name='project_id' className='w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-500 dark:border-zinc-800 dark:bg-zinc-800 dark:text-zinc-100' required>
-                  {projects.map(project => (
-                    <option key={project.id} value={project.id}>{project.name}</option>
-                  ))}
-                </select>
+                <label htmlFor='sub_project_id' className='block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1'>Project</label>
+                <Combobox
+                  id='sub_project_id'
+                  name='project_id'
+                  required
+                  options={projects.map(p => ({ id: p.id, label: p.name }))}
+                  placeholder="Select a project..."
+                />
               </div>
               <div className='grid grid-cols-2 gap-4'>
                 <div>
-                  <label className='block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1'>Year</label>
-                  <select name='year' className='w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-500 dark:border-zinc-800 dark:bg-zinc-800 dark:text-zinc-100' required defaultValue={currentYear}>
-                    {years.map(year => (
-                      <option key={year} value={year}>{year}</option>
-                    ))}
-                  </select>
+                  <label htmlFor='sub_year' className='block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1'>Year</label>
+                  <Combobox
+                    id='sub_year'
+                    name='year'
+                    required
+                    defaultValue={currentYear}
+                    options={years.map(y => ({ id: y, label: y.toString() }))}
+                  />
                 </div>
                 <div>
-                  <label className='block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1'>Month</label>
-                  <select name='month' className='w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-500 dark:border-zinc-800 dark:bg-zinc-800 dark:text-zinc-100' required defaultValue={new Date().getMonth() + 1}>
-                    {months.map(month => (
-                      <option key={month.value} value={month.value}>{month.label}</option>
-                    ))}
-                  </select>
+                  <label htmlFor='sub_month' className='block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1'>Month</label>
+                  <Combobox
+                    id='sub_month'
+                    name='month'
+                    required
+                    defaultValue={new Date().getMonth() + 1}
+                    options={months.map(m => ({ id: m.value, label: m.label }))}
+                  />
                 </div>
               </div>
               <div className='flex gap-3 pt-2'>

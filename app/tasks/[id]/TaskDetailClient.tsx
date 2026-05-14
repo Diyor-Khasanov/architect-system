@@ -15,6 +15,7 @@ import TaskReportClient from './TaskReportClient'
 import TaskDailyReportsClient from './TaskDailyReportsClient'
 import { Report, DailyReport } from '../../lib/reports'
 import { FileResponse } from '../../lib/files'
+import Combobox from '../../components/Combobox'
 
 const STATUS_TRANSITIONS: Record<TaskStatus, TaskStatus[]> = {
   TODO: ['IN_PROGRESS', 'CANCELED'],
@@ -167,19 +168,19 @@ export default function TaskDetailClient({
                   className='mt-1 block w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100'
                 />
               </div>
-              <div>
+              <div className='space-y-1'>
                 <label htmlFor='priority' className='block text-sm font-medium text-zinc-700 dark:text-zinc-300'>Priority</label>
-                <select
-                  name='priority'
+                <Combobox
                   id='priority'
+                  name='priority'
                   defaultValue={task.priority}
                   required
-                  className='mt-1 block w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100'
-                >
-                  <option value='low'>Low</option>
-                  <option value='medium'>Medium</option>
-                  <option value='high'>High</option>
-                </select>
+                  options={[
+                    { id: 'low', label: 'Low' },
+                    { id: 'medium', label: 'Medium' },
+                    { id: 'high', label: 'High' },
+                  ]}
+                />
               </div>
             </div>
             <div className='pt-2'>

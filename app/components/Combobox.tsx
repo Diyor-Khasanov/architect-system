@@ -18,6 +18,7 @@ interface ComboboxProps {
   onChange?: (value: string | number) => void
   required?: boolean
   className?: string
+  id?: string
 }
 
 export default function Combobox({
@@ -29,6 +30,7 @@ export default function Combobox({
   onChange,
   required = false,
   className,
+  id,
 }: ComboboxProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
@@ -80,6 +82,7 @@ export default function Combobox({
       <input type='hidden' name={name} value={selectedId || ''} required={required} />
 
       <button
+        id={id}
         type='button'
         onClick={() => setIsOpen(!isOpen)}
         className='flex w-full items-center justify-between rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-zinc-700'
