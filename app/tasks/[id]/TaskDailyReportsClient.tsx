@@ -1,22 +1,42 @@
 'use client'
 
 import { DailyReport } from '../../lib/reports'
-import { FileText, Calendar, User, ArrowRight } from 'lucide-react'
+import { FileText, Calendar, User, ArrowRight, Plus } from 'lucide-react'
 import { format } from 'date-fns'
 import Link from 'next/link'
 
 interface TaskDailyReportsClientProps {
   reports: DailyReport[]
   userNameMap: Record<number, string>
+  projectId: number
+  taskId: number
+  canAddReport: boolean
 }
 
-export default function TaskDailyReportsClient({ reports, userNameMap }: TaskDailyReportsClientProps) {
+export default function TaskDailyReportsClient({
+  reports,
+  userNameMap,
+  projectId,
+  taskId,
+  canAddReport,
+}: TaskDailyReportsClientProps) {
   if (reports.length === 0) {
     return (
       <section className='rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
-        <h2 className='text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 mb-4'>
-          Daily Progress Reports
-        </h2>
+        <div className='flex items-center justify-between mb-4'>
+          <h2 className='text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100'>
+            Daily Progress Reports
+          </h2>
+          {canAddReport && (
+            <Link
+              href={`/daily-reports/create?project_id=${projectId}&task_id=${taskId}`}
+              className='flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-900 transition-all hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800'
+            >
+              <Plus className='h-4 w-4' />
+              Log Daily Report
+            </Link>
+          )}
+        </div>
         <p className='text-sm text-zinc-500 dark:text-zinc-400 italic'>
           No daily reports logged for this task yet.
         </p>
@@ -26,9 +46,20 @@ export default function TaskDailyReportsClient({ reports, userNameMap }: TaskDai
 
   return (
     <section className='rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
-      <h2 className='text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 mb-6'>
-        Daily Progress Reports
-      </h2>
+      <div className='flex items-center justify-between mb-6'>
+        <h2 className='text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100'>
+          Daily Progress Reports
+        </h2>
+        {canAddReport && (
+          <Link
+            href={`/daily-reports/create?project_id=${projectId}&task_id=${taskId}`}
+            className='flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-900 transition-all hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800'
+          >
+            <Plus className='h-4 w-4' />
+            Log Daily Report
+          </Link>
+        )}
+      </div>
       <div className='space-y-4'>
         {reports.map((report) => (
           <div

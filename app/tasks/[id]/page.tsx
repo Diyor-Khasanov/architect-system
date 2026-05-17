@@ -1,9 +1,8 @@
 import { notFound, redirect } from 'next/navigation'
 import AppShell from '../../components/AppShell'
 import { fetchCurrentUser } from '../../lib/auth'
-import { fetchTask, fetchTaskAssignments, fetchTaskHistory } from '../../lib/tasks'
+import { fetchTask, fetchTaskAssignments } from '../../lib/tasks'
 import { fetchProject, fetchProjectMembers } from '../../lib/projects'
-import { fetchHelpRequests } from '../../lib/help-requests'
 import { fetchUsers, type User } from '../../lib/users'
 import TaskDetailClient from './TaskDetailClient'
 import { fetchTaskReport, fetchReportFiles, fetchDailyReports, type DailyReport } from '../../lib/reports'
@@ -25,8 +24,6 @@ export default async function TaskDetailPage({
   let task
   let assignments
   let projectMembers
-  let history
-  let helpRequests
   let project
   let users: User[] = []
   let report = null
@@ -40,11 +37,9 @@ export default async function TaskDetailPage({
     }
     task = fetchedTask
 
-    const [fetchedAssignments, fetchedMembers, fetchedHistory, fetchedHelp, fetchedProject, fetchedReport, allDailyReports] = await Promise.all([
+    const [fetchedAssignments, fetchedMembers, fetchedProject, fetchedReport, allDailyReports] = await Promise.all([
       fetchTaskAssignments(id).catch(() => []),
       fetchProjectMembers(fetchedTask.project_id || 0).catch(() => []),
-      fetchTaskHistory(id).catch(() => []),
-      fetchHelpRequests().catch(() => []),
       fetchProject((fetchedTask.project_id || 0).toString()).catch(() => undefined),
       fetchTaskReport(id).catch(() => null),
       fetchDailyReports().catch(() => []),
@@ -52,8 +47,6 @@ export default async function TaskDetailPage({
 
     assignments = fetchedAssignments
     projectMembers = fetchedMembers
-    history = fetchedHistory
-    helpRequests = fetchedHelp
     project = fetchedProject
     report = fetchedReport
     dailyReports = (allDailyReports as DailyReport[]).filter(
@@ -106,8 +99,6 @@ export default async function TaskDetailPage({
         currentUserRole={currentUser.role}
         assignments={assignments}
         projectMembers={projectMembers}
-        history={history}
-        helpRequests={helpRequests}
         project={project}
         userNameMap={userNameMap}
         report={report}
