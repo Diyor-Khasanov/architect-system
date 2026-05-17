@@ -1,6 +1,6 @@
 import { getAuthHeaderFromCookies } from './auth'
 
-export type TaskStatus = 'TODO' | 'IN_PROGRESS' | 'REVIEW' | 'DONE' | 'CANCELED' | 'BLOCKED'
+export type TaskStatus = 'todo' | 'in_progress' | 'review' | 'blocked' | 'done' | 'canceled'
 
 export interface Task {
   id: number
@@ -53,7 +53,7 @@ function normalizeTaskResponse(payload: unknown): Task {
     id: taskData.id as number,
     title: taskData.title as string,
     description: taskData.description as string,
-    status: (taskData.status as TaskStatus) || 'TODO',
+    status: ((taskData.status as string)?.toLowerCase() as TaskStatus) || 'todo',
     priority: (taskData.priority as string) || 'medium',
     deadline: taskData.deadline as string,
     project_id: (taskData.project_id ?? taskData.projectId) as number,

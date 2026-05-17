@@ -3,7 +3,7 @@
 import { useState, useActionState } from 'react'
 import { Task, TaskStatus, TaskAssignment } from '../../lib/tasks'
 import { Project, ProjectMember } from '../../lib/projects'
-import { Clock, Edit2, CheckCircle2, Play, Search, Ban, AlertTriangle, ArrowRight } from 'lucide-react'
+import { Clock, Edit2, CheckCircle2, Play, Search, Ban, AlertTriangle, ArrowRight, type LucideIcon } from 'lucide-react'
 import Link from 'next/link'
 import { updateTaskAction, updateTaskStatusAction } from '../../actions/tasks'
 import { useToast } from '../../context/ToastContext'
@@ -14,32 +14,30 @@ import { FileResponse } from '../../lib/files'
 import Combobox from '../../components/Combobox'
 
 const STATUS_TRANSITIONS: Record<TaskStatus, TaskStatus[]> = {
-  TODO: ['IN_PROGRESS', 'CANCELED'],
-  IN_PROGRESS: ['REVIEW', 'BLOCKED', 'CANCELED'],
-  REVIEW: ['DONE', 'IN_PROGRESS'],
-  BLOCKED: ['IN_PROGRESS', 'CANCELED'],
-  DONE: [],
-  CANCELED: [],
+  todo: ['in_progress', 'canceled'],
+  in_progress: ['review', 'blocked', 'canceled'],
+  review: ['done', 'in_progress'],
+  blocked: ['in_progress', 'canceled'],
+  done: [],
+  canceled: [],
 }
 
 const STATUS_COLORS: Record<TaskStatus, string> = {
-  TODO: 'bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300',
-  IN_PROGRESS: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
-  REVIEW: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400',
-  DONE: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
-  CANCELED: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
-  BLOCKED: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
+  todo: 'bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300',
+  in_progress: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+  review: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400',
+  done: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+  canceled: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+  blocked: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
 }
 
-import { LucideIcon } from 'lucide-react'
-
 const STATUS_ICONS: Record<TaskStatus, LucideIcon> = {
-  TODO: Clock,
-  IN_PROGRESS: Play,
-  REVIEW: Search,
-  DONE: CheckCircle2,
-  CANCELED: Ban,
-  BLOCKED: AlertTriangle,
+  todo: Clock,
+  in_progress: Play,
+  review: Search,
+  done: CheckCircle2,
+  canceled: Ban,
+  blocked: AlertTriangle,
 }
 
 export default function TaskDetailClient({
@@ -71,9 +69,9 @@ export default function TaskDetailClient({
   const canEditTask = isManagerOrAdmin
 
   // Handle case-insensitivity for status lookup
-  const normalizedStatus = (task.status?.toUpperCase() || 'TODO') as TaskStatus
-  const statusColor = STATUS_COLORS[normalizedStatus] || STATUS_COLORS.TODO
-  const StatusIcon = STATUS_ICONS[normalizedStatus] || STATUS_ICONS.TODO
+  const normalizedStatus = (task.status?.toLowerCase() || 'todo') as TaskStatus
+  const statusColor = STATUS_COLORS[normalizedStatus] || STATUS_COLORS.todo
+  const StatusIcon = STATUS_ICONS[normalizedStatus] || STATUS_ICONS.todo
 
   async function handleStatusTransition(newStatus: TaskStatus) {
     const res = await updateTaskStatusAction(task.id, newStatus)

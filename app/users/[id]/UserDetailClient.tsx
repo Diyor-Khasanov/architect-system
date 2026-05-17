@@ -315,8 +315,8 @@ export default function UserDetailClient({
                     <div key={task.id} className='flex items-center justify-between rounded-xl border border-zinc-100 p-4 dark:border-zinc-800'>
                       <div className='flex items-start gap-3'>
                         <div className={`mt-1 h-2 w-2 rounded-full ${
-                          task.status === 'completed' ? 'bg-emerald-500' :
-                          task.status === 'active' ? 'bg-blue-500' :
+                          task.status === 'done' ? 'bg-emerald-500' :
+                          task.status === 'in_progress' ? 'bg-blue-500' :
                           'bg-zinc-300'
                         }`} />
                         <div>
