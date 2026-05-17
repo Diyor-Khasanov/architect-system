@@ -1,16 +1,13 @@
 'use client'
 
-import { useState, useActionState, useCallback } from 'react'
-import { Task, TaskStatus, TaskAssignment, TaskHistoryEntry } from '../../lib/tasks'
+import { useState, useActionState } from 'react'
+import { Task, TaskStatus, TaskAssignment } from '../../lib/tasks'
 import { Project, ProjectMember } from '../../lib/projects'
-import { HelpRequest } from '../../lib/help-requests'
-import { Calendar, User, Folder, Clock, Edit2, CheckCircle2, Play, Search, Ban, AlertTriangle, ArrowRight, HelpCircle, X, Plus } from 'lucide-react'
+import { Calendar, User, Folder, Clock, Edit2, CheckCircle2, Play, Search, Ban, AlertTriangle, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { updateTaskAction, updateTaskStatusAction } from '../../actions/tasks'
 import { useToast } from '../../context/ToastContext'
 import TaskAssignmentsClient from './TaskAssignmentsClient'
-import TaskHistoryClient from './TaskHistoryClient'
-import HelpRequestCreateForm from '../../components/HelpRequestCreateForm'
 import TaskReportClient from './TaskReportClient'
 import TaskDailyReportsClient from './TaskDailyReportsClient'
 import { Report, DailyReport } from '../../lib/reports'
@@ -52,8 +49,6 @@ export default function TaskDetailClient({
   currentUserRole,
   assignments,
   projectMembers,
-  history,
-  helpRequests,
   project,
   userNameMap,
   report,
@@ -65,8 +60,6 @@ export default function TaskDetailClient({
   currentUserRole: string
   assignments: TaskAssignment[]
   projectMembers: ProjectMember[]
-  history: TaskHistoryEntry[]
-  helpRequests: HelpRequest[]
   project?: Project
   userNameMap: Record<number, string>
   report: Report | null
@@ -74,7 +67,6 @@ export default function TaskDetailClient({
   dailyReports: DailyReport[]
 }) {
   const [isEditing, setIsEditing] = useState(false)
-  const [isRequestingHelp, setIsRequestingHelp] = useState(false)
   const { toast } = useToast()
   const [, updateAction, isPending] = useActionState(updateTaskAction.bind(null, task.id), null)
 
@@ -97,11 +89,6 @@ export default function TaskDetailClient({
     }
   }
 
-  const handleHelpSuccess = useCallback(() => {
-    setIsRequestingHelp(false)
-  }, [])
-
-  const taskHelpRequests = helpRequests.filter((hr) => hr.task_id === task.id)
 
   const allowedTransitions = STATUS_TRANSITIONS[normalizedStatus] || []
 
@@ -346,6 +333,9 @@ export default function TaskDetailClient({
           <TaskDailyReportsClient
             reports={dailyReports}
             userNameMap={userNameMap}
+            projectId={task.project_id}
+            taskId={task.id}
+            canAddReport={currentUserRole === 'worker'}
           />
 
           <TaskAssignmentsClient
@@ -354,89 +344,6 @@ export default function TaskDetailClient({
             projectMembers={projectMembers}
             canManage={isManagerOrAdmin}
           />
-
-          <section className='rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
-            <div className='flex items-center justify-between mb-6'>
-              <h2 className='text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100'>
-                Help Requests
-              </h2>
-              {currentUserRole === 'worker' && (
-                <div className='flex items-center gap-2'>
-                  <Link
-                    href={`/daily-reports/create?project_id=${task.project_id}&task_id=${task.id}`}
-                    className='flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-900 transition-all hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800'
-                  >
-                    <Plus className='h-4 w-4' />
-                    Log Daily Report
-                  </Link>
-                  <button
-                    onClick={() => setIsRequestingHelp(!isRequestingHelp)}
-                    className='flex items-center gap-2 rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-all hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200'
-                  >
-                    {isRequestingHelp ? (
-                      <>
-                        <X className='h-4 w-4' />
-                        Cancel
-                      </>
-                    ) : (
-                      <>
-                        <HelpCircle className='h-4 w-4' />
-                        Need Help?
-                      </>
-                    )}
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {isRequestingHelp && (
-              <div className='mb-6'>
-                <HelpRequestCreateForm tasks={[]} taskId={task.id} onSuccess={handleHelpSuccess} />
-              </div>
-            )}
-
-            {taskHelpRequests.length === 0 ? (
-              <p className='text-sm text-zinc-500 dark:text-zinc-400 italic'>
-                No help requests created for this task yet.
-              </p>
-            ) : (
-              <div className='space-y-4'>
-                {taskHelpRequests.map((request) => (
-                  <div
-                    key={request.id}
-                    className='flex items-center justify-between rounded-xl border border-zinc-100 p-4 transition-colors hover:bg-zinc-50/50 dark:border-zinc-800 dark:hover:bg-zinc-800/50'
-                  >
-                    <div className='flex items-center gap-3'>
-                      <div className='rounded-full bg-zinc-100 p-2 dark:bg-zinc-800'>
-                        <HelpCircle className='h-4 w-4 text-zinc-500' />
-                      </div>
-                      <div>
-                        <div className='flex items-center gap-2'>
-                          <p className='font-medium text-zinc-900 dark:text-zinc-100'>
-                            {request.title || `Help Request #${request.id}`}
-                          </p>
-                          <span className='rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400 uppercase'>
-                            {request.status}
-                          </span>
-                        </div>
-                        <p className='text-xs text-zinc-500 dark:text-zinc-400'>
-                          Created on {new Date(request.created_at).toLocaleDateString()}
-                        </p>
-                      </div>
-                    </div>
-                    <Link
-                      href={`/help-requests/${request.id}`}
-                      className='text-sm font-medium text-zinc-900 hover:underline dark:text-zinc-100'
-                    >
-                      View Details
-                    </Link>
-                  </div>
-                ))}
-              </div>
-            )}
-          </section>
-
-          <TaskHistoryClient history={history} userNameMap={userNameMap} />
         </main>
       </div>
     </div>
