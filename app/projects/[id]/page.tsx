@@ -46,16 +46,16 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
     dailyReports = (allDailyReports as DailyReport[]).filter(
       (dr) => dr.project_id === Number(id)
     )
-    taskNameMap = Object.fromEntries((allTasks as any[]).map((t) => [t.id, t.title]))
+    taskNameMap = Object.fromEntries((allTasks as { id: number; title: string }[]).map((t) => [t.id, t.title]))
     userNameMap = Object.fromEntries(
-      (allUsers as any[]).map((u) => [
+      allUsers.map((u) => [
         u.id,
         u.profile?.full_name || u.username,
       ])
     )
 
     if (['admin', 'manager'].includes(currentUser.role)) {
-      managers = (allUsers as any[])
+      managers = allUsers
         .filter((u) => u.role === 'manager')
         .map((u) => ({
           id: u.id,
@@ -63,7 +63,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
           full_name: u.profile?.full_name || u.username,
         }))
 
-      availableWorkers = (allUsers as any[]).filter((u) => u.role === 'worker') as User[]
+      availableWorkers = allUsers.filter((u) => u.role === 'worker')
     }
   } catch {
     // Error handled by null check below
@@ -118,8 +118,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                 <div>
                   <dt className='text-zinc-500 dark:text-zinc-400'>Manager</dt>
                   <dd className='font-medium text-zinc-900 dark:text-zinc-100'>
-                    {managers.find((m) => m.id === project?.manager_id)?.full_name ||
-                      `#${project.manager_id}`}
+                    {userNameMap[project.manager_id] || `#${project.manager_id}`}
                   </dd>
                 </div>
                 <div>

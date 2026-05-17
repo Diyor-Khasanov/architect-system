@@ -27,22 +27,53 @@ interface CreateProjectPayload {
 
 const API_BASE_URL = 'http://13.50.4.92/api/v1'
 
+function normalizeProject(payload: unknown): Project {
+  if (!payload || typeof payload !== 'object') {
+    throw new Error('Invalid project payload')
+  }
+
+  const data = payload as Record<string, unknown>
+
+  return {
+    ...data,
+    id: data.id as number,
+    name: data.name as string,
+    description: data.description as string,
+    manager_id: (data.manager_id ?? data.managerId) as number,
+    status: (data.status as string) || 'draft',
+    deadline: data.deadline as string,
+    created_at: (data.created_at ?? data.createdAt) as string,
+  } as Project
+}
+
 function normalizeProjectsResponse(payload: unknown): Project[] {
+  let items: unknown[] = []
+
   if (Array.isArray(payload)) {
-    return payload as Project[]
+    items = payload
+  } else if (payload && typeof payload === 'object') {
+    const candidate = payload as {
+      items?: unknown[]
+      data?: unknown[]
+      results?: unknown[]
+      projects?: unknown[]
+      project?: unknown[]
+    }
+
+    if (Array.isArray(candidate.items)) items = candidate.items
+    else if (Array.isArray(candidate.data)) items = candidate.data
+    else if (Array.isArray(candidate.results)) items = candidate.results
+    else if (Array.isArray(candidate.projects)) items = candidate.projects
+    else if (Array.isArray(candidate.project)) items = candidate.project
   }
 
-  if (payload && typeof payload === 'object') {
-    const candidate = payload as { items?: unknown; data?: unknown; results?: unknown; projects?: unknown; project?: unknown }
-
-    if (Array.isArray(candidate.items)) return candidate.items as Project[]
-    if (Array.isArray(candidate.data)) return candidate.data as Project[]
-    if (Array.isArray(candidate.results)) return candidate.results as Project[]
-    if (Array.isArray(candidate.projects)) return candidate.projects as Project[]
-    if (Array.isArray(candidate.project)) return candidate.project as Project[]
-  }
-
-  return []
+  return items.map((item) => {
+    try {
+      return normalizeProject(item)
+    } catch {
+      return item as Project
+    }
+  })
 }
 
 export async function fetchProjects() {
@@ -89,14 +120,13 @@ export async function fetchProject(id: string) {
 
   const payload = (await response.json()) as unknown
 
+  let projectData = payload
   if (payload && typeof payload === 'object' && payload !== null && !('id' in payload)) {
-    const candidate = payload as { data?: Project; item?: Project; project?: Project }
-    if (candidate.data) return candidate.data
-    if (candidate.item) return candidate.item
-    if (candidate.project) return candidate.project
+    const candidate = payload as { data?: unknown; item?: unknown; project?: unknown }
+    projectData = candidate.data || candidate.item || candidate.project || payload
   }
 
-  return payload as Project
+  return normalizeProject(projectData)
 }
 
 export async function createProject(payload: CreateProjectPayload) {
