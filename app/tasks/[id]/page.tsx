@@ -3,6 +3,7 @@ import AppShell from '../../components/AppShell'
 import { fetchCurrentUser } from '../../lib/auth'
 import { fetchTask, fetchTaskAssignments } from '../../lib/tasks'
 import { fetchProject, fetchProjectMembers } from '../../lib/projects'
+import { fetchHelpRequests } from '../../lib/help-requests'
 import TaskDetailClient from './TaskDetailClient'
 import { fetchTaskReport, fetchReportFiles } from '../../lib/reports'
 
@@ -26,6 +27,7 @@ export default async function TaskDetailPage({
   let project
   let report = null
   let reportFiles = []
+  let helpRequests = []
 
   try {
     const fetchedTask = await fetchTask(id)
@@ -34,17 +36,19 @@ export default async function TaskDetailPage({
     }
     task = fetchedTask
 
-    const [fetchedAssignments, fetchedMembers, fetchedProject, fetchedReport] = await Promise.all([
+    const [fetchedAssignments, fetchedMembers, fetchedProject, fetchedReport, allHelpRequests] = await Promise.all([
       fetchTaskAssignments(id).catch(() => []),
       fetchProjectMembers(fetchedTask.project_id || 0).catch(() => []),
       fetchProject((fetchedTask.project_id || 0).toString()).catch(() => undefined),
       fetchTaskReport(id).catch(() => null),
+      fetchHelpRequests().catch(() => []),
     ])
 
     assignments = fetchedAssignments
     projectMembers = fetchedMembers
     project = fetchedProject
     report = fetchedReport
+    helpRequests = allHelpRequests.filter((r: { task_id?: number }) => r.task_id === task.id)
 
     if (report) {
       reportFiles = await fetchReportFiles(report.id).catch(() => [])
@@ -65,6 +69,7 @@ export default async function TaskDetailPage({
         project={project}
         report={report}
         reportFiles={reportFiles}
+        helpRequests={helpRequests}
       />
     </AppShell>
   )

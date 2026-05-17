@@ -27,7 +27,7 @@ export default async function HelpRequestsPage() {
 
   return (
     <AppShell currentUser={currentUser}>
-      <HelpRequestsClient helpRequests={helpRequests} tasks={tasks} fetchError={fetchError} />
+      <HelpRequestsClient helpRequests={helpRequests} fetchError={fetchError} />
     </AppShell>
   )
 }

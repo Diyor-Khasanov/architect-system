@@ -8,11 +8,11 @@ import { Task } from '../lib/tasks'
 import Combobox from './Combobox'
 
 export default function HelpRequestCreateForm({
-  tasks,
+  tasks = [],
   onSuccess,
   taskId
 }: {
-  tasks: Task[],
+  tasks?: Task[],
   onSuccess: () => void,
   taskId?: number
 }) {
@@ -53,13 +53,40 @@ export default function HelpRequestCreateForm({
                 id: task.id,
                 label: `#${task.id} - ${task.title}`,
               })),
-              { id: 0, label: 'General / No specific task' }
             ]}
           />
         </div>
       )}
 
-      <div className='flex justify-end'>
+      <div className='space-y-2'>
+        <label htmlFor='title' className='text-sm font-medium text-zinc-700 dark:text-zinc-300'>
+          Title
+        </label>
+        <input
+          id='title'
+          name='title'
+          type='text'
+          required
+          className='w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-zinc-900 dark:border-zinc-800 dark:bg-zinc-900 dark:focus:ring-zinc-100'
+          placeholder='Brief summary of your issue'
+        />
+      </div>
+
+      <div className='space-y-2'>
+        <label htmlFor='description' className='text-sm font-medium text-zinc-700 dark:text-zinc-300'>
+          Description
+        </label>
+        <textarea
+          id='description'
+          name='description'
+          required
+          rows={3}
+          className='w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-zinc-900 dark:border-zinc-800 dark:bg-zinc-900 dark:focus:ring-zinc-100'
+          placeholder='Detailed explanation of what you need help with...'
+        />
+      </div>
+
+      <div className='flex justify-end pt-2'>
         <button
           type='submit'
           disabled={isPending}

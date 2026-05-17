@@ -1,26 +1,17 @@
 'use client'
 
-import { useState, useCallback } from 'react'
 import { HelpRequest } from '../lib/help-requests'
 import { Task } from '../lib/tasks'
-import { HelpCircle, Plus, X, ArrowRight } from 'lucide-react'
-import HelpRequestCreateForm from '../components/HelpRequestCreateForm'
+import { HelpCircle, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 
 export default function HelpRequestsClient({
   helpRequests,
-  tasks,
   fetchError,
 }: {
   helpRequests: HelpRequest[]
-  tasks: Task[]
   fetchError?: string
 }) {
-  const [isCreating, setIsCreating] = useState(false)
-
-  const handleSuccess = useCallback(() => {
-    setIsCreating(false)
-  }, [])
 
   return (
     <section className='space-y-6'>
