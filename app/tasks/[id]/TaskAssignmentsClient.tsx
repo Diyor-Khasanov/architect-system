@@ -98,7 +98,6 @@ export default function TaskAssignmentsClient({
         <table className='w-full text-left text-sm'>
           <thead className='border-b border-zinc-200 text-xs uppercase tracking-wide text-zinc-500 dark:border-zinc-800 dark:text-zinc-400'>
             <tr>
-              <th className='px-2 py-3'>Name</th>
               <th className='px-2 py-3'>Role on Task</th>
               {canManage && <th className='px-2 py-3 text-right'>Actions</th>}
             </tr>
@@ -107,9 +106,6 @@ export default function TaskAssignmentsClient({
             {assignments && assignments.length > 0 ? (
               assignments.map((assignment) => (
                 <tr key={assignment.user_id} className='group hover:bg-zinc-50/50 dark:hover:bg-zinc-800/50'>
-                  <td className='px-2 py-3 font-medium text-zinc-900 dark:text-zinc-100'>
-                    {assignment.full_name}
-                  </td>
                   <td className='px-2 py-3 text-zinc-600 dark:text-zinc-400'>
                     {assignment.role_on_task}
                   </td>
@@ -130,7 +126,7 @@ export default function TaskAssignmentsClient({
               ))
             ) : (
               <tr>
-                <td colSpan={canManage ? 3 : 2} className='px-2 py-8 text-center text-zinc-500 dark:text-zinc-400'>
+                <td colSpan={canManage ? 2 : 1} className='px-2 py-8 text-center text-zinc-500 dark:text-zinc-400'>
                   No workers assigned to this task yet.
                 </td>
               </tr>
