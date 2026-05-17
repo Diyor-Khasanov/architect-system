@@ -9,8 +9,7 @@ import { updateTaskAction, updateTaskStatusAction } from '../../actions/tasks'
 import { useToast } from '../../context/ToastContext'
 import TaskAssignmentsClient from './TaskAssignmentsClient'
 import TaskReportClient from './TaskReportClient'
-import TaskDailyReportsClient from './TaskDailyReportsClient'
-import { Report, DailyReport } from '../../lib/reports'
+import { Report } from '../../lib/reports'
 import { FileResponse } from '../../lib/files'
 import Combobox from '../../components/Combobox'
 
@@ -50,10 +49,8 @@ export default function TaskDetailClient({
   assignments,
   projectMembers,
   project,
-  userNameMap,
   report,
   reportFiles,
-  dailyReports,
 }: {
   task: Task
   currentUserId: number
@@ -61,10 +58,8 @@ export default function TaskDetailClient({
   assignments: TaskAssignment[]
   projectMembers: ProjectMember[]
   project?: Project
-  userNameMap: Record<number, string>
   report: Report | null
   reportFiles: FileResponse[]
-  dailyReports: DailyReport[]
 }) {
   const [isEditing, setIsEditing] = useState(false)
   const { toast } = useToast()
@@ -271,14 +266,6 @@ export default function TaskDetailClient({
             report={report}
             files={reportFiles}
             canEdit={currentUserRole === 'worker' && isWorkerOnTask}
-          />
-
-          <TaskDailyReportsClient
-            reports={dailyReports}
-            userNameMap={userNameMap}
-            projectId={task.project_id}
-            taskId={task.id}
-            canAddReport={currentUserRole === 'worker'}
           />
 
           <TaskAssignmentsClient
