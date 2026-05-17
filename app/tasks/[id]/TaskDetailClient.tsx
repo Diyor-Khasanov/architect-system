@@ -3,7 +3,7 @@
 import { useState, useActionState } from 'react'
 import { Task, TaskStatus, TaskAssignment } from '../../lib/tasks'
 import { Project, ProjectMember } from '../../lib/projects'
-import { Calendar, User, Folder, Clock, Edit2, CheckCircle2, Play, Search, Ban, AlertTriangle, ArrowRight } from 'lucide-react'
+import { Clock, Edit2, CheckCircle2, Play, Search, Ban, AlertTriangle, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { updateTaskAction, updateTaskStatusAction } from '../../actions/tasks'
 import { useToast } from '../../context/ToastContext'
@@ -263,63 +263,6 @@ export default function TaskDetailClient({
             </section>
           )}
 
-          <section className='rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
-            <h2 className='text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-4'>
-              Metadata
-            </h2>
-            <div className='space-y-4'>
-              <div className='flex items-center gap-3 text-sm'>
-                <Calendar className='h-4 w-4 text-zinc-400' />
-                <span className='text-zinc-500 dark:text-zinc-400 w-20'>Deadline:</span>
-                <span className='font-medium text-zinc-900 dark:text-zinc-100'>
-                  {new Date(task.deadline).toLocaleDateString(undefined, { dateStyle: 'long' })}
-                </span>
-              </div>
-               <div className='flex items-center gap-3 text-sm'>
-                <Folder className='h-4 w-4 text-zinc-400' />
-                <span className='text-zinc-500 dark:text-zinc-400 w-20'>Project:</span>
-                {isManagerOrAdmin ? (
-                  <Link href={`/projects/${task.project_id || 0}`} className='font-medium text-zinc-900 hover:underline dark:text-zinc-100'>
-                    {project?.name || `Project #${task.project_id || 'undefined'}`}
-                  </Link>
-                ) : (
-                  <span className='font-medium text-zinc-900 dark:text-zinc-100'>
-                    {project?.name || `Project #${task.project_id || 'undefined'}`}
-                  </span>
-                )}
-              </div>
-            </div>
-          </section>
-
-          <section className='rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
-            <h2 className='text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-4'>
-              Stakeholders
-            </h2>
-            <div className='space-y-4'>
-              <div className='flex items-center gap-3 text-sm'>
-                <User className='h-4 w-4 text-zinc-400' />
-                <span className='text-zinc-500 dark:text-zinc-400 w-20'>Creator:</span>
-                <span className='font-medium text-zinc-900 dark:text-zinc-100 truncate'>
-                  {userNameMap[task.creator_id] || `User #${task.creator_id || 'undefined'}`}
-                </span>
-              </div>
-              {task.assignee_id ? (
-                <div className='flex items-center gap-3 text-sm'>
-                  <User className='h-4 w-4 text-zinc-400' />
-                  <span className='text-zinc-500 dark:text-zinc-400 w-20'>Assignee:</span>
-                  <span className='font-medium text-zinc-900 dark:text-zinc-100 truncate'>
-                    {userNameMap[task.assignee_id] || `User #${task.assignee_id}`}
-                  </span>
-                </div>
-              ) : (
-                <div className='flex items-center gap-3 text-sm'>
-                  <User className='h-4 w-4 text-zinc-400' />
-                  <span className='text-zinc-500 dark:text-zinc-400 w-20'>Assignee:</span>
-                  <span className='italic text-zinc-400'>Unassigned</span>
-                </div>
-              )}
-            </div>
-          </section>
         </aside>
 
         <main className='lg:col-span-3 space-y-6'>
