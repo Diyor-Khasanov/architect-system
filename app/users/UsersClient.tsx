@@ -72,8 +72,16 @@ export default function UsersClient({
                     <td className='px-2 py-4 text-zinc-500 dark:text-zinc-400'>{user.id}</td>
                     <td className='px-2 py-4'>
                       <div className='flex items-center gap-3'>
-                        <div className='flex h-9 w-9 items-center justify-center rounded-full bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400'>
-                          <UserIcon className='h-5 w-5' />
+                        <div className='flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400'>
+                          {user.profile?.avatar_file_id ? (
+                            <img
+                              src={`/api/files/${user.profile.avatar_file_id}`}
+                              alt={user.profile?.full_name || user.username}
+                              className='h-full w-full object-cover'
+                            />
+                          ) : (
+                            <UserIcon className='h-5 w-5' />
+                          )}
                         </div>
                         <div>
                           <Link

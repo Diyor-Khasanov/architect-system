@@ -147,8 +147,16 @@ export default function UserDetailClient({
           <article className='lg:col-span-2 space-y-6'>
             <div className='rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
               <div className='flex flex-col items-center text-center md:flex-row md:items-start md:text-left gap-6'>
-                <div className='flex h-24 w-24 shrink-0 items-center justify-center rounded-full bg-zinc-100 text-zinc-400 dark:bg-zinc-800 dark:text-zinc-500'>
-                  <UserIcon className='h-12 w-12' />
+                <div className='flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-full bg-zinc-100 text-zinc-400 dark:bg-zinc-800 dark:text-zinc-500'>
+                  {user.profile?.avatar_file_id ? (
+                    <img
+                      src={`/api/files/${user.profile.avatar_file_id}`}
+                      alt={user.profile?.full_name || user.username}
+                      className='h-full w-full object-cover'
+                    />
+                  ) : (
+                    <UserIcon className='h-12 w-12' />
+                  )}
                 </div>
                 <div className='flex-1 space-y-1'>
                   <h2 className='text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100'>

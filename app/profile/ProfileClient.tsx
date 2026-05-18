@@ -76,8 +76,16 @@ export default function ProfileClient({ user, profile }: { user: MeResponse, pro
           <div className='lg:col-span-2 space-y-6'>
             <article className='rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900'>
               <div className='flex items-center gap-4 mb-6'>
-                <div className='flex h-16 w-16 items-center justify-center rounded-full bg-zinc-100 text-zinc-400 dark:bg-zinc-800 dark:text-zinc-500'>
-                  <UserIcon className='h-8 w-8' />
+                <div className='flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-zinc-100 text-zinc-400 dark:bg-zinc-800 dark:text-zinc-500'>
+                  {profile.avatar_file_id ? (
+                    <img
+                      src={`/api/files/${profile.avatar_file_id}`}
+                      alt={profile.full_name || user.username}
+                      className='h-full w-full object-cover'
+                    />
+                  ) : (
+                    <UserIcon className='h-8 w-8' />
+                  )}
                 </div>
                 <div>
                   <h2 className='text-xl font-bold text-zinc-900 dark:text-zinc-100'>{displayValue(profile.full_name)}</h2>

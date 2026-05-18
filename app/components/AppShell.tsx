@@ -49,8 +49,16 @@ export default function AppShell({ currentUser, children }: AppShellProps) {
                 </span>
                 <span className='text-xs capitalize text-zinc-500 dark:text-zinc-400'>{currentUser.role}</span>
               </div>
-              <div className='flex h-8 w-8 items-center justify-center rounded-full bg-zinc-900 text-xs font-medium text-white dark:bg-zinc-100 dark:text-zinc-900'>
-                {(currentUser.profile?.full_name ?? currentUser.username).charAt(0).toUpperCase()}
+              <div className='flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-zinc-900 text-xs font-medium text-white dark:bg-zinc-100 dark:text-zinc-900'>
+                {currentUser.profile?.avatar_file_id ? (
+                  <img
+                    src={`/api/files/${currentUser.profile.avatar_file_id}`}
+                    alt={currentUser.profile?.full_name ?? currentUser.username}
+                    className='h-full w-full object-cover'
+                  />
+                ) : (
+                  (currentUser.profile?.full_name ?? currentUser.username).charAt(0).toUpperCase()
+                )}
               </div>
             </Link>
           </div>
