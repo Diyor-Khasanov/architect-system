@@ -46,16 +46,16 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
     dailyReports = (allDailyReports as DailyReport[]).filter(
       (dr) => dr.project_id === Number(id)
     )
-    taskNameMap = Object.fromEntries((allTasks as any[]).map((t) => [t.id, t.title]))
+    taskNameMap = Object.fromEntries((allTasks as { id: number; title: string }[]).map((t) => [t.id, t.title]))
     userNameMap = Object.fromEntries(
-      (allUsers as any[]).map((u) => [
+      (allUsers as User[]).map((u) => [
         u.id,
         u.profile?.full_name || u.username,
       ])
     )
 
     if (['admin', 'manager'].includes(currentUser.role)) {
-      managers = (allUsers as any[])
+      managers = (allUsers as User[])
         .filter((u) => u.role === 'manager')
         .map((u) => ({
           id: u.id,
@@ -63,7 +63,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
           full_name: u.profile?.full_name || u.username,
         }))
 
-      availableWorkers = (allUsers as any[]).filter((u) => u.role === 'worker') as User[]
+      availableWorkers = (allUsers as User[]).filter((u) => u.role === 'worker')
     }
   } catch {
     // Error handled by null check below

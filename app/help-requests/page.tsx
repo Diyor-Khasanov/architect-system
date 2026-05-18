@@ -2,7 +2,6 @@ import { redirect } from 'next/navigation'
 import AppShell from '../components/AppShell'
 import { fetchCurrentUser } from '../lib/auth'
 import { fetchHelpRequests, type HelpRequest } from '../lib/help-requests'
-import { type Task } from '../lib/tasks'
 import HelpRequestsClient from './HelpRequestsClient'
 
 export const dynamic = 'force-dynamic'
@@ -15,7 +14,6 @@ export default async function HelpRequestsPage() {
   }
 
   let helpRequests: HelpRequest[] = []
-  const tasks: Task[] = []
   let fetchError = ''
 
   try {
@@ -27,7 +25,7 @@ export default async function HelpRequestsPage() {
 
   return (
     <AppShell currentUser={currentUser}>
-      <HelpRequestsClient helpRequests={helpRequests} tasks={tasks} fetchError={fetchError} />
+      <HelpRequestsClient helpRequests={helpRequests} fetchError={fetchError} />
     </AppShell>
   )
 }
