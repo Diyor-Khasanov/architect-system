@@ -77,6 +77,8 @@ export default function TaskDetailClient({
   const statusColor = STATUS_COLORS[normalizedStatus] || STATUS_COLORS.todo
   const StatusIcon = STATUS_ICONS[normalizedStatus] || STATUS_ICONS.todo
 
+  const assigneeName = projectMembers.find((m) => m.user_id === task.assignee_id)?.full_name
+
   async function handleStatusTransition(newStatus: TaskStatus) {
     const res = await updateTaskStatusAction(task.id, newStatus)
     if (res.error) {
@@ -166,6 +168,19 @@ export default function TaskDetailClient({
                   ]}
                 />
               </div>
+              <div className='space-y-1'>
+                <label htmlFor='assignee_id' className='block text-sm font-medium text-zinc-700 dark:text-zinc-300'>Assignee</label>
+                <Combobox
+                  id='assignee_id'
+                  name='assignee_id'
+                  defaultValue={task.assignee_id}
+                  placeholder='Select a worker...'
+                  options={projectMembers.map((member) => ({
+                    id: member.user_id,
+                    label: member.full_name,
+                  }))}
+                />
+              </div>
             </div>
             <div className='pt-2'>
               <button
@@ -212,6 +227,11 @@ export default function TaskDetailClient({
             <h1 className='text-2xl md:text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100'>
               {task.title}
             </h1>
+            {assigneeName && (
+              <p className='mt-1 text-sm text-zinc-500 dark:text-zinc-400'>
+                Assigned to <span className='font-medium text-zinc-900 dark:text-zinc-100'>{assigneeName}</span>
+              </p>
+            )}
             <div className='mt-3 flex items-center gap-2'>
                <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColor}`}>
                 <StatusIcon className='h-3.5 w-3.5' />

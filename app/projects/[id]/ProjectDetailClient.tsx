@@ -8,7 +8,7 @@ import {
 } from '../../actions/projects'
 import { cn } from '../../lib/utils'
 import { Edit, Play, Pause, CheckCircle2, Trash2, UserPlus, Plus } from 'lucide-react'
-import type { Project } from '../../lib/projects'
+import type { Project, ProjectMember } from '../../lib/projects'
 import type { MeResponse } from '../../lib/auth'
 import { useToast } from '../../context/ToastContext'
 import TaskCreateForm from '../../components/TaskCreateForm'
@@ -54,6 +54,7 @@ interface ProjectDetailClientProps {
   currentUser: MeResponse
   id: string
   availableManagers: { id: number; username: string; full_name: string }[]
+  members?: ProjectMember[]
 }
 
 export default function ProjectDetailClient({
@@ -61,6 +62,7 @@ export default function ProjectDetailClient({
   currentUser,
   id,
   availableManagers,
+  members = [],
 }: ProjectDetailClientProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [showTaskForm, setShowTaskForm] = useState(false)
@@ -264,6 +266,7 @@ export default function ProjectDetailClient({
         <div className='animate-in fade-in slide-in-from-top-4 duration-300'>
           <TaskCreateForm
             projectId={id}
+            members={members}
             onSuccess={handleTaskSuccess}
           />
         </div>

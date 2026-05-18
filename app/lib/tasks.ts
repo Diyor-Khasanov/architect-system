@@ -175,7 +175,7 @@ export async function fetchTask(id: string | number) {
   return normalizeTaskResponse(payload)
 }
 
-export async function createTask(projectId: string | number, payload: { title: string; description: string; deadline: string }) {
+export async function createTask(projectId: string | number, payload: { title: string; description: string; deadline: string; assignee_id?: number }) {
   const authorization = await getAuthHeaderFromCookies()
 
   if (!authorization) {
@@ -343,7 +343,7 @@ export async function updateTaskStatus(id: string | number, status: TaskStatus) 
   return (await response.json()) as Task
 }
 
-export async function updateTask(id: string | number, payload: Partial<{ title: string; description: string; deadline: string; priority: string }>) {
+export async function updateTask(id: string | number, payload: Partial<{ title: string; description: string; deadline: string; priority: string; assignee_id: number | null }>) {
   const authorization = await getAuthHeaderFromCookies()
 
   if (!authorization) {

@@ -4,12 +4,16 @@ import { useActionState } from 'react'
 import { createTaskAction } from '../actions/tasks'
 import { useToast } from '../context/ToastContext'
 import { useEffect } from 'react'
+import type { ProjectMember } from '../lib/projects'
+import Combobox from './Combobox'
 
 export default function TaskCreateForm({
   projectId,
+  members = [],
   onSuccess
 }: {
   projectId: string | number,
+  members?: ProjectMember[],
   onSuccess: () => void
 }) {
   const { toast } = useToast()
@@ -58,6 +62,21 @@ export default function TaskCreateForm({
             type='datetime-local'
             required
             className='w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-zinc-900 dark:border-zinc-800 dark:bg-zinc-900 dark:focus:ring-zinc-100'
+          />
+        </div>
+
+        <div className='space-y-2 md:col-span-2'>
+          <label htmlFor='assignee_id' className='text-sm font-medium text-zinc-700 dark:text-zinc-300'>
+            Assignee (Optional)
+          </label>
+          <Combobox
+            id='assignee_id'
+            name='assignee_id'
+            placeholder='Select a worker...'
+            options={members.map((member) => ({
+              id: member.user_id,
+              label: member.full_name,
+            }))}
           />
         </div>
       </div>
