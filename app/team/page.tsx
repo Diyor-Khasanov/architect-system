@@ -55,6 +55,7 @@ export default async function TeamPage() {
     email: string
     role: string
     is_active: boolean
+    avatar_file_id?: number
   }
 
   let teammates: TeammateDisplay[] = []
@@ -69,6 +70,7 @@ export default async function TeamPage() {
         email: u.email,
         role: u.role,
         is_active: u.is_active,
+        avatar_file_id: u.profile?.avatar_file_id,
       }))
   } else {
     // Fallback: Aggregate from projects data
@@ -105,15 +107,16 @@ export default async function TeamPage() {
 
   // Always include admins if the user can fetch all users
   if (!fetchUsersFailed && allUsers.length > 0) {
-    const admins = allUsers.filter(u => u.role === 'admin' && !teammateIds.has(u.id) && u.id !== currentUser.id)
-    admins.forEach(admin => {
-        teammates.push({
-            id: admin.id,
-            name: admin.profile?.full_name || admin.username,
-            email: admin.email,
-            role: admin.role,
-            is_active: admin.is_active
-        })
+    const admins = allUsers.filter((u) => u.role === 'admin' && !teammateIds.has(u.id) && u.id !== currentUser.id)
+    admins.forEach((admin) => {
+      teammates.push({
+        id: admin.id,
+        name: admin.profile?.full_name || admin.username,
+        email: admin.email,
+        role: admin.role,
+        is_active: admin.is_active,
+        avatar_file_id: admin.profile?.avatar_file_id,
+      })
     })
   }
 
@@ -147,8 +150,16 @@ export default async function TeamPage() {
                     <tr key={teammate.id} className='border-b border-zinc-100 hover:bg-zinc-50/50 transition-colors'>
                       <td className='px-2 py-4'>
                         <div className='flex items-center gap-3'>
-                          <div className='flex h-9 w-9 items-center justify-center rounded-full bg-zinc-100 text-zinc-600'>
-                            <UserIcon className='h-5 w-5' />
+                          <div className='flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-zinc-100 text-zinc-600'>
+                            {teammate.avatar_file_id ? (
+                              <img
+                                src={`/api/files/${teammate.avatar_file_id}`}
+                                alt={teammate.name}
+                                className='h-full w-full object-cover'
+                              />
+                            ) : (
+                              <UserIcon className='h-5 w-5' />
+                            )}
                           </div>
                           <div>
                             <p className='font-medium text-zinc-900'>{teammate.name}</p>
