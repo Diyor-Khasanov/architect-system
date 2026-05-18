@@ -12,6 +12,8 @@ import TaskReportClient from './TaskReportClient'
 import { Report } from '../../lib/reports'
 import { FileResponse } from '../../lib/files'
 import Combobox from '../../components/Combobox'
+import { HelpRequest } from '../../lib/help-requests'
+import TaskHelpRequestsClient from './TaskHelpRequestsClient'
 
 const STATUS_TRANSITIONS: Record<TaskStatus, TaskStatus[]> = {
   todo: ['in_progress', 'canceled'],
@@ -49,6 +51,7 @@ export default function TaskDetailClient({
   project,
   report,
   reportFiles,
+  helpRequests,
 }: {
   task: Task
   currentUserId: number
@@ -58,6 +61,7 @@ export default function TaskDetailClient({
   project?: Project
   report: Report | null
   reportFiles: FileResponse[]
+  helpRequests: HelpRequest[]
 }) {
   const [isEditing, setIsEditing] = useState(false)
   const { toast } = useToast()
@@ -264,6 +268,12 @@ export default function TaskDetailClient({
             report={report}
             files={reportFiles}
             canEdit={currentUserRole === 'worker' && isWorkerOnTask}
+          />
+
+          <TaskHelpRequestsClient
+            taskId={task.id}
+            helpRequests={helpRequests}
+            canCreate={currentUserRole === 'worker' && isWorkerOnTask}
           />
 
           <TaskAssignmentsClient

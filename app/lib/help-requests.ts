@@ -77,7 +77,7 @@ export async function fetchHelpRequest(id: string | number) {
   return (await response.json()) as HelpRequest
 }
 
-export async function createHelpRequest(taskId: number) {
+export async function createHelpRequest(taskId: number, title: string, description: string) {
   const authorization = await getAuthHeaderFromCookies()
 
   if (!authorization) {
@@ -90,7 +90,11 @@ export async function createHelpRequest(taskId: number) {
       Authorization: authorization,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ task_id: taskId }),
+    body: JSON.stringify({
+      task_id: taskId,
+      title,
+      description,
+    }),
     cache: 'no-store',
   })
 

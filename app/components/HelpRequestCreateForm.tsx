@@ -53,11 +53,38 @@ export default function HelpRequestCreateForm({
                 id: task.id,
                 label: `#${task.id} - ${task.title}`,
               })),
-              { id: 0, label: 'General / No specific task' }
             ]}
           />
         </div>
       )}
+
+      <div className='space-y-2'>
+        <label htmlFor='title' className='text-sm font-medium text-zinc-700 dark:text-zinc-300'>
+          Title
+        </label>
+        <input
+          type='text'
+          id='title'
+          name='title'
+          required
+          placeholder='Brief summary of the issue'
+          className='w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100'
+        />
+      </div>
+
+      <div className='space-y-2'>
+        <label htmlFor='description' className='text-sm font-medium text-zinc-700 dark:text-zinc-300'>
+          Description
+        </label>
+        <textarea
+          id='description'
+          name='description'
+          required
+          rows={3}
+          placeholder='Explain what you need help with...'
+          className='w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100'
+        />
+      </div>
 
       <div className='flex justify-end'>
         <button

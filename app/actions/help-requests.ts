@@ -5,13 +5,19 @@ import { createHelpRequest, assignHelpRequest, resolveHelpRequest } from '../lib
 
 export async function createHelpRequestAction(prevState: unknown, formData: FormData) {
   const taskId = formData.get('task_id') ? Number(formData.get('task_id')) : null
+  const title = formData.get('title') as string
+  const description = formData.get('description') as string
 
   if (taskId === null || isNaN(taskId)) {
     return { error: 'Task is required.' }
   }
 
+  if (!title || !description) {
+    return { error: 'Title and description are required.' }
+  }
+
   try {
-    await createHelpRequest(taskId)
+    await createHelpRequest(taskId, title, description)
     revalidatePath('/help-requests')
     revalidatePath(`/tasks/${taskId}`)
     return { success: true }
