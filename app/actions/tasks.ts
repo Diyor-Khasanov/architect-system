@@ -7,13 +7,14 @@ export async function createTaskAction(projectId: string | number, prevState: un
   const title = formData.get('title') as string
   const description = formData.get('description') as string
   const deadline = formData.get('deadline') as string
+  const assigneeId = formData.get('assignee_id') ? Number(formData.get('assignee_id')) : undefined
 
   if (!title || !description || !deadline) {
     return { error: 'All fields are required.' }
   }
 
   try {
-    await createTask(projectId, { title, description, deadline })
+    await createTask(projectId, { title, description, deadline, assignee_id: assigneeId })
     revalidatePath(`/projects/${projectId}`)
     revalidatePath('/tasks')
     return { success: true }
@@ -39,13 +40,14 @@ export async function updateTaskAction(taskId: string | number, prevState: unkno
   const description = formData.get('description') as string
   const deadline = formData.get('deadline') as string
   const priority = formData.get('priority') as string
+  const assigneeId = formData.get('assignee_id') ? Number(formData.get('assignee_id')) : null
 
   if (!title || !description || !deadline || !priority) {
     return { error: 'All fields are required.' }
   }
 
   try {
-    const updatedTask = await updateTask(taskId, { title, description, deadline, priority })
+    const updatedTask = await updateTask(taskId, { title, description, deadline, priority, assignee_id: assigneeId })
     revalidatePath(`/tasks/${taskId}`)
     revalidatePath('/tasks')
     revalidatePath(`/projects/${updatedTask.project_id}`)
