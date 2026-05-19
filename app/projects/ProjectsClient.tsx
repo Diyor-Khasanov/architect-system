@@ -84,7 +84,6 @@ export default function ProjectsClient({
             <table className='w-full min-w-[600px] text-left text-sm'>
               <thead className='border-b border-zinc-200 text-xs uppercase tracking-wide text-zinc-500 dark:border-zinc-800 dark:text-zinc-400'>
                 <tr>
-                  <th className='px-2 py-3'>ID</th>
                   <th className='px-2 py-3'>Name</th>
                   <th className='px-2 py-3 text-center'>Members</th>
                   <th className='px-2 py-3'>Manager</th>
@@ -99,7 +98,6 @@ export default function ProjectsClient({
                     key={project.id}
                     className='border-b border-zinc-100 transition-colors hover:bg-zinc-50/50 dark:border-zinc-800 dark:hover:bg-zinc-800/50'
                   >
-                    <td className='px-2 py-3 text-zinc-500 dark:text-zinc-400'>{project.id}</td>
                     <td className='px-2 py-3'>
                       <Link
                         href={`/projects/${project.id}`}
@@ -116,7 +114,7 @@ export default function ProjectsClient({
                     </td>
                     <td className='px-2 py-3 text-zinc-600 dark:text-zinc-300'>
                       {availableManagers.find((m) => m.id === project.manager_id)?.full_name ||
-                        `#${project.manager_id}`}
+                        'Unknown Manager'}
                     </td>
                     <td className='px-2 py-3'>
                       <span

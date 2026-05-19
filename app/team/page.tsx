@@ -81,7 +81,7 @@ export default async function TeamPage() {
       if (p.manager_id !== currentUser.id && !teammateMap.has(p.manager_id)) {
         teammateMap.set(p.manager_id, {
           id: p.manager_id,
-          name: `Manager (ID: ${p.manager_id})`,
+          name: 'Manager',
           email: '---',
           role: 'manager',
           is_active: true,

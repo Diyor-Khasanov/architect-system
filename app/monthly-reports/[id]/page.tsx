@@ -60,7 +60,6 @@ export default async function MonthlyReportDetailPage({ params }: { params: Prom
                 <h1 className='text-2xl font-bold text-zinc-900 dark:text-zinc-100'>
                   Monthly Report - {months[report.month - 1]} {report.year}
                 </h1>
-                <p className='text-zinc-500 dark:text-zinc-400'>ID: #{report.id}</p>
               </div>
             </div>
           </div>

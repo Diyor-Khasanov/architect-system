@@ -45,11 +45,9 @@ export default function HelpRequestsClient({
             <table className='w-full min-w-[600px] text-left text-sm'>
               <thead className='border-b border-zinc-200 text-xs uppercase tracking-wide text-zinc-500 dark:border-zinc-800 dark:text-zinc-400'>
                 <tr>
-                  <th className='px-2 py-3'>ID</th>
                   <th className='px-2 py-3'>Title</th>
                   <th className='px-2 py-3'>Status</th>
                   <th className='px-2 py-3'>Priority</th>
-                  <th className='px-2 py-3'>User ID</th>
                   <th className='px-2 py-3'>Created</th>
                   <th className='px-2 py-3 text-right'>Action</th>
                 </tr>
@@ -60,7 +58,6 @@ export default function HelpRequestsClient({
                     key={request.id}
                     className='border-b border-zinc-100 transition-colors hover:bg-zinc-50/50 dark:border-zinc-800 dark:hover:bg-zinc-800/50'
                   >
-                    <td className='px-2 py-3 text-zinc-500 dark:text-zinc-400'>{request.id}</td>
                     <td className='px-2 py-3'>
                       <div className='flex items-center gap-2'>
                         <HelpCircle className='h-4 w-4 text-zinc-400' />
@@ -80,7 +77,6 @@ export default function HelpRequestsClient({
                         {request.priority}
                       </span>
                     </td>
-                    <td className='px-2 py-3 text-zinc-600 dark:text-zinc-300'>{request.user_id}</td>
                     <td className='px-2 py-3 text-zinc-500 dark:text-zinc-400'>
                       {new Date(request.created_at).toLocaleDateString()}
                     </td>

@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import type { UserProfile } from '../lib/users'
 import type { MeResponse } from '../lib/auth'
-import { User as UserIcon, Phone, Fingerprint, Hash, Image as ImageIcon, Mail, Shield, HardHat, Pencil } from 'lucide-react'
+import { User as UserIcon, Phone, Mail, Shield, HardHat, Pencil } from 'lucide-react'
 import ProfileEditForm from '../components/ProfileEditForm'
 import AvatarUploadForm from '../components/AvatarUploadForm'
 
@@ -100,29 +100,12 @@ export default function ProfileClient({ user, profile }: { user: MeResponse, pro
                       )}
                       {user.role}
                     </span>
-                    <span className='text-xs text-zinc-500 dark:text-zinc-400'>ID: {profile.id}</span>
                   </div>
                 </div>
               </div>
 
               <div className='grid gap-4 md:grid-cols-2'>
                 <div className='space-y-4'>
-                  <div className='flex items-center justify-between py-2 border-b border-zinc-50 dark:border-zinc-800'>
-                    <div className='flex items-center gap-3 text-zinc-600 dark:text-zinc-400'>
-                      <Hash className='h-4 w-4' />
-                      <span className='text-sm font-medium'>Profile ID</span>
-                    </div>
-                    <span className='text-sm font-semibold text-zinc-900 dark:text-zinc-100'>{displayValue(profile.id)}</span>
-                  </div>
-
-                  <div className='flex items-center justify-between py-2 border-b border-zinc-50 dark:border-zinc-800'>
-                    <div className='flex items-center gap-3 text-zinc-600 dark:text-zinc-400'>
-                      <Fingerprint className='h-4 w-4' />
-                      <span className='text-sm font-medium'>User ID</span>
-                    </div>
-                    <span className='text-sm font-semibold text-zinc-900 dark:text-zinc-100'>{displayValue(profile.user_id)}</span>
-                  </div>
-
                   <div className='flex items-center justify-between py-2 border-b border-zinc-50 dark:border-zinc-800'>
                     <div className='flex items-center gap-3 text-zinc-600 dark:text-zinc-400'>
                       <UserIcon className='h-4 w-4' />
@@ -141,13 +124,6 @@ export default function ProfileClient({ user, profile }: { user: MeResponse, pro
                     <span className='text-sm font-semibold text-zinc-900 dark:text-zinc-100'>{displayValue(profile.phone)}</span>
                   </div>
 
-                  <div className='flex items-center justify-between py-2 border-b border-zinc-50 dark:border-zinc-800'>
-                    <div className='flex items-center gap-3 text-zinc-600 dark:text-zinc-400'>
-                      <ImageIcon className='h-4 w-4' />
-                      <span className='text-sm font-medium'>Avatar File ID</span>
-                    </div>
-                    <span className='text-sm font-semibold text-zinc-900 dark:text-zinc-100'>{displayValue(profile.avatar_file_id)}</span>
-                  </div>
                 </div>
               </div>
             </article>

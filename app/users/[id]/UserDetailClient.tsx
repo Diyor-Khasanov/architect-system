@@ -224,15 +224,6 @@ export default function UserDetailClient({
                     </p>
                   </div>
                 </div>
-                <div className='flex items-start gap-3'>
-                  <div className='mt-1 rounded-lg bg-zinc-100 p-2 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400'>
-                    <Shield className='h-4 w-4' />
-                  </div>
-                  <div>
-                    <p className='text-xs font-medium uppercase tracking-wider text-zinc-400 dark:text-zinc-500'>Account ID</p>
-                    <p className='text-sm text-zinc-900 font-medium dark:text-zinc-100'>#{user.id}</p>
-                  </div>
-                </div>
               </div>
             </div>
           </article>

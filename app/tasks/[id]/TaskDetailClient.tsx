@@ -105,7 +105,7 @@ export default function TaskDetailClient({
                 <span>/</span>
                </>
             )}
-              <span className='text-zinc-900 dark:text-zinc-100'>Edit Task #{task.id}</span>
+              <span className='text-zinc-900 dark:text-zinc-100'>Edit Task</span>
             </div>
             <button
               onClick={() => setIsEditing(false)}
@@ -210,7 +210,7 @@ export default function TaskDetailClient({
                 <span>/</span>
                </>
             )}
-            <span className='text-zinc-900 dark:text-zinc-100'>Task #{task.id}</span>
+            <span className='text-zinc-900 dark:text-zinc-100'>Task Details</span>
           </div>
           {canEditTask && (
             <button
