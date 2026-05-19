@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useState } from 'react'
 import { DailyReport } from '../../lib/reports'
+import { FileResponse } from '../../lib/files'
 import { updateDailyReportAction } from '../../actions/reports'
 import { useToast } from '../../context/ToastContext'
 import { format } from 'date-fns'
@@ -17,6 +18,7 @@ import {
   ArrowLeft
 } from 'lucide-react'
 import Link from 'next/link'
+import ReportAttachments from '../../components/ReportAttachments'
 
 interface DailyReportDetailClientProps {
   report: DailyReport
@@ -24,6 +26,7 @@ interface DailyReportDetailClientProps {
   userName: string
   projectName: string
   taskName: string
+  files: FileResponse[]
 }
 
 export default function DailyReportDetailClient({
@@ -31,7 +34,8 @@ export default function DailyReportDetailClient({
   canEdit,
   userName,
   projectName,
-  taskName
+  taskName,
+  files
 }: DailyReportDetailClientProps) {
   const { toast } = useToast()
   const [isEditing, setIsEditing] = useState(false)
@@ -141,10 +145,16 @@ export default function DailyReportDetailClient({
               </div>
             </form>
           ) : (
-            <div className='prose prose-sm max-w-none dark:prose-invert'>
+            <div className='prose prose-sm max-w-none dark:prose-invert space-y-6'>
               <div className='whitespace-pre-wrap rounded-xl bg-zinc-50 p-6 text-zinc-800 dark:bg-zinc-800/50 dark:text-zinc-200'>
                 {report.text}
               </div>
+              <ReportAttachments
+                reportId={report.id}
+                initialFiles={files}
+                canEdit={canEdit}
+                revalidatePath={`/daily-reports/${report.id}`}
+              />
             </div>
           )}
         </div>

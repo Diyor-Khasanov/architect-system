@@ -1,5 +1,6 @@
 'use server'
 
+import { revalidatePath } from 'next/cache'
 import { uploadFile, deleteFile, fetchFileSignedUrl, type FileResponse } from '../lib/files'
 
 export type UploadFileState = {
@@ -23,6 +24,26 @@ export async function uploadFileAction(prevState: UploadFileState | null, formDa
   }
 }
 
+export async function uploadReportFileAction(prevState: UploadFileState | null, formData: FormData) {
+  const reportId = formData.get('report_id')
+  const path = formData.get('revalidate_path') as string
+
+  if (!reportId || Number(reportId) < 1) {
+    return { error: 'Report ID is required and must be positive' }
+  }
+
+  try {
+    const result = await uploadFile(formData)
+    if (path) {
+      revalidatePath(path)
+    }
+    return { success: true, data: result }
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred during file upload'
+    return { error: errorMessage }
+  }
+}
+
 export type GetSignedUrlState = {
   success?: boolean
   url?: string
@@ -39,6 +60,25 @@ export async function getFileSignedUrlAction(prevState: GetSignedUrlState | null
     return { success: true, url: result.url }
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred while fetching signed URL'
+    return { error: errorMessage }
+  }
+}
+
+export async function deleteReportFileAction(prevState: DeleteFileState | null, formData: FormData) {
+  const id = formData.get('file_id') as string
+  const path = formData.get('revalidate_path') as string
+
+  if (!id) return { error: 'File ID is required' }
+  if (Number(id) < 1) return { error: 'File ID must be a positive number' }
+
+  try {
+    await deleteFile(id)
+    if (path) {
+      revalidatePath(path)
+    }
+    return { success: true }
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred during file deletion'
     return { error: errorMessage }
   }
 }

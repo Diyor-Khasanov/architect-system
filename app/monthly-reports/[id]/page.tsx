@@ -1,4 +1,4 @@
-import { fetchMonthlyReport } from '../../lib/reports'
+import { fetchMonthlyReport, fetchReportFiles } from '../../lib/reports'
 import { fetchCurrentUser } from '../../lib/auth'
 import { fetchUsers } from '../../lib/users'
 import { fetchProject } from '../../lib/projects'
@@ -7,6 +7,7 @@ import AppShell from '../../components/AppShell'
 import { Calendar, User, Folder, BarChart3, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import { format } from 'date-fns'
+import ReportAttachments from '../../components/ReportAttachments'
 
 export default async function MonthlyReportDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -18,14 +19,17 @@ export default async function MonthlyReportDetailPage({ params }: { params: Prom
   let report
   let project
   let users
+  let files = []
   try {
     report = await fetchMonthlyReport(id)
-    const [fetchedProject, fetchedUsers] = await Promise.all([
+    const [fetchedProject, fetchedUsers, fetchedFiles] = await Promise.all([
       fetchProject(report.project_id.toString()),
-      fetchUsers()
+      fetchUsers(),
+      fetchReportFiles(report.id).catch(() => [])
     ])
     project = fetchedProject
     users = fetchedUsers
+    files = fetchedFiles
   } catch (error) {
     console.error('Error fetching monthly report data:', error)
     return notFound()
@@ -98,6 +102,15 @@ export default async function MonthlyReportDetailPage({ params }: { params: Prom
               This is a system-generated monthly performance report for {project.name} during {months[report.month - 1]} {report.year}.
             </p>
             {/* Add more detailed report content here if available from backend */}
+          </div>
+
+          <div className='mt-8 pt-8'>
+            <ReportAttachments
+              reportId={report.id}
+              initialFiles={files}
+              canEdit={currentUser.role === 'worker' && currentUser.id === report.user_id}
+              revalidatePath={`/monthly-reports/${report.id}`}
+            />
           </div>
         </div>
       </div>
