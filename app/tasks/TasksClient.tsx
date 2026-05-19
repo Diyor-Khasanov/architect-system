@@ -64,12 +64,10 @@ export default function TasksClient({
             <table className='w-full min-w-[600px] text-left text-sm'>
               <thead className='border-b border-zinc-200 text-xs uppercase tracking-wide text-zinc-500 dark:border-zinc-800 dark:text-zinc-400'>
                 <tr>
-                  <th className='px-2 py-3'>ID</th>
                   <th className='px-2 py-3'>Title</th>
                   <th className='px-2 py-3'>Status</th>
                   <th className='px-2 py-3'>Priority</th>
                   <th className='px-2 py-3'>Deadline</th>
-                  <th className='px-2 py-3'>Project ID</th>
                 </tr>
               </thead>
               <tbody>
@@ -83,7 +81,6 @@ export default function TasksClient({
                       key={task.id}
                       className='border-b border-zinc-100 transition-colors hover:bg-zinc-50/50 dark:border-zinc-800 dark:hover:bg-zinc-800/50'
                     >
-                      <td className='px-2 py-3 text-zinc-500 dark:text-zinc-400'>{task.id}</td>
                       <td className='px-2 py-3'>
                         <Link
                           href={`/tasks/${task.id}`}
@@ -114,11 +111,6 @@ export default function TasksClient({
                       </td>
                       <td className='px-2 py-3 text-zinc-600 dark:text-zinc-300'>
                         {new Date(task.deadline).toLocaleDateString()}
-                      </td>
-                      <td className='px-2 py-3 text-zinc-600 dark:text-zinc-300'>
-                        <Link href={`/projects/${task.project_id}`} className='hover:underline'>
-                          #{task.project_id}
-                        </Link>
                       </td>
                     </tr>
                   )

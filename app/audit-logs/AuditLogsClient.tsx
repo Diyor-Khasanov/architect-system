@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Search, Eye, Calendar, User, Activity } from 'lucide-react'
+import { Search, Eye, Calendar, Activity } from 'lucide-react'
 import type { AuditLog } from '../lib/audit-logs'
 
 interface AuditLogsClientProps {
@@ -46,7 +46,6 @@ export default function AuditLogsClient({ logs }: AuditLogsClientProps) {
               <tr>
                 <th className='px-6 py-4 font-medium'>Action</th>
                 <th className='px-6 py-4 font-medium'>Resource</th>
-                <th className='px-6 py-4 font-medium'>User ID</th>
                 <th className='px-6 py-4 font-medium'>Timestamp</th>
                 <th className='px-6 py-4 font-medium'>Details</th>
               </tr>
@@ -62,12 +61,6 @@ export default function AuditLogsClient({ logs }: AuditLogsClientProps) {
                   </td>
                   <td className='px-6 py-4 text-zinc-600 dark:text-zinc-400'>
                     {log.resource} {log.resource_id && `(#${log.resource_id})`}
-                  </td>
-                  <td className='px-6 py-4'>
-                    <div className='flex items-center gap-2 text-zinc-600 dark:text-zinc-400'>
-                      <User className='h-3.5 w-3.5' />
-                      <span>{log.user_id}</span>
-                    </div>
                   </td>
                   <td className='px-6 py-4'>
                     <div className='flex items-center gap-2 text-zinc-600 dark:text-zinc-400'>
@@ -87,7 +80,7 @@ export default function AuditLogsClient({ logs }: AuditLogsClientProps) {
               ))}
               {filteredLogs.length === 0 && (
                 <tr>
-                  <td colSpan={5} className='px-6 py-10 text-center text-zinc-500 dark:text-zinc-400'>
+                  <td colSpan={4} className='px-6 py-10 text-center text-zinc-500 dark:text-zinc-400'>
                     No audit logs found.
                   </td>
                 </tr>

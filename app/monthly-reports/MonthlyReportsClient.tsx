@@ -125,9 +125,6 @@ export default function MonthlyReportsClient({
                 <div className='rounded-lg bg-zinc-100 p-2 dark:bg-zinc-800'>
                   <BarChart3 className='h-5 w-5 text-zinc-600 dark:text-zinc-400' />
                 </div>
-                <span className='text-[10px] font-medium uppercase tracking-wider text-zinc-500'>
-                  ID: #{report.id}
-                </span>
               </div>
 
               <div className='mb-4 flex-1'>
@@ -137,7 +134,7 @@ export default function MonthlyReportsClient({
                 <div className='flex flex-wrap gap-x-4 gap-y-2 text-xs text-zinc-500 dark:text-zinc-400'>
                   <div className='flex items-center gap-1.5'>
                     <User className='h-3.5 w-3.5' />
-                    {userNameMap[report.user_id] || `User #${report.user_id}`}
+                    {userNameMap[report.user_id] || 'Unknown User'}
                   </div>
                   <div className='flex items-center gap-1.5'>
                     <Calendar className='h-3.5 w-3.5' />
@@ -149,7 +146,7 @@ export default function MonthlyReportsClient({
               <div className='space-y-2 border-t border-zinc-100 pt-4 dark:border-zinc-800'>
                 <div className='flex items-center gap-2 text-xs text-zinc-600 dark:text-zinc-400'>
                   <Folder className='h-3.5 w-3.5 shrink-0' />
-                  <span className='truncate'>{projectNameMap[report.project_id] || `Project #${report.project_id}`}</span>
+                  <span className='truncate'>{projectNameMap[report.project_id] || 'Unknown Project'}</span>
                 </div>
               </div>
             </Link>

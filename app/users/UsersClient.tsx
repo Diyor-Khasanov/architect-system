@@ -59,7 +59,6 @@ export default function UsersClient({
             <table className='w-full min-w-[800px] text-left text-sm'>
               <thead className='border-b border-zinc-200 text-xs uppercase tracking-wide text-zinc-500 dark:border-zinc-800 dark:text-zinc-400'>
                 <tr>
-                  <th className='px-2 py-3'>ID</th>
                   <th className='px-2 py-3'>User</th>
                   <th className='px-2 py-3'>Role</th>
                   <th className='px-2 py-3'>Status</th>
@@ -69,7 +68,6 @@ export default function UsersClient({
               <tbody>
                 {initialUsers.map((user) => (
                   <tr key={user.id} className='border-b border-zinc-100 hover:bg-zinc-50/50 transition-colors dark:border-zinc-800 dark:hover:bg-zinc-800/50'>
-                    <td className='px-2 py-4 text-zinc-500 dark:text-zinc-400'>{user.id}</td>
                     <td className='px-2 py-4'>
                       <div className='flex items-center gap-3'>
                         <div className='flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400'>

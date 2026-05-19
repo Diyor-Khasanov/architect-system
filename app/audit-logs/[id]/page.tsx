@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ChevronLeft, Calendar, User, Activity, FileText } from 'lucide-react'
+import { ChevronLeft, Calendar, Activity, FileText } from 'lucide-react'
 import AppShell from '../../components/AppShell'
 import { fetchCurrentUser } from '../../lib/auth'
 import { fetchAuditLogById } from '../../lib/audit-logs'
@@ -58,7 +58,7 @@ export default async function AuditLogDetailPage({ params }: PageProps) {
             <div>
               <h1 className='text-2xl font-semibold text-zinc-900 dark:text-zinc-100'>{log.action}</h1>
               <p className='text-sm text-zinc-500 dark:text-zinc-400'>
-                Audit Log Entry # {log.id}
+                Audit Log Entry
               </p>
             </div>
           </div>
@@ -80,13 +80,6 @@ export default async function AuditLogDetailPage({ params }: PageProps) {
                 <div className='flex-1 border-b border-zinc-100 pb-1 dark:border-zinc-800'>
                   <span className='block text-xs text-zinc-500'>Resource ID</span>
                   <span className='text-sm font-medium text-zinc-900 dark:text-zinc-100'>{log.resource_id ?? 'N/A'}</span>
-                </div>
-              </div>
-              <div className='flex items-center gap-3'>
-                <User className='h-4 w-4 text-zinc-400' />
-                <div className='flex-1 border-b border-zinc-100 pb-1 dark:border-zinc-800'>
-                  <span className='block text-xs text-zinc-500'>Actor User ID</span>
-                  <span className='text-sm font-medium text-zinc-900 dark:text-zinc-100'>{log.user_id}</span>
                 </div>
               </div>
               <div className='flex items-center gap-3'>
