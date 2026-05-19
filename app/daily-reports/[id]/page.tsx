@@ -1,4 +1,4 @@
-import { fetchDailyReport } from '../../lib/reports'
+import { fetchDailyReport, fetchReportFiles } from '../../lib/reports'
 import { fetchCurrentUser } from '../../lib/auth'
 import { fetchUserById } from '../../lib/users'
 import { fetchProject } from '../../lib/projects'
@@ -26,11 +26,12 @@ export default async function DailyReportDetailPage({ params }: PageProps) {
     notFound()
   }
 
-  // Fetch related names
-  const [reporter, project, task] = await Promise.all([
+  // Fetch related names and files
+  const [reporter, project, task, files] = await Promise.all([
     fetchUserById(report.user_id).catch(() => null),
     fetchProject(report.project_id.toString()).catch(() => null),
     fetchTask(report.task_id).catch(() => null),
+    fetchReportFiles(report.id).catch(() => []),
   ])
 
   const userName = reporter?.profile?.full_name || reporter?.username || `User #${report.user_id}`
@@ -45,6 +46,7 @@ export default async function DailyReportDetailPage({ params }: PageProps) {
         userName={userName}
         projectName={projectName}
         taskName={taskName}
+        files={files}
       />
     </AppShell>
   )
