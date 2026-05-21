@@ -67,11 +67,12 @@ export default function TaskCreateForm({
 
         <div className='space-y-2 md:col-span-2'>
           <label htmlFor='assignee_id' className='text-sm font-medium text-zinc-700 dark:text-zinc-300'>
-            Assignee (Optional)
+            Assignee
           </label>
           <Combobox
             id='assignee_id'
             name='assignee_id'
+            required
             placeholder='Select a worker...'
             options={members.map((member) => ({
               id: member.user_id,

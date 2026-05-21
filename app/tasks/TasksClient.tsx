@@ -24,11 +24,13 @@ const STATUS_COLORS: Record<TaskStatus, string> = {
 
 export default function TasksClient({
   tasks,
+  userNameMap = {},
   fetchError,
   title = 'Tasks',
   subtitle = 'Overview of all tasks across projects.',
 }: {
   tasks: Task[]
+  userNameMap?: Record<number, string>
   fetchError?: string
   title?: string
   subtitle?: string
@@ -65,6 +67,7 @@ export default function TasksClient({
               <thead className='border-b border-zinc-200 text-xs uppercase tracking-wide text-zinc-500 dark:border-zinc-800 dark:text-zinc-400'>
                 <tr>
                   <th className='px-2 py-3'>Title</th>
+                  <th className='px-2 py-3'>Assignee</th>
                   <th className='px-2 py-3'>Status</th>
                   <th className='px-2 py-3'>Priority</th>
                   <th className='px-2 py-3'>Deadline</th>
@@ -91,6 +94,9 @@ export default function TasksClient({
                         <p className='text-xs text-zinc-500 dark:text-zinc-400 truncate max-w-[200px]'>
                           {task.description}
                         </p>
+                      </td>
+                      <td className='px-2 py-3 text-zinc-600 dark:text-zinc-300'>
+                        {task.assignee_id ? (userNameMap[task.assignee_id] || `#${task.assignee_id}`) : 'Unassigned'}
                       </td>
                       <td className='px-2 py-3'>
                         <div className='flex items-center gap-1.5'>

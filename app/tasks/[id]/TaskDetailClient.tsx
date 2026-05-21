@@ -68,7 +68,7 @@ export default function TaskDetailClient({
   const [, updateAction, isPending] = useActionState(updateTaskAction.bind(null, task.id), null)
 
   const isManagerOrAdmin = currentUserRole === 'admin' || currentUserRole === 'manager'
-  const isWorkerOnTask = assignments.some((a) => a.user_id === currentUserId)
+  const isWorkerOnTask = assignments.some((a) => a.user_id === currentUserId) || task.assignee_id === currentUserId
   const canUpdateStatus = isWorkerOnTask || isManagerOrAdmin
   const canEditTask = isManagerOrAdmin
 
@@ -173,6 +173,7 @@ export default function TaskDetailClient({
                 <Combobox
                   id='assignee_id'
                   name='assignee_id'
+                  required
                   defaultValue={task.assignee_id}
                   placeholder='Select a worker...'
                   options={projectMembers.map((member) => ({

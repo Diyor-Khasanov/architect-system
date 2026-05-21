@@ -9,8 +9,8 @@ export async function createTaskAction(projectId: string | number, prevState: un
   const deadline = formData.get('deadline') as string
   const assigneeId = formData.get('assignee_id') ? Number(formData.get('assignee_id')) : undefined
 
-  if (!title || !description || !deadline) {
-    return { error: 'All fields are required.' }
+  if (!title || !description || !deadline || !assigneeId) {
+    return { error: 'All fields including assignee are required.' }
   }
 
   try {
@@ -42,8 +42,8 @@ export async function updateTaskAction(taskId: string | number, prevState: unkno
   const priority = formData.get('priority') as string
   const assigneeId = formData.get('assignee_id') ? Number(formData.get('assignee_id')) : null
 
-  if (!title || !description || !deadline || !priority) {
-    return { error: 'All fields are required.' }
+  if (!title || !description || !deadline || !priority || !assigneeId) {
+    return { error: 'All fields including assignee are required.' }
   }
 
   try {
