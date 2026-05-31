@@ -55,7 +55,3 @@ Architect System is a modern project and task management platform built with Nex
 ## Deployment
 
 The project is optimized for deployment on the [Vercel Platform](https://vercel.com/).
-
-## License
-
-This project is licensed under the MIT License.
