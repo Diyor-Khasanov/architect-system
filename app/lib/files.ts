@@ -1,4 +1,5 @@
 import { getAuthHeaderFromCookies } from './auth'
+import { API_BASE_URL } from './config'
 
 export interface FileResponse {
   id: number
@@ -10,7 +11,7 @@ export interface FileResponse {
   created_at: string
 }
 
-const API_BASE_URL = 'http://13.50.4.92/api/v1'
+
 
 export async function uploadFile(formData: FormData) {
   const authorization = await getAuthHeaderFromCookies()

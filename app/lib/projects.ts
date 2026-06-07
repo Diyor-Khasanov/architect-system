@@ -1,4 +1,5 @@
 import { getAuthHeaderFromCookies } from './auth'
+import { API_BASE_URL } from './config'
 
 export interface ProjectMember {
   user_id: number
@@ -25,7 +26,7 @@ interface CreateProjectPayload {
   manager_id: number
 }
 
-const API_BASE_URL = 'http://13.50.4.92/api/v1'
+
 
 function normalizeProjectsResponse(payload: unknown): Project[] {
   if (Array.isArray(payload)) {

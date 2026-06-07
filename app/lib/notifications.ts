@@ -1,6 +1,5 @@
 import { getAuthHeaderFromCookies } from './auth'
-
-const API_BASE_URL = 'http://13.50.4.92/api/v1'
+import { API_BASE_URL } from './config'
 
 export interface Notification {
   id: number

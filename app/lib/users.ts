@@ -1,4 +1,5 @@
 import { getAuthHeaderFromCookies, type UserRole } from './auth'
+import { API_BASE_URL } from './config'
 
 export interface UserProfile {
   id: number
@@ -34,7 +35,7 @@ export interface UpdateUserProfilePayload {
   avatar_file_id: number
 }
 
-const API_BASE_URL = 'http://13.50.4.92/api/v1'
+
 
 function normalizeUsersResponse(payload: unknown): User[] {
   if (Array.isArray(payload)) {

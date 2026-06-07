@@ -1,4 +1,5 @@
 import { getAuthHeaderFromCookies } from './auth'
+import { API_BASE_URL } from './config'
 
 export interface Report {
   id: number
@@ -29,7 +30,7 @@ export interface DailyReport {
   updated_at: string
 }
 
-const API_BASE_URL = 'http://13.50.4.92/api/v1'
+
 
 export async function fetchTaskReport(taskId: string | number): Promise<Report | null> {
   const authorization = await getAuthHeaderFromCookies()

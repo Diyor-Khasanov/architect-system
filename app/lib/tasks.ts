@@ -1,4 +1,5 @@
 import { getAuthHeaderFromCookies } from './auth'
+import { API_BASE_URL } from './config'
 
 export type TaskStatus = 'todo' | 'in_progress' | 'review' | 'blocked' | 'done' | 'canceled'
 
@@ -31,7 +32,7 @@ export interface TaskHistoryEntry {
   created_at: string
 }
 
-const API_BASE_URL = 'http://13.50.4.92/api/v1'
+
 
 function normalizeTaskResponse(payload: unknown): Task {
   let taskData: Record<string, unknown> | null = null

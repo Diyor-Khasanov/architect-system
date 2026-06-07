@@ -1,69 +1,63 @@
 'use server'
 
-import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { authenticateWithBackend, clearAuthSession, persistAuthSession } from '../lib/auth'
 
-const API_BASE_URL = 'http://13.50.4.92/api/v1'
-
-function resolveToken(payload: unknown) {
-  if (!payload || typeof payload !== 'object') return null
-
-  const candidate = payload as Record<string, unknown>
-
-  return (
-    candidate.access_token ??
-    candidate.token ??
-    (candidate.data as Record<string, unknown> | undefined)?.access_token ??
-    (candidate.data as Record<string, unknown> | undefined)?.token ??
-    null
-  )
+export interface LoginActionState {
+  status: 'idle' | 'error' | 'success'
+  message: string
+  userDisplayName?: string
+  fieldErrors?: {
+    username?: string
+    password?: string
+  }
 }
 
-export async function loginAction(formData: FormData) {
-  const username = formData.get('username')
-  const password = formData.get('password')
+const INITIAL_LOGIN_STATE: LoginActionState = {
+  status: 'idle',
+  message: '',
+}
 
-  if (!username || !password) {
-    return { error: 'Username va parol majburiy.' }
+function getRequiredString(formData: FormData, key: string) {
+  const value = formData.get(key)
+  return typeof value === 'string' ? value.trim() : ''
+}
+
+export async function loginAction(previousState: LoginActionState = INITIAL_LOGIN_STATE, formData: FormData): Promise<LoginActionState> {
+  void previousState
+  const username = getRequiredString(formData, 'username')
+  const password = getRequiredString(formData, 'password')
+  const fieldErrors: LoginActionState['fieldErrors'] = {}
+
+  if (!username) fieldErrors.username = 'Username yoki email majburiy.'
+  if (!password) fieldErrors.password = 'Parol majburiy.'
+
+  if (fieldErrors.username || fieldErrors.password) {
+    return {
+      status: 'error',
+      message: 'Iltimos, barcha majburiy maydonlarni to‘ldiring.',
+      fieldErrors,
+    }
   }
 
-  const basicCredential = btoa(`${username}:${password}`)
-
   try {
-    const response = await fetch(`${API_BASE_URL}/auth/login`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Basic ${basicCredential}`,
-        'Content-Type': 'application/json',
-      },
-      cache: 'no-store',
-    })
+    const result = await authenticateWithBackend({ username, password })
+    await persistAuthSession(result.session)
 
-    if (!response.ok) {
-      return { error: 'Login yoki parol xato!' }
+    return {
+      status: 'success',
+      message: 'Kirish muvaffaqiyatli. Dashboard ochilmoqda...',
+      userDisplayName: result.user?.profile?.full_name ?? result.user?.username ?? username,
     }
-
-    const payload = await response.json().catch(() => null)
-    const token = resolveToken(payload)
-    const cookieStore = await cookies()
-
-    if (typeof token === 'string' && token.length > 0) {
-      cookieStore.set('auth_mode', 'bearer', { path: '/', httpOnly: true, sameSite: 'lax' })
-      cookieStore.set('auth_value', token, { path: '/', httpOnly: true, sameSite: 'lax' })
-    } else {
-      cookieStore.set('auth_mode', 'basic', { path: '/', httpOnly: true, sameSite: 'lax' })
-      cookieStore.set('auth_value', basicCredential, { path: '/', httpOnly: true, sameSite: 'lax' })
+  } catch (error) {
+    return {
+      status: 'error',
+      message: error instanceof Error ? error.message : 'Tarmoq ulanishida xatolik yuz berdi.',
     }
-
-    return { success: true }
-  } catch {
-    return { error: 'Tarmoq ulanishida xatolik yuz berdi.' }
   }
 }
 
 export async function logoutAction() {
-  const cookieStore = await cookies()
-  cookieStore.delete('auth_mode')
-  cookieStore.delete('auth_value')
+  await clearAuthSession()
   redirect('/login')
 }

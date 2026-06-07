@@ -1,4 +1,5 @@
 import { getAuthHeaderFromCookies } from './auth'
+import { API_BASE_URL } from './config'
 
 export interface HelpRequest {
   id: number
@@ -12,7 +13,7 @@ export interface HelpRequest {
   updated_at: string
 }
 
-const API_BASE_URL = 'http://13.50.4.92/api/v1'
+
 
 function normalizeHelpRequestsResponse(payload: unknown): HelpRequest[] {
   if (Array.isArray(payload)) {
